@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "bpcl-mr-v-support-client-side-solution",
+    "id": "ca85d196-ecdf-49b2-a69b-4a23d6c211f5",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.21.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "bpcl-mr-v-support description"
+      },
+      "longDescription": {
+        "default": "bpcl-mr-v-support description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "bpcl-mr-v-support Feature",
+        "description": "The feature that activates elements of the bpcl-mr-v-support solution.",
+        "id": "75e85c5d-792f-4ddf-88bd-4f9b9e0a76d1",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/bpcl-mr-v-support.sppkg"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "22.22.0",
+    "sdksVersions": {},
+    "version": "1.21.1",
+    "libraryName": "bpcl-mr-v-support",
+    "libraryId": "ca85d196-ecdf-49b2-a69b-4a23d6c211f5",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "bpcl-mr-v-support",
+    "solutionShortDescription": "bpcl-mr-v-support description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
