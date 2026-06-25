@@ -7,6 +7,21 @@ import "@pnp/sp/attachments";
 
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 
+export interface INavigationMenuItem {
+    Id: number;
+    Title: string;
+    MenuUrl: {
+        Url: string;
+        Description: string;
+    };
+
+    ParentId?: {
+        Id: number;
+        Title: string;
+    };
+    Sequence?: number;
+}
+
 export interface IWelcomeBannerItem {
     Id: number;
     Title: string;
@@ -16,17 +31,23 @@ export interface IWelcomeBannerItem {
 
 export interface ISafetyDashBoardItem {
     Id: number;
-    FileRef: string;
+    AFDaysDate: string;
+    AFDCount: number;
+    AFManHours: number;
 }
 
 export interface ITestimonialItem {
     Id: number;
-    FileRef: string;
+    Title: string;
+    Description: string;
+    ImageUrl: string;
 }
 
 export interface ISuccessStoryItem {
     Id: number;
-    FileRef: string;
+    Title: string;
+    Description: string;
+    ImageUrl: string;
 }
 
 export interface IEmployeeGreetingItem {
@@ -109,11 +130,31 @@ export default class BpclMrVSupportService {
         this.siteUrl = context.pageContext.web.absoluteUrl;
     }
 
+    //Navigation Menu
+    public async getNavigationMenu(): Promise<INavigationMenuItem[]> {
+        const items = await this.sp.web.lists
+            .getByTitle("MR_SL_NavigationMenu")
+            .items
+            .select(
+                "Id",
+                "Title",
+                "MenuUrl",
+                "Sequence",
+                "ParentId/Id",
+                "ParentId/Title"
+            )
+            .expand("ParentId")
+            .filter("IsActive eq 1")
+            .orderBy("Sequence", true)();
+
+        return items;
+    }
+
     // Welcome Banner
     public async getWelcomeBanners(): Promise<IWelcomeBannerItem[]> {
 
         const items = await this.sp.web.lists
-            .getByTitle("MR_WelcomeBanner")
+            .getByTitle("MR_DL_WelcomeBanner")
             .items
             .select("Id", "WelcomeBannerTitle", "RedirectURL", "FileRef")
             .orderBy("Id", false)();
@@ -131,50 +172,86 @@ export default class BpclMrVSupportService {
 
     public async getSafetyDashBoard(): Promise<ISafetyDashBoardItem[]> {
         const items = await this.sp.web.lists
-            .getByTitle("SafetyDashBoard")
+            .getByTitle("MR_SL_SafetyDashboard")
             .items
-            .select("Id", "FileRef")
+            .select("Id", "AFDaysDate", "AFDCount", "AFManHours")
             .orderBy("ID", false)();
         return items.map((item: any) => ({
 
             Id: item.Id,
-            FileRef: item.FileRef
+            AFDaysDate: item.AFDaysDate,
+            AFDCount: item.AFDCount,
+            AFManHours: item.AFManHours
 
         })
         );
     }
+
+    
 
     public async getTestimonials(): Promise<ITestimonialItem[]> {
-        const items = await this.sp.web.lists
-            .getByTitle("Testimonials")
-            .items
-            .select("Id", "FileRef")
-            .orderBy("ID", false)();
-        return items.map((item: any) => ({
-            Id: item.Id,
-            FileRef: item.FileRef
 
-        })
-        );
+        const items = await this.sp.web.lists
+            .getByTitle("MR_SL_Testimonials")
+            .items
+            .select("Id", "Title", "Description", "AttachmentFiles", "AttachmentFiles/FileName")
+            .expand("AttachmentFiles")
+            .orderBy("Id", false)();
+
+        return items.map((item: any) => {
+            let fileUrl = "";
+            if (item.AttachmentFiles && item.AttachmentFiles.length > 0) {
+
+                const fileName = item.AttachmentFiles[0].FileName;
+                fileUrl = `${this.siteUrl}/Lists/MR_SL_Testimonials/Attachments/${item.Id}/${fileName}`;
+            }
+
+            return {
+                Id: item.Id,
+                Title: item.Title,
+                Description: item.Description,
+                ImageUrl: fileUrl
+            };
+
+        });
+
     }
 
-    public async getSuccessStories(): Promise<ISuccessStoryItem[]> {
-        const items = await this.sp.web.lists
-            .getByTitle("SuccessStories")
-            .items
-            .select("Id", "FileRef")
-            .orderBy("ID", false)();
-        return items.map((item: any) => ({
-            Id: item.Id,
-            FileRef: item.FileRef
+   
 
-        })
-        );
+public async getSuccessStories(): Promise<ISuccessStoryItem[]> {
+
+        const items = await this.sp.web.lists
+            .getByTitle("MR_SL_SuccessStories")
+            .items
+            .select("Id", "Title", "Description", "AttachmentFiles", "AttachmentFiles/FileName")
+            .expand("AttachmentFiles")
+            .orderBy("Id", false)();
+
+        return items.map((item: any) => {
+            let fileUrl = "";
+            if (item.AttachmentFiles && item.AttachmentFiles.length > 0) {
+
+                const fileName = item.AttachmentFiles[0].FileName;
+                fileUrl = `${this.siteUrl}/Lists/MR_SL_SuccessStories/Attachments/${item.Id}/${fileName}`;
+            }
+
+            return {
+                Id: item.Id,
+                Title: item.Title,
+                Description: item.Description,
+                ImageUrl: fileUrl
+            };
+
+        });
+
     }
+
+
     public async getEmployeeGreetings(): Promise<IEmployeeGreetingItem[]> {
 
 
-        const items = await this.sp.web.lists.getByTitle("MR_EmployeeGreetings")
+        const items = await this.sp.web.lists.getByTitle("MR_SL_EmployeeGreetings")
 
             .items
             .select("Id", "EmpName/Id", "EmpName/Title", "EmpName/EMail", "EmailID", "Category")
@@ -192,7 +269,7 @@ export default class BpclMrVSupportService {
     public async getWeeklyNotices(): Promise<IWeeklyNoticeItem[]> {
 
         const items = await this.sp.web.lists
-            .getByTitle("MR_WeeklyNotices")
+            .getByTitle("MR_SL_WeeklyNotices")
             .items
             .select("Id", "Title", "DateReleased", "AttachmentFiles", "AttachmentFiles/FileName")
             .expand("AttachmentFiles")
@@ -203,7 +280,7 @@ export default class BpclMrVSupportService {
             if (item.AttachmentFiles && item.AttachmentFiles.length > 0) {
 
                 const fileName = item.AttachmentFiles[0].FileName;
-                fileUrl = `${this.siteUrl}/Lists/MR_WeeklyNotices/Attachments/${item.Id}/${fileName}`;
+                fileUrl = `${this.siteUrl}/Lists/MR_SL_WeeklyNotices/Attachments/${item.Id}/${fileName}`;
             }
 
             return {
@@ -220,7 +297,7 @@ export default class BpclMrVSupportService {
     // Quick Links
     public async getQuickLinks(): Promise<IQuickLinkItem[]> {
         const items = await this.sp.web.lists
-            .getByTitle("MR_QuickLinks")
+            .getByTitle("MR_SL_QuickLinks")
             .items
             .select("Id", "Title", "DisplayOrder", "RedirectURL", "CoverImage")
             .filter("IsActive eq 1")
@@ -243,7 +320,7 @@ export default class BpclMrVSupportService {
 
                     else if (img.fileName) {
 
-                        imageUrl = `${this.siteUrl}/Lists/MR_QuickLinks/Attachments/${item.Id}/${img.fileName}`;
+                        imageUrl = `${this.siteUrl}/Lists/MR_SL_QuickLinks/Attachments/${item.Id}/${img.fileName}`;
 
                     }
 
@@ -269,7 +346,7 @@ export default class BpclMrVSupportService {
         const items =
             await this.sp.web.lists
                 .getByTitle(
-                    "MR_LateralMoves"
+                    "MR_SL_LateralMoves"
                 )
                 .items
                 .select(
@@ -304,7 +381,7 @@ export default class BpclMrVSupportService {
                             .FileName;
 
                     imageUrl =
-                        `${this.siteUrl}/Lists/MR_LateralMoves/Attachments/${item.Id}/${fileName}`;
+                        `${this.siteUrl}/Lists/MR_SL_LateralMoves/Attachments/${item.Id}/${fileName}`;
 
                 }
 
@@ -330,7 +407,7 @@ export default class BpclMrVSupportService {
 
         const items =
             await this.sp.web.lists
-                .getByTitle("MR_Holiday")
+                .getByTitle("MR_SL_HolidayList")
                 .items
                 .select(
                     "Id",
@@ -364,7 +441,7 @@ export default class BpclMrVSupportService {
                             .FileName;
 
                     imageUrl =
-                        `${this.siteUrl}/Lists/MR_Holiday/Attachments/${item.Id}/${fileName}`;
+                        `${this.siteUrl}/Lists/MR_SL_HolidayList/Attachments/${item.Id}/${fileName}`;
 
                 }
 
@@ -390,7 +467,7 @@ export default class BpclMrVSupportService {
 
         const items = await this.sp.web.lists
 
-            .getByTitle("MR_FavouriteLinks")
+            .getByTitle("MR_SL_FavouriteLinks")
             .items
             .select("Id", "Title", "RedirectURL", "DisplayOrder", "IsActive")
             .filter("IsActive eq 1")
@@ -409,7 +486,7 @@ export default class BpclMrVSupportService {
     public async getSafetyTips(): Promise<ISafetyTipItem[]> {
 
         const items = await this.sp.web.lists
-            .getByTitle("MR_SafetyTips")
+            .getByTitle("MR_SL_SafetyTips")
             .items
             .select("Id", "Description", "AttachmentFiles", "AttachmentFiles/FileName")
             .expand("AttachmentFiles")
@@ -422,7 +499,7 @@ export default class BpclMrVSupportService {
             if (item.AttachmentFiles && item.AttachmentFiles.length > 0) {
 
                 const fileName = item.AttachmentFiles[0].FileName;
-                fileUrl = `${this.siteUrl}/Lists/MR_SafetyTips/Attachments/${item.Id}/${fileName}`;
+                fileUrl = `${this.siteUrl}/Lists/MR_SL_SafetyTips/Attachments/${item.Id}/${fileName}`;
             }
 
             return {
@@ -439,7 +516,7 @@ export default class BpclMrVSupportService {
     public async getTeamOperatingPrinciples(): Promise<ITeamOperatingPrincipleItem[]> {
 
         const items = await this.sp.web.lists
-            .getByTitle("MR_TeamOperatingPrinciples")
+            .getByTitle("MR_SL_TeamOperatingPrinciples")
             .items
             .select("Id", "Description", "AttachmentFiles", "AttachmentFiles/FileName")
             .expand("AttachmentFiles")
@@ -452,7 +529,7 @@ export default class BpclMrVSupportService {
             if (item.AttachmentFiles && item.AttachmentFiles.length > 0) {
 
                 const fileName = item.AttachmentFiles[0].FileName;
-                fileUrl = `${this.siteUrl}/Lists/MR_TeamOperatingPrinciples/Attachments/${item.Id}/${fileName}`;
+                fileUrl = `${this.siteUrl}/Lists/MR_SL_TeamOperatingPrinciples/Attachments/${item.Id}/${fileName}`;
             }
 
             return {
@@ -468,7 +545,7 @@ export default class BpclMrVSupportService {
 
     public async getVissionMission(): Promise<IVissionMissionItem[]> {
 
-        const items = await this.sp.web.lists.getByTitle("MR_VissionMission")
+        const items = await this.sp.web.lists.getByTitle("MR_SL_VissionMission")
 
             .items
             .select("Id", "VMTitle", "VMDescription", "AttachmentFiles", "AttachmentFiles/FileName")
@@ -480,7 +557,7 @@ export default class BpclMrVSupportService {
             if (item.AttachmentFiles && item.AttachmentFiles.length > 0) {
 
                 const fileName = item.AttachmentFiles[0].FileName;
-                imageUrl = `${this.siteUrl}/Lists/MR_VissionMission/Attachments/${item.Id}/${fileName}`;
+                imageUrl = `${this.siteUrl}/Lists/MR_SL_VissionMission/Attachments/${item.Id}/${fileName}`;
 
             }
 
@@ -496,7 +573,7 @@ export default class BpclMrVSupportService {
 
     // Business Units
     public async getBusinessUnits(): Promise<IBusinessUnit[]> {
-        const items = await this.sp.web.lists.getByTitle("BPCL_BusinessUnits")
+        const items = await this.sp.web.lists.getByTitle("MR_SL_BusinessUnits")
             .items
             .select("Id", "BUTitle", "IsActive", "RedirectURL", "AttachmentFiles", "AttachmentFiles/FileName")
             .expand("AttachmentFiles")
@@ -509,7 +586,7 @@ export default class BpclMrVSupportService {
             if (item.AttachmentFiles && item.AttachmentFiles.length > 0) {
 
                 const fileName = item.AttachmentFiles[0].FileName;
-                imageUrl = `${this.siteUrl}/Lists/BPCL_BusinessUnits/Attachments/${item.Id}/${fileName}`;
+                imageUrl = `${this.siteUrl}/Lists/MR_SL_BusinessUnits/Attachments/${item.Id}/${fileName}`;
 
             }
 

@@ -27,511 +27,227 @@
 /* ================================
    NAVBAR MAIN
 ================================ */
-
 .mainNavbar {
-  background: #0052cc;
+  background: #0052CC;
+  border-bottom: 1px solid #ddd;
   padding: 0;
+}
+ 
+.menuContainer {
   width: 100%;
-}
-
-/* ================================
-   CONTAINER
-================================ */
-
-.navContainer {
-  display: flex;
-  align-items: flex-start;
-  /* keep brand at top */
-  width: 100%;
-  padding: 0px 30px;
-  gap: 40px !important;
-}
-
-/* ================================
-   BRAND
-================================ */
-
-.brand {
-  flex: 0 0 auto;
-  font-weight: 600;
-  margin-right: 40px;
-  white-space: nowrap;
-  color: #fff !important;
-  align-self: flex-start;
-  padding-top: 8px;
-  padding-right: 40px;
-}
-
-/* ================================
-   MENU WRAPPER
-================================ */
-
-.menuWrapper {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  margin-left: auto;
-  margin-left: 40px;
-
 }
-
-/* ================================
-   FIRST ROW
-================================ */
-
+ 
 .firstRow {
   display: flex;
   align-items: center;
-  width: 100%;
   justify-content: space-between;
+  min-height: 35px;
+  width: 100%;
 }
-
-/* ================================
-   MENU NAVIGATION
-================================ */
-
-.firstRow .menuNav {
+ 
+ 
+ 
+.menuNav {
   display: flex;
   flex-wrap: nowrap;
-  gap: 16px;
   align-items: center;
-  //justify-content: flex-start;
-  justify-content: flex-end;
+  gap: 6px;
   flex: 1;
+  overflow: visible;
   min-width: 0;
-
-
 }
-
-/* ================================
-   SECOND ROW
-================================ */
-
+ 
+ 
+ 
+.menuDropdown {
+  white-space: nowrap;
+}
+ 
+.menuDropdown {
+  white-space: nowrap;
+  position: relative;
+}
+ 
+.menuDropdown :global(.dropdown-toggle) {
+  color: #fff !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 8px 12px !important;
+}
+ 
+.menuDropdown :global(.dropdown-menu) {
+  z-index: 9999 !important;
+  min-width: 220px;
+}
+ 
 .secondRow {
-  padding-top: 6px;
-  margin-top: 6px;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
   width: 100%;
-  display: flex;
-  //justify-content: space-between; 
-  padding-right: 54px;
-  justify-content: flex-end;
+  padding: 8px 10px;
+  border-top: 1px solid rgba(255,255,255,.2);
+  background: #0052CC;
 }
-
-.secondRow .menuNav {
+ 
+.secondMenuNav {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-  justify-content: flex-end;
-  flex: 1;
+  gap: 6px;
+  width: 100%;
 }
-
-/* ================================
-   MENU ITEMS
-================================ */
-
+ 
 .menuItem {
-  white-space: nowrap;
   color: #fff !important;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 8px 12px !important;
   font-size: 14px;
 }
-
-.menuItem a.nav-link {
-  opacity: 1 !important;
+ 
+.menuItem:hover {
+  color: #dba300 !important;
 }
-
-
-/* ===== FINAL NAVBAR COLOR FIX ===== */
-
-
-.quickLinksMenus .navbar-nav .dropdown-menu {
-  padding: 0px;
-}
-
-:global(.quickLinksMenus .nav-link),
-:global(.quickLinksMenus .dropdown-toggle) {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-:global(.navbar-dark .navbar-nav .nav-link),
-:global(.navbar-dark .navbar-nav .dropdown-toggle) {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Hover state */
-:global(.quickLinksMenus .nav-link:hover),
-:global(.quickLinksMenus .dropdown-toggle:hover) {
-  color: #ffffff !important;
-  opacity: 1 !important;
-  //background: transparent !important;
-}
-
-/* Active / focus */
-:global(.quickLinksMenus .nav-link:focus),
-:global(.quickLinksMenus .dropdown-toggle:focus),
-:global(.quickLinksMenus .nav-link.active) {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-
-:global(.mainNavbar .nav-link),
-:global(.mainNavbar .dropdown-toggle) {
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-
-
-/* Dropdown items should stay dark */
-:global(.dropdown-menu .dropdown-item) {
-  color: #333 !important;
-}
-
-:global(.dropdown-menu .dropdown-item:hover) {
-  // background-color: #f2f6ff;
-  // color: #0052cc !important;
-  background-color: #0052cc;
-  color: #fff !important;
-  border-left: 4px solid #ffd600;
-}
-
-/* ================================
-   CHEVRON
-================================ */
-
-.chevron {
-  margin-left: auto;
-
-  width: 44px;
-  min-width: 44px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
+ 
+ 
+.chevronBtn {
+  border: none;
+  background: transparent;
   color: #fff;
   font-size: 20px;
+  cursor: pointer;
+  width: 40px;
+  min-width: 40px;
+  flex-shrink: 0;
+}
+ 
+.chevronBtn:hover {
+  color: #dba300;
 }
 
-/* ================================
-   DROPDOWN FIXES
-================================ */
-
-:global(.dropdown-menu) {
-  border-radius: 4px;
-  min-width: 200px;
-  z-index: 9999;
-  position: absolute;
-  overflow: visible;
-}
-
-/* ================================
-   SUBMENU POSITIONING
-================================ */
-
-:global(.dropdown-submenu) {
+//my code start
+.dropdownSubmenu {
   position: relative;
 }
 
-:global(.dropdown-submenu > .dropdown-menu) {
+.dropdownSubmenuMenu {
+  display: none;
+  position: absolute;
   top: 0;
   left: 100%;
-  display: none;
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid #ddd;
+  z-index: 9999;
 }
 
-:global(.dropdown-submenu:hover > .dropdown-menu) {
+.dropdownSubmenu:hover .dropdownSubmenuMenu {
   display: block;
 }
-
-:global(.dropdown-submenu.open-left > .dropdown-menu) {
-  left: auto;
-  right: 100%;
-}
-
-/* =====================================
-   TABLET RESPONSIVE
-===================================== */
-
-@media (max-width: 992px) {
-
-  .navContainer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .brand {
-    margin-bottom: 10px;
-  }
-
-  .menuWrapper {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .firstRow .menuNav {
-    flex-wrap: wrap;
-  }
-
-}
-
-/* =====================================
-   MOBILE
-===================================== */
-
-
-.mobileToggle {
-  display: none;
-  font-size: 22px;
-  cursor: pointer;
-  color: #fff;
-  margin-left: auto;
-}
-
-@media (max-width: 820px) {
-
-  .mainNavbar {
-    position: sticky;
-    top: 0;
-    z-index: 10000;
-  }
-
-  .navContainer {
-    flex-direction: row;
-    align-items: center;
-    position: relative;
-    z-index: 10001;
-    justify-content: space-between;
-
-  }
-
-  .quickLinksMenus {
-    position: sticky;
-    top: 60px;
-    z-index: 9000;
-  }
-
-
-
-  .brand {
-    margin-right: auto;
-    display: flex;
-    align-items: center;
-    padding-right: 4px;
-    font-size: 18px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 250px;
-    min-width: 0;
-  }
-
-  .mobileToggle {
-    display: block;
-    font-size: 22px;
-    cursor: pointer;
-    color: #fff;
-    position: relative;
-    z-index: 12000;
-    align-items: center;
-  }
-
-  .menuWrapper {
-    display: none;
-    width: 100%;
-    position: fixed;
-    top: 130px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #0052cc;
-    padding: 10px 20px;
-    max-height: calc(100vh - 190px);
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-    z-index: 11000;
-  }
-
-  .mobileOpen {
+//my code end
+ 
+/* Tablet */
+@media (max-width: 991px) {
+ 
+ 
+    .secondMenuNav {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    gap: 0;
+  }
+ 
+  .menuItem {
+    width: 100%;
+    padding: 10px 15px !important;
+  }
+ 
+ .secondRow {
+    width: 100%;
+    max-height: 60vh;
     overflow-y: auto;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255,255,255,.2);
   }
-
-  .firstRow {
-    flex-direction: column;
-    align-items: flex-start;
+ 
+  .secondRow::-webkit-scrollbar {
+    width: 5px;
   }
-
-  .firstRow .menuNav {
-    flex-direction: column;
-    width: 100%;
-    gap: 12px;
-    align-items: flex-start;
+ 
+  .secondRow::-webkit-scrollbar-thumb {
+    background: #dba300;
+    border-radius: 10px;
   }
-
-  .menuItem,
-  .menuItem a,
-  .menuItem .nav-link {
-    width: 100%;
-    text-align: left !important;
-    justify-content: flex-start !important;
-  }
-
-
+}
+ 
+ 
+/* Mobile */
+ 
+ 
+@media (max-width: 576px) {
+ 
+  .firstRow,
   .secondRow {
     display: none;
   }
-
-  .chevron {
-    display: none;
+ 
+  .mobileMenu {
+    max-height: 70vh;
+    overflow-y: auto;
   }
-
+ 
+  .mobileMenu::-webkit-scrollbar {
+    width: 5px;
+  }
+ 
+  .mobileMenu::-webkit-scrollbar-thumb {
+    background: #dba300;
+    border-radius: 10px;
+  }
 }
-
-
-
-
-/* ===============================
-   Navbar Dropdown Styles
-   =============================== */
-
-.customDropdown {
-  position: relative;
+ 
+ 
+.mobileHeader {
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+  min-height: 50px;
+  width: 100%;
 }
-
-/* Hide dropdown by default */
-.customDropdown :global(.dropdown-menu) {
-  display: none;
-  margin-top: 0;
-  border-radius: 0;
-  padding: 0;
-  min-width: 220px;
-  z-index: 1050;
+.mobileHeaderText{
+  color: #fff;
+  margin: 0;
 }
-
-/* Open first-level dropdown on hover */
-.customDropdown:hover> :global(.dropdown-menu) {
-  display: block;
-}
-
-/* Dropdown item */
-.customDropdown :global(.dropdown-item) {
-  padding: 10px 16px;
-  font-size: 14px;
-  color: #333;
-  white-space: nowrap;
-}
-
-.customDropdown :global(.dropdown-item:hover) {
-  background-color: #f2f6ff;
-  color: #0052cc;
-}
-
-/* ===============================
-   Level-2 Flyout submenu
-   =============================== */
-
-:global(.dropdown-submenu) {
-  position: relative;
-}
-
-/* Default → open to RIGHT */
-:global(.dropdown-submenu > .dropdown-menu) {
-  display: none;
-  top: 0;
-  left: 100%;
-  right: auto;
-  border-radius: 0;
-  min-width: 220px;
-  z-index: 9999;
-}
-
-:global(.dropdown-submenu > .dropdown-item) {
-
-  color: #000 !important;
-
-}
-
-/* Show submenu on hover */
-:global(.dropdown-submenu.has-children:hover > .dropdown-menu) {
-  display: block;
-}
-
-/* ❌ Never open submenu if no children */
-:global(.dropdown-submenu:not(.has-children) > .dropdown-menu) {
-  display: none !important;
-}
-
-/* ✅ Flip to LEFT ONLY when JS adds this class */
-:global(.dropdown-submenu.open-left > .dropdown-menu) {
-  left: auto;
-  right: 100%;
-  color: #000;
-}
-
-
-
-/* Show dropdown arrow for top navbar items */
-.quickLinksMenus .dropdown-toggle::after {
-  display: inline-block !important;
-  margin-left: 6px;
-  vertical-align: middle;
-  content: "▾";
-  border: none !important;
-  font-size: 12px;
-}
-
-
-
-:global(.dropdown-submenu.has-children > a::before) {
-  content: "›";
-  float: right;
-  font-size: 14px;
-  margin-left: auto;
-}
-
-:global(.dropdown-submenu.has-children > a::after) {
-  display: none !important;
-
-}
-
-.quickLinksMenus>.dropdown-toggle::after,
-.quickLinksMenus .nav-item>.dropdown-toggle::after {
-  content: "▾";
-  margin-left: 6px;
-  font-size: 12px;
-  border: none !important;
-}
-
-
-
-
-/* Cursor hint */
-:global(.dropdown-submenu.has-children > a) {
+ 
+.hamburgerBtn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 28px;
   cursor: pointer;
+  padding: 10px 15px;
 }
-
-.quickLinksMenus .nav-link,
-.quickLinksMenus .dropdown-toggle,
-.quickLinksMenus .innerPageMenus {
-  opacity: 1 !important;
+ 
+.mobileMenu {
+width: 100%;
+  max-height: 70vh; /* adjust height as needed */
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-top: 1px solid rgba(255,255,255,.2);
 }
-
-/* Prevent bootstrap active dim effect */
-.quickLinksMenus .nav-link:focus,
-.quickLinksMenus .nav-link:active,
-.quickLinksMenus .dropdown-toggle:focus,
-.quickLinksMenus .dropdown-toggle:active {
-  opacity: 1 !important;
-  background: transparent !important;
+ 
+.mobileMenuNav {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
 }
-
+ 
+.mobileMenuNav .menuItem {
+  display: block;
+  width: 100%;
+  padding: 12px 15px !important;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  white-space: normal;
+}
 
 
 
@@ -647,7 +363,7 @@
     margin: 0px 12px;
   }
 
-  .performanceHighlightsWrapper {
+  .safetydashboardWrapper {
     padding: 30px 26px;
   }
 
@@ -1071,7 +787,7 @@
   border-bottom: 2px solid #ffd600;
 }
 
-.performanceHighlightsWrapper {
+.safetydashboardWrapper {
   background: #242424;
   padding: 60px 56px 60px 56px;
   border-radius: 0px;
@@ -1082,7 +798,7 @@
 
 /* ================= COMMON CARD ================= */
 
-.performanceHighlightsWrapper {
+.safetydashboardWrapper {
   background: #242424;
   padding: 60px 56px;
   border-radius: 0;
@@ -1099,7 +815,7 @@
 }
 
 /* Equal height columns */
-.performanceHighlightsWrapper>[class*='col-'] {
+.safetydashboardWrapper>[class*='col-'] {
   display: flex;
   flex-direction: column;
 }
@@ -1233,17 +949,17 @@
   }
 }
 
-.tabCarouselImg {
-  width: 100%;
-  height: 330px;
-  object-fit: cover;
-  border-radius: 16px;
-}
+// .tabCarouselImg {
+//   width: 100%;
+//   height: 330px;
+//   object-fit: cover;
+//   border-radius: 16px;
+// }
 
 .customCarousel {
 
   :global(.carousel-indicators) {
-    bottom: 10px;
+    // bottom: 10px;
     justify-content: flex-end;
     margin-right: 20px;
     margin-left: 20px;
@@ -1256,7 +972,7 @@
     background-color: #d3d3d3 !important;
     opacity: 1;
     border: none;
-    margin: 0 5px;
+    margin: 0 4px;
   }
 
   :global(.carousel-indicators .active) {
@@ -1265,6 +981,58 @@
 }
 
 
+.carouselCard {
+  background: #fff;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tabCarouselImg {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  display: block;
+  border-radius: 16px 16px 0px 0px;
+}
+
+.carouselContent {
+  padding: 11px;
+  min-height: 100px;
+  background: #fff;
+
+  h4 {
+    color: #0072b0;
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  p {
+        -webkit-box-orient: vertical;
+    color: #1f2937;
+    cursor: pointer;
+    display: -webkit-box;
+    font-size: 12px;
+    font-weight: 500;
+    overflow: hidden;
+    text-decoration: none !important;
+    margin: 0;
+  }
+}
+
+.carouselContent p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
 
 /* ================= PERFORMANCE ================= */
@@ -1482,7 +1250,7 @@
 /* ================= TABLET FIX ================= */
 
 @media (min-width: 768px) and (max-width: 991px) {
-  .performanceHighlightsWrapper {
+  .safetydashboardWrapper {
     .col-md-3 {
       width: 50%;
     }
@@ -1497,7 +1265,7 @@
 /* ================= MOBILE FIX ================= */
 
 @media (max-width: 767px) {
-  .performanceHighlightsWrapper {
+  .safetydashboardWrapper {
 
     .col-md-3,
     .col-md-6 {
@@ -3155,6 +2923,8 @@
   &:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(180deg, #4f9cff, #1664da);
+    color: white;
   }
 
   span {
@@ -3368,7 +3138,7 @@
     margin: 0px 12px;
   }
 
-  .performanceHighlightsWrapper {
+  .safetydashboardWrapper {
     padding: 30px 26px;
   }
 
@@ -3403,7 +3173,7 @@
     margin: 0px 12px;
   }
 
-  .performanceHighlightsWrapper {
+  .safetydashboardWrapper {
     padding: 30px 26px;
   }
 

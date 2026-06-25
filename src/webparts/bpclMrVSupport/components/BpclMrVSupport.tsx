@@ -10,11 +10,13 @@ import 'swiper/css/autoplay';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-import NewsAnnouncement from '../assets/news-announcement.png';
+
+import NewsAnnouncement from '../assets/governance.jpg';
 import BDcelebration from '../assets/celebration-BD.png';
 import Blueship from '../assets/blue-ship.png';
-
-import BpclMrVSupportService, { IBusinessUnit, ISafetyDashBoardItem, ITestimonialItem, ISuccessStoryItem, IEmployeeGreetingItem, IWeeklyNoticeItem, IWelcomeBannerItem, IQuickLinkItem, ILateralMoveItem, IHolidayItem, IFavouriteLinkItem, ISafetyTipItem, ITeamOperatingPrincipleItem, IVissionMissionItem } from '../Services/BpclMrVSupportService';
+import GoldShild from '../assets/gold-shield-png.png';
+import Savemoney from '../assets/Savemoney.png';
+import BpclMrVSupportService, { INavigationMenuItem, IBusinessUnit, ISafetyDashBoardItem, ITestimonialItem, ISuccessStoryItem, IEmployeeGreetingItem, IWeeklyNoticeItem, IWelcomeBannerItem, IQuickLinkItem, ILateralMoveItem, IHolidayItem, IFavouriteLinkItem, ISafetyTipItem, ITeamOperatingPrincipleItem, IVissionMissionItem } from '../Services/BpclMrVSupportService';
 import ViewAllWeeklyNotices from './ViewAllWeeklyNotices';
 import ViewAllHolidayList from './ViewAllHolidayList';
 
@@ -74,6 +76,7 @@ interface IVsupportState {
 
   isMobileMenuOpen: boolean;
   showOverflowMenus: boolean;
+  navigationMenuItem: INavigationMenuItem[];
   businessUnits: IBusinessUnit[];
   welcomeBanners: IWelcomeBannerItem[];
   testimonials: ITestimonialItem[];
@@ -91,13 +94,19 @@ interface IVsupportState {
 
   showWeeklyNoticesPage: boolean;
   showHolidayListPage: boolean;
+  windowWidth: number;
+  visibleMenus: INavigationMenuItem[];
+  hiddenMenus: INavigationMenuItem[];
 }
 
 
 
 export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsupportState> {
 
+
+
   private _service!: BpclMrVSupportService;
+  private menuContainerRef = React.createRef<HTMLDivElement>();
 
   constructor(props: IBpclMrVSupportProps) {
 
@@ -114,11 +123,14 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       showHolidayListPage: false,
       showModal: false,
       selectedItem: null,
-      activeTab: "performanceHighlights",
+      activeTab: "safetydashboard",
       isMobileMenuOpen: false,
       showOverflowMenus: false,
       directorCorner: [],
       businessUnits: [],
+      navigationMenuItem: [],
+      visibleMenus: [],
+      hiddenMenus: [],
       welcomeBanners: [],
       weeklyNotices: [],
       testimonials: [],
@@ -134,6 +146,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       employeeGreetings: [],
 
 
+      windowWidth: window.innerWidth,
 
     };
 
@@ -161,6 +174,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       this.handleLanguageChange
     );
 
+    window.addEventListener(
+      "resize",
+      this.handleResize
+    );
   }
 
   public componentWillUnmount(): void {
@@ -169,6 +186,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       "languageChanged",
       this.handleLanguageChange
     );
+    window.removeEventListener(
+      "resize",
+      this.handleResize
+    );
 
   }
 
@@ -176,6 +197,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
     try {
 
+      const navigationMenuItem = await this._service.getNavigationMenu();
       const businessUnits = await this._service.getBusinessUnits();
       const welcomeBanners = await this._service.getWelcomeBanners();
       const quickLinks = await this._service.getQuickLinks();
@@ -191,7 +213,12 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       const weeklyNotices = await this._service.getWeeklyNotices();
       const vissionMission = await this._service.getVissionMission();
 
-      this.setState({ businessUnits, welcomeBanners, quickLinks, lateralMoves, holidays, favouriteLinks, safetyTips, teamOperatingPrinciples, employeeGreetings, testimonials, successStories, safetyDashBoard, weeklyNotices, vissionMission });
+
+      this.setState({ navigationMenuItem, businessUnits, welcomeBanners, quickLinks, lateralMoves, holidays, favouriteLinks, safetyTips, teamOperatingPrinciples, employeeGreetings, testimonials, successStories, safetyDashBoard, weeklyNotices, vissionMission },
+        () => { this.splitMenus(); }
+
+
+      );
 
     }
     catch (error) {
@@ -207,6 +234,82 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     this.forceUpdate();
 
   }
+
+  private handleResize = (): void => {
+    this.setState({
+      windowWidth: window.innerWidth
+    });
+
+    this.splitMenus();
+  };
+
+  private splitMenus = (): void => {
+
+
+
+    const parentMenus = this.state.navigationMenuItem.filter(
+      item => !item.ParentId
+    );
+
+    const container = this.menuContainerRef.current;
+
+    if (!container || parentMenus.length === 0) {
+      return;
+    }
+
+    // Reserve space for chevron button
+    const availableWidth = container.clientWidth - 10;
+
+    let usedWidth = 0;
+
+    const visibleMenus: INavigationMenuItem[] = [];
+    const hiddenMenus: INavigationMenuItem[] = [];
+
+    const tempContainer = document.createElement("div");
+
+    tempContainer.style.position = "absolute";
+    tempContainer.style.visibility = "hidden";
+    tempContainer.style.whiteSpace = "nowrap";
+    tempContainer.style.top = "-9999px";
+
+    document.body.appendChild(tempContainer);
+
+    parentMenus.forEach(menu => {
+
+      const tempSpan = document.createElement("span");
+
+      tempSpan.className = styles.menuItem;
+      tempSpan.innerText = menu.Title;
+
+      tempContainer.appendChild(tempSpan);
+
+      // Add padding/margin buffer
+      const menuWidth = tempSpan.offsetWidth + 10;
+
+      if (usedWidth + menuWidth <= availableWidth) {
+
+        visibleMenus.push(menu);
+        usedWidth += menuWidth;
+
+      } else {
+
+        hiddenMenus.push(menu);
+
+      }
+
+      tempContainer.removeChild(tempSpan);
+
+    });
+
+
+    document.body.removeChild(tempContainer);
+
+    this.setState({
+      visibleMenus,
+      hiddenMenus
+    });
+
+  };
 
   public render(): React.ReactElement<IBpclMrVSupportProps> {
 
@@ -257,174 +360,285 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     ];
 
 
+    const isMobile = this.state.windowWidth <= 1024;
 
+    const parentMenus = this.state.navigationMenuItem.filter(
+      item => !item.ParentId
+    );
+
+    const mobileMenus = [...parentMenus];
+
+    /* IMPORTANT - use values calculated by splitMenus() */
+    const visibleMenus = this.state.visibleMenus;
+    const hiddenMenus = this.state.hiddenMenus;
+
+    const getChildMenus = (
+      parentId: number
+    ): INavigationMenuItem[] => {
+
+      return this.state.navigationMenuItem.filter(
+        item => item.ParentId?.Id === parentId
+      );
+
+    };
+
+    const renderChildMenus = (
+      parentId: number
+    ): React.ReactNode => {
+
+      const children = this.state.navigationMenuItem.filter(
+        item => item.ParentId?.Id === parentId
+      );
+
+      return children.map(child => {
+
+        const subChildren =
+          this.state.navigationMenuItem.filter(
+            item => item.ParentId?.Id === child.Id
+          );
+
+        if (subChildren.length === 0) {
+
+          return (
+            <NavDropdown.Item
+              key={child.Id}
+              href={child.MenuUrl?.Url || "#"}
+              target="_blank"
+            >
+              {child.Title}
+            </NavDropdown.Item>
+          );
+
+        }
+
+        return (
+          <div
+            key={child.Id}
+            className={styles.dropdownSubmenu}
+          >
+            <a
+              className="dropdown-item dropdown-toggle"
+              href="#"
+              onClick={(e) => e.preventDefault()}
+            >
+              {child.Title}
+            </a>
+
+            <div
+              className={styles.dropdownSubmenuMenu}
+            >
+              {renderChildMenus(child.Id)}
+            </div>
+
+          </div>
+        );
+
+      });
+
+    };
 
 
 
     return (
       <section>
 
-        <Navbar expand="lg" sticky="top" className={`${styles.mainNavbar} quickLinksMenus`}>
-          <Container fluid className={styles.navContainer}>
+        <Navbar sticky="top" className={styles.mainNavbar}>
+          <Container fluid>
 
-            {/* Brand */}
-            {/* <Navbar.Brand className={styles.brand}>
-              Sincera Consulting India PVT LTD
-            </Navbar.Brand> */}
+            <div className={styles.menuContainer}>
 
-            {/* Mobile Hamburger */}
-            <div
-              className={styles.mobileToggle}
-              onClick={() =>
-                this.setState({ isMobileMenuOpen: !this.state.isMobileMenuOpen })
-              }
-            >
-              <i
-                className={`bi ${this.state.isMobileMenuOpen ? "bi-x-lg" : "bi-list"}`}
-              />
-            </div>
+              {/* MOBILE MENU */}
+              {isMobile ? (
+                <>
+                  <div className={styles.mobileHeader}>
+                    <h5 className={styles.mobileHeaderText}>
+                      Vsupport
+                    </h5>
 
-            {/* Menu Wrapper */}
-            <div
-              className={`${styles.menuWrapper} ${this.state.isMobileMenuOpen ? styles.mobileOpen : ""
-                }`}
-            >
-
-              {/* First Row */}
-              <div className={styles.firstRow}>
-
-                <Nav className={styles.menuNav}>
-
-                  {/* Home */}
-                  <Nav.Link
-                    href="#"
-                    className={styles.menuItem}
-                    onClick={() => this.setState({ isMobileMenuOpen: false })}
-                  >
-                    Home
-                  </Nav.Link>
-
-                  {/* About */}
-                  <Nav.Link
-                    href="#"
-                    className={styles.menuItem}
-                    onClick={() => this.setState({ isMobileMenuOpen: false })}
-                  >
-                    About
-                  </Nav.Link>
-
-                  {/* Services Dropdown */}
-                  <NavDropdown
-                    title="Services"
-                    id="nav-dropdown-services"
-                    className={styles.menuItem}
-                  >
-                    <NavDropdown.Item href="#">
-                      Web Development
-                    </NavDropdown.Item>
-
-                    <NavDropdown.Item href="#">
-                      SharePoint Solutions
-                    </NavDropdown.Item>
-
-                    <NavDropdown.Item href="#">
-                      UI/UX Design
-                    </NavDropdown.Item>
-                  </NavDropdown>
-
-                  {/* Products Dropdown */}
-                  <NavDropdown
-                    title="Products"
-                    id="nav-dropdown-products"
-                    className={styles.menuItem}
-                  >
-                    <NavDropdown.Item href="#">
-                      CRM Solution
-                    </NavDropdown.Item>
-
-                    <NavDropdown.Item href="#">
-                      HR Management
-                    </NavDropdown.Item>
-
-                    <NavDropdown.Item href="#">
-                      Employee Portal
-                    </NavDropdown.Item>
-                  </NavDropdown>
-
-                  {/* Contact */}
-                  <Nav.Link
-                    href="#"
-                    className={styles.menuItem}
-                    onClick={() => this.setState({ isMobileMenuOpen: false })}
-                  >
-                    Contact
-                  </Nav.Link>
-
-                </Nav>
-
-                {/* Desktop Chevron */}
-                <div
-                  className={styles.chevron}
-                  onClick={() =>
-                    this.setState({
-                      showOverflowMenus: !this.state.showOverflowMenus
-                    })
-                  }
-                >
-                  <i
-                    className={`bi ${this.state.showOverflowMenus
-                      ? "bi-chevron-up"
-                      : "bi-chevron-down"
-                      }`}
-                  />
-                </div>
-
-              </div>
-
-              {/* Second Row */}
-              {this.state.showOverflowMenus && (
-                <div className={styles.secondRow}>
-
-                  <Nav className={styles.menuNav}>
-
-                    {/* Careers */}
-                    <Nav.Link
-                      href="#"
-                      className={styles.menuItem}
+                    <button
+                      type="button"
+                      className={styles.hamburgerBtn}
+                      onClick={() =>
+                        this.setState(prevState => ({
+                          showOverflowMenus: !prevState.showOverflowMenus
+                        }))
+                      }
                     >
-                      Careers
-                    </Nav.Link>
+                      <i
+                        className={`bi ${this.state.showOverflowMenus
+                          ? "bi-x-lg"
+                          : "bi-list"
+                          }`}
+                      />
+                    </button>
+                  </div>
 
-                    {/* Resources */}
-                    <Nav.Link
-                      href="#"
-                      className={styles.menuItem}
-                    >
-                      Resources
-                    </Nav.Link>
+                  {this.state.showOverflowMenus && (
+                    <div className={styles.mobileMenu}>
+                      <Nav className={styles.mobileMenuNav}>
 
-                    {/* More Dropdown */}
-                    <NavDropdown
-                      title="More"
-                      id="overflow-nav-more"
-                      className={styles.menuItem}
-                    >
-                      <NavDropdown.Item href="#">
-                        Blog
-                      </NavDropdown.Item>
+                        {mobileMenus.map(parentMenu => {
 
-                      <NavDropdown.Item href="#">
-                        News
-                      </NavDropdown.Item>
+                          const childMenus =
+                            getChildMenus(parentMenu.Id);
 
-                      <NavDropdown.Item href="#">
-                        Support
-                      </NavDropdown.Item>
-                    </NavDropdown>
+                          return (
+                            <div key={parentMenu.Id}>
 
-                  </Nav>
+                              <Nav.Link
+                                href={
+                                  parentMenu.MenuUrl?.Url || "#"
+                                }
+                                className={styles.menuItem}
+                              >
+                                {parentMenu.Title}
+                              </Nav.Link>
 
-                </div>
+                              {childMenus.length > 0 && (
+
+                                <div style={{ paddingLeft: "20px" }}>
+
+                                  {childMenus.map(child => (
+
+                                    <Nav.Link
+                                      key={child.Id}
+                                      href={
+                                        child.MenuUrl?.Url || "#"
+                                      }
+                                      className={styles.menuItem}
+                                    >
+                                      • {child.Title}
+                                    </Nav.Link>
+
+                                  ))}
+
+                                </div>
+
+                              )}
+
+                            </div>
+                          );
+
+                        })}
+
+                      </Nav>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* DESKTOP MENU */}
+                  <div className={styles.firstRow} ref={this.menuContainerRef}>
+
+                    <Nav className={styles.menuNav}>
+
+                      {visibleMenus.map(parentMenu => {
+
+                        const childMenus =
+                          getChildMenus(parentMenu.Id);
+
+                        if (childMenus.length > 0) {
+
+                          return (
+                            <NavDropdown
+                              key={parentMenu.Id}
+                              title={parentMenu.Title}
+                              id={`menu-${parentMenu.Id}`}
+                              className={styles.menuDropdown}
+                            >
+                              {renderChildMenus(parentMenu.Id)}
+                            </NavDropdown>
+                          );
+                        }
+
+                        return (
+                          <Nav.Link
+                            key={parentMenu.Id}
+                            href={
+                              parentMenu.MenuUrl?.Url || "#"
+                            }
+                            target="_blank"
+                            className={styles.menuItem}
+                          >
+                            {parentMenu.Title}
+                          </Nav.Link>
+                        );
+
+                      })}
+
+                    </Nav>
+
+                    {hiddenMenus.length > 0 && (
+
+                      <button
+                        type="button"
+                        className={styles.chevronBtn}
+                        onClick={() =>
+                          this.setState(prev => ({
+                            showOverflowMenus:
+                              !prev.showOverflowMenus
+                          }))
+                        }
+                      >
+                        <i
+                          className={`bi ${this.state.showOverflowMenus
+                            ? "bi-chevron-up"
+                            : "bi-chevron-down"
+                            }`}
+                        />
+                      </button>
+
+                    )}
+
+                  </div>
+
+                  {this.state.showOverflowMenus &&
+                    hiddenMenus.length > 0 && (
+
+                      <div className={styles.secondRow}>
+
+                        <Nav className={styles.secondMenuNav}>
+
+                          {hiddenMenus.map(parentMenu => {
+
+                            const childMenus =
+                              getChildMenus(parentMenu.Id);
+
+                            if (childMenus.length > 0) {
+
+                              return (
+                                <NavDropdown
+                                  key={parentMenu.Id}
+                                  title={parentMenu.Title}
+                                  id={`hidden-${parentMenu.Id}`}
+                                  className={styles.menuDropdown}
+                                >
+                                  {renderChildMenus(parentMenu.Id)}
+                                </NavDropdown>
+                              );
+                            }
+
+                            return (
+                              <Nav.Link
+                                key={parentMenu.Id}
+                                href={
+                                  parentMenu.MenuUrl?.Url || "#"
+                                }
+                                target="_blank"
+                                className={styles.menuItem}
+                              >
+                                {parentMenu.Title}
+                              </Nav.Link>
+                            );
+
+                          })}
+
+                        </Nav>
+
+                      </div>
+
+                    )}
+                </>
               )}
 
             </div>
@@ -468,7 +682,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
           {/* ================= PERFORMANCE SECTION ================= */}
 
-          <Row className={styles.performanceHighlightsWrapper}>
+          <Row className={styles.safetydashboardWrapper}>
             <Col lg={6} md={12}>
 
               {/* -------- Dynamic Tabs -------- */}
@@ -479,7 +693,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 className={`${styles.customOutlinePills} flex-wrap`}
               >
                 {[
-                  { key: "performanceHighlights", label: "Safety Dashboard" },
+                  { key: "safetydashboard", label: "Safety Dashboard" },
                   { key: "successStories", label: "Success Stories" },
                   { key: "testimonials", label: "Testimonials" }
                 ].map(tab => (
@@ -490,31 +704,61 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               </Nav>
 
               {/* -------- Dynamic Carousel -------- */}
-              {/* -------- Dynamic Carousel -------- */}
               <div className="tab-content p-1">
 
                 {/* ================= SAFETY DASHBOARD ================= */}
-                {this.state.activeTab === "performanceHighlights" && (
-                  <Carousel
-                    className={styles.customCarousel}
-                    controls={false}
-                    indicators={true}
-                    interval={3000}
-                    pause={false}
-                  >
-                    {this.state.safetyDashBoard.map((item) => (
-                      <Carousel.Item key={item.Id}>
+                {this.state.activeTab === "safetydashboard" &&
+                  this.state.safetyDashBoard.length > 0 && (() => {
 
-                        <img
-                          src={item.FileRef}
-                          alt="Safety Dashboard"
-                          className={styles.tabCarouselImg}
-                        />
+                    const latestItem = this.state.safetyDashBoard[0]; // Latest record because orderBy(ID,false)
 
-                      </Carousel.Item>
-                    ))}
-                  </Carousel>
-                )}
+                    const formattedDate = latestItem.AFDaysDate
+                      ? new Date(latestItem.AFDaysDate).toLocaleDateString("en-GB")
+                      : "";
+
+                    return (
+                      <div className={styles.staticHighlights}>
+
+                        <div className={`${styles.staticHighCard} col-6 sm-12`}>
+                          <img
+                            src={GoldShild}
+                            className={styles.staticImg}
+                            alt="Gold Shield"
+                          />
+
+                          <div>
+                            <h4 className={styles.staticTitle}>
+                              {latestItem.AFDCount} Days
+                            </h4>
+
+                            <p className={styles.staticDescription}>
+                              Accident Free Days
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className={`${styles.staticHighCard} col-6 sm-12`}>
+                          <img
+                            src={Savemoney}
+                            className={styles.staticImg}
+                            alt="Save Money"
+                          />
+
+                          <div>
+                            <h4 className={styles.staticTitle}>
+                              {latestItem.AFManHours} Million Manhours
+                            </h4>
+
+                            <p className={styles.staticDescription}>
+                              Without Any Accident As On {formattedDate}
+                            </p>
+                          </div>
+                        </div>
+
+                      </div>
+                    );
+                  })()
+                }
 
                 {/* ================= SUCCESS STORIES ================= */}
                 {this.state.activeTab === "successStories" && (
@@ -528,11 +772,18 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     {this.state.successStories.map((item) => (
                       <Carousel.Item key={item.Id}>
 
-                        <img
-                          src={item.FileRef}
-                          alt="Success Story"
-                          className={styles.tabCarouselImg}
-                        />
+                        <div className={styles.carouselCard}>
+                          <img
+                            src={item.ImageUrl}
+                            alt="Success Story"
+                            className={styles.tabCarouselImg}
+                          />
+
+                          <div className={styles.carouselContent}>
+                            <h4>Project Success 1</h4>
+                            <p>Succes story 1 Succes story 1</p>
+                          </div>
+                        </div>
 
                       </Carousel.Item>
                     ))}
@@ -551,11 +802,18 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     {this.state.testimonials.map((item) => (
                       <Carousel.Item key={item.Id}>
 
-                        <img
-                          src={item.FileRef}
-                          alt="Testimonial"
-                          className={styles.tabCarouselImg}
-                        />
+                        <div className={styles.carouselCard}>
+                          <img
+                            src={item.ImageUrl}
+                            alt="Testimonial"
+                            className={styles.tabCarouselImg}
+                          />
+
+                          <div className={styles.carouselContent}>
+                            <h4>Testimonial 1</h4>
+                            <p>Testimonial 1 Testimonial 1</p>
+                          </div>
+                        </div>
 
                       </Carousel.Item>
                     ))}
@@ -742,7 +1000,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
           <div className={styles.newsBanner}>
             <h2 className={styles.sectionHeading}>
-              TEAM Entity - Announcements, Broadcasts & Events
+              MR - Announcements, Broadcasts & Events
             </h2>
 
             <Row>
@@ -785,7 +1043,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 {/* ----------- Broadcasts ----------- */}
                 <div className={`${styles.broadcastBanner} mt-2 mt-sm-3 mt-md-0`}>
                   <div className={styles.bannerTitle}>
-                    <h4>Corporate Broadcasts</h4>
+                    <h4>MR Broadcasts</h4>
                     <span className={styles.seeAll}>See All</span>
                   </div>
 
@@ -796,9 +1054,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                           width={40}
                           height={40}
                           src={NewsAnnouncement}
-                          alt="Broadcast"
+                          alt="MR Broadcasts"
                         />
-                        <h3>Broadcast Title 1</h3>
+                        <h3>MR Broadcasts Title 1</h3>
                       </div>
 
                       <div className={styles.marqueeItem}>
@@ -806,9 +1064,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                           width={40}
                           height={40}
                           src={NewsAnnouncement}
-                          alt="Broadcast"
+                          alt="MR Broadcasts"
                         />
-                        <h3>Broadcast Title 2</h3>
+                        <h3>MR Broadcasts Title 2</h3>
                       </div>
                     </div>
 
@@ -819,7 +1077,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 {/* ----------- Events ----------- */}
                 <div className={styles.eventsBanner}>
                   <div className={styles.bannerTitle}>
-                    <h4>Corporate Events</h4>
+                    <h4>MR Events</h4>
                     <span className={styles.seeAll}>See All</span>
                   </div>
 
@@ -1291,6 +1549,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                   </div>
 
+                  <button className={`${styles.portalActionBtn} mt-2`}>
+                    Manage Links
+                  </button>
+
                 </div>
 
               </Col>
@@ -1486,7 +1748,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 {/* Header */}
                 <div className={styles.missionHeader}>
                   <h4 className={styles.sectionHeading}>
-                    Mission, Vision & Values
+                    Vision & Mission
                   </h4>
 
                   <div className={styles.topRightControls}>
@@ -1510,7 +1772,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 <Swiper
                   modules={[Navigation, Autoplay]}
                   spaceBetween={16}
-                  slidesPerView={3}
+                  slidesPerView={2}
                   navigation={{
                     prevEl: `.${styles.missionPrev}`,
                     nextEl: `.${styles.missionNext}`
@@ -1520,7 +1782,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     0: { slidesPerView: 1 },
                     576: { slidesPerView: 1.2 },
                     768: { slidesPerView: 2 },
-                    992: { slidesPerView: 3 }
+                    992: { slidesPerView: 2 }
                   }}
                 >
 
@@ -1548,7 +1810,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                             <p
                               className={styles.desc}
-                              style={{ WebkitLineClamp: 2 }}
+                              style={{ WebkitLineClamp: 1 }}
                             >
                               {item.VMDescription}
                             </p>

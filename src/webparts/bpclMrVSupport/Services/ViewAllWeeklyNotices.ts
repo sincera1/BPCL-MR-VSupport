@@ -25,7 +25,7 @@ export default class ViewAllWeeklyNotices {
     public async getWeeklyNotices(): Promise<IWeeklyNoticeItem[]> {
 
         const items = await this.sp.web.lists
-            .getByTitle("MR_WeeklyNotices")
+            .getByTitle("MR_SL_WeeklyNotices")
             .items
             .select(
                 "Id",
@@ -48,7 +48,7 @@ export default class ViewAllWeeklyNotices {
 
                 const fileName = item.AttachmentFiles[0].FileName;
 
-                fileUrl = `${this.siteUrl}/Lists/MR_WeeklyNotices/Attachments/${item.Id}/${fileName}`;
+                fileUrl = `${this.siteUrl}/Lists/MR_SL_WeeklyNotices/Attachments/${item.Id}/${fileName}`;
             }
 
             return {

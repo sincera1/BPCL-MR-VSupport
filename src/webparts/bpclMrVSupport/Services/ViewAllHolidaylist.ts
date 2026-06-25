@@ -28,7 +28,7 @@ export default class ViewAllHolidaylist {
     public async getHolidays(): Promise<IHolidayItem[]> {
 
         const items = await this.sp.web.lists
-            .getByTitle("MR_Holiday")
+            .getByTitle("MR_SL_HolidayList")
             .items
             .select("Id", "Title", "DateReleased", "AttachmentFiles", "AttachmentFiles/FileName")
             .expand("AttachmentFiles")
@@ -40,7 +40,7 @@ export default class ViewAllHolidaylist {
 
             if (item.AttachmentFiles && item.AttachmentFiles.length > 0) {
                 const fileName = item.AttachmentFiles[0].FileName;
-                fileUrl = `${this.siteUrl}/Lists/MR_Holiday/Attachments/${item.Id}/${fileName}`;
+                fileUrl = `${this.siteUrl}/Lists/MR_SL_HolidayList/Attachments/${item.Id}/${fileName}`;
             }
 
             return {
