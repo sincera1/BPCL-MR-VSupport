@@ -9,61 +9,84 @@ import 'swiper/css/navigation';
 import 'swiper/css/autoplay';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
+import Loader from "../Services/Loader";
 
 import NewsAnnouncement from '../assets/governance.jpg';
 import BDcelebration from '../assets/celebration-BD.png';
 import Blueship from '../assets/blue-ship.png';
 import GoldShild from '../assets/gold-shield-png.png';
 import Savemoney from '../assets/Savemoney.png';
-import BpclMrVSupportService, { INavigationMenuItem, IBusinessUnit, ISafetyDashBoardItem, ITestimonialItem, ISuccessStoryItem, IEmployeeGreetingItem, IWeeklyNoticeItem, IWelcomeBannerItem, IQuickLinkItem, ILateralMoveItem, IHolidayItem, IFavouriteLinkItem, ISafetyTipItem, ITeamOperatingPrincipleItem, IVissionMissionItem } from '../Services/BpclMrVSupportService';
+import BpclMrVSupportService, { INavigationMenuItem, IBusinessUnit, ISafetyDashBoardItem, ITestimonialItem, ISuccessStoryItem, IEmployeeGreetingItem, IWeeklyNoticeItem, IWelcomeBannerItem, IQuickLinkItem, ILateralMoveItem, IHolidayItem, IFavouriteLinkItem, ISafetyTipItem, ITeamOperatingPrincipleItem, IVissionMissionItem, IAttachment, ICorporateNewsItem, INewsPreviewItem, IEventPreviewItem, IBroadcastItem, IBusinessPlanItem } from '../Services/BpclMrVSupportService';
+import ViewAllBusinessPlan from './VIewAllBusinessPlan';
 import ViewAllWeeklyNotices from './ViewAllWeeklyNotices';
 import ViewAllHolidayList from './ViewAllHolidayList';
+import PreviewEventsModal from '../Services/PreviewEventsModal';
+import PreviewBroadcastModal from '../Services/PreviewBroadcastModal';
+import PreviewNewsModal from '../Services/PreviewNewsModal';
 
 const translations: any = {
-
   English: {
-
-    performance: "Performance",
-    quickLinks: "Quick Links",
+    safetyDashboard: "Safety Dashboard",
+    successStories: "Success Stories",
+    testimonials: "Testimonials",
+    mrAnnouncementsBroadcastsEventsNews: "MR - Announcements, Broadcasts & Events, News & Announcements",
+    newsAnnouncements: "News & Announcements",
+    mrBroadcasts: "MR Broadcasts",
+    mrEvents: "MR Events",
+    weeklyNotices: "Weekly Notices",
+    mrBusinessPlan: "MR Business Plan",
+    holidayListQuickLinks: "Holiday List & Quick Links",
     lateralMoves: "Lateral Moves",
     holidayList: "Holiday List",
+    quickLinks: "Quick Links",
     favouriteLinks: "Favourite Links",
     safetyTips: "Safety Tips",
     teamOperatingPrinciples: "Team Operating Principles",
-    missionVisionValues: "Mission, Vision & Values",
+    visionMission: "Vision & Mission",
     businessUnits: "Business Units"
-
   },
 
   Hindi: {
-
-    performance: "परफॉर्मेंस",
-    quickLinks: "त्वरित लिंक",
+    safetyDashboard: "सुरक्षा डैशबोर्ड",
+    successStories: "सफलता की कहानियाँ",
+    testimonials: "प्रशंसापत्र",
+    mrAnnouncementsBroadcastsEventsNews: "एमआर - घोषणाएँ, प्रसारण एवं कार्यक्रम, समाचार एवं घोषणाएँ",
+    newsAnnouncements: "समाचार एवं घोषणाएँ",
+    mrBroadcasts: "एमआर प्रसारण",
+    mrEvents: "एमआर कार्यक्रम",
+    weeklyNotices: "साप्ताहिक सूचनाएँ",
+    mrBusinessPlan: "एमआर बिजनेस प्लान",
+    holidayListQuickLinks: "छुट्टियों की सूची एवं त्वरित लिंक",
     lateralMoves: "लेटरल मूव्स",
     holidayList: "छुट्टियों की सूची",
+    quickLinks: "त्वरित लिंक",
     favouriteLinks: "पसंदीदा लिंक",
     safetyTips: "सुरक्षा सुझाव",
     teamOperatingPrinciples: "टीम संचालन सिद्धांत",
-    missionVisionValues: "मिशन, विज़न और वैल्यूज",
+    visionMission: "विजन एवं मिशन",
     businessUnits: "बिजनेस यूनिट्स"
-
   },
 
   Marathi: {
-
-    performance: "परफॉर्मन्स",
-    quickLinks: "द्रुत लिंक",
+    safetyDashboard: "सुरक्षा डॅशबोर्ड",
+    successStories: "यशोगाथा",
+    testimonials: "प्रशंसापत्र",
+    mrAnnouncementsBroadcastsEventsNews: "एमआर - घोषणा, प्रसारण व कार्यक्रम, बातम्या व घोषणा",
+    newsAnnouncements: "बातम्या व घोषणा",
+    mrBroadcasts: "एमआर प्रसारण",
+    mrEvents: "एमआर कार्यक्रम",
+    weeklyNotices: "साप्ताहिक सूचना",
+    mrBusinessPlan: "एमआर व्यवसाय योजना",
+    holidayListQuickLinks: "सुट्टी यादी व द्रुत दुवे",
     lateralMoves: "लेटरल मूव्ह्स",
     holidayList: "सुट्टी यादी",
+    quickLinks: "द्रुत दुवे",
     favouriteLinks: "आवडते दुवे",
     safetyTips: "सुरक्षा सूचना",
     teamOperatingPrinciples: "टीम ऑपरेटिंग प्रिन्सिपल्स",
-    missionVisionValues: "मिशन, व्हिजन आणि व्हॅल्यूज",
-    businessUnits: "बिझनेस युनिट्स"
-
+    visionMission: "दृष्टी व ध्येय",
+    businessUnits: "व्यवसाय युनिट्स"
   }
-
 };
 
 
@@ -73,7 +96,7 @@ interface IVsupportState {
   showModal: boolean;
   selectedItem: any;
   activeTab: string;
-
+  isLoading: boolean;
   isMobileMenuOpen: boolean;
   showOverflowMenus: boolean;
   navigationMenuItem: INavigationMenuItem[];
@@ -90,13 +113,33 @@ interface IVsupportState {
   teamOperatingPrinciples: ITeamOperatingPrincipleItem[];
   vissionMission: IVissionMissionItem[];
   employeeGreetings: IEmployeeGreetingItem[];
+  businessPlan: IBusinessPlanItem[];
   weeklyNotices: IWeeklyNoticeItem[];
-
+  showBusinessPlanPage: boolean;
   showWeeklyNoticesPage: boolean;
   showHolidayListPage: boolean;
   windowWidth: number;
   visibleMenus: INavigationMenuItem[];
   hiddenMenus: INavigationMenuItem[];
+
+  corporateNews: ICorporateNewsItem[];
+  events: ICorporateNewsItem[];
+  broadcasts: IBroadcastItem[];
+
+  showPreview: boolean;
+  previewItem?: IBroadcastItem;
+  previewAttachments: IAttachment[];
+
+  showEventPreview: boolean;
+  previewEventItem?: IEventPreviewItem;
+  previewEventAttachments: IAttachment[];
+
+  showNewsPreview: boolean;
+  selectedNewsItem?: INewsPreviewItem;
+  newsAttachments: IAttachment[];
+
+  isBroadcastPaused: boolean;
+  isEventPaused: boolean;
 }
 
 
@@ -112,13 +155,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
     super(props);
 
-    this._service =
-      new BpclMrVSupportService(
-        props.context
-      );
+    this._service = new BpclMrVSupportService(props.context);
 
     this.state = {
-
+      isLoading: true,
+      showBusinessPlanPage: false,
       showWeeklyNoticesPage: false,
       showHolidayListPage: false,
       showModal: false,
@@ -132,6 +173,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       visibleMenus: [],
       hiddenMenus: [],
       welcomeBanners: [],
+      businessPlan: [],
       weeklyNotices: [],
       testimonials: [],
       successStories: [],
@@ -144,7 +186,23 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       teamOperatingPrinciples: [],
       vissionMission: [],
       employeeGreetings: [],
+      corporateNews: [],
+      events: [],
+      broadcasts: [],
+      showEventPreview: false,
+      previewEventItem: undefined,
+      previewEventAttachments: [],
 
+      showNewsPreview: false,
+      selectedNewsItem: undefined,
+      newsAttachments: [],
+      // Broadcast preview
+      showPreview: false,
+      previewItem: undefined,
+      previewAttachments: [],
+
+      isBroadcastPaused: false,
+      isEventPaused: false,
 
       windowWidth: window.innerWidth,
 
@@ -199,6 +257,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
       const navigationMenuItem = await this._service.getNavigationMenu();
       const businessUnits = await this._service.getBusinessUnits();
+      const corporateNews = await this._service.getCorporateNews();
+      const events = await this._service.getEvents();
+      const broadcasts = await this._service.getBroadcasts();
+
       const welcomeBanners = await this._service.getWelcomeBanners();
       const quickLinks = await this._service.getQuickLinks();
       const lateralMoves = await this._service.getLateralMoves();
@@ -211,10 +273,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       const successStories = await this._service.getSuccessStories();
       const safetyDashBoard = await this._service.getSafetyDashBoard();
       const weeklyNotices = await this._service.getWeeklyNotices();
+      const businessPlan = await this._service.getBusinessPlan();
       const vissionMission = await this._service.getVissionMission();
 
 
-      this.setState({ navigationMenuItem, businessUnits, welcomeBanners, quickLinks, lateralMoves, holidays, favouriteLinks, safetyTips, teamOperatingPrinciples, employeeGreetings, testimonials, successStories, safetyDashBoard, weeklyNotices, vissionMission },
+      this.setState({ navigationMenuItem, corporateNews, events, broadcasts, businessUnits, welcomeBanners, quickLinks, lateralMoves, holidays, favouriteLinks, safetyTips, teamOperatingPrinciples, employeeGreetings, testimonials, successStories, safetyDashBoard, weeklyNotices, businessPlan, vissionMission, isLoading: false },
         () => { this.splitMenus(); }
 
 
@@ -311,6 +374,154 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
   };
 
+  private openNewsPreview = async (
+    item: ICorporateNewsItem
+  ): Promise<void> => {
+    try {
+
+      const [previewItem, attachments] = await Promise.all([
+        this._service.getNewsPreviewItem(item.Id),
+        this._service.getAttachments(item.Id)
+      ]);
+
+      if (!previewItem) return;
+
+      this.setState({
+        showNewsPreview: true,
+        selectedNewsItem: previewItem,
+        newsAttachments: attachments
+      });
+
+    } catch (error) {
+      console.error("Something went wrong. Please contact administrator.", error);
+    }
+  };
+
+  private closeNewsPreview = (): void => {
+    this.setState({
+      showNewsPreview: false,
+      selectedNewsItem: undefined,
+      newsAttachments: []
+    });
+  };
+
+  private openBroadcastPreview = async (item: IBroadcastItem): Promise<void> => {
+    try {
+      const attachments = await this._service.getAttachments(item.Id);
+      console.log("Broadcast attachments from service:", attachments);
+
+      this.setState({
+        showPreview: true,
+        previewItem: item,
+        previewAttachments: attachments
+      });
+    } catch (error) {
+      console.error("Something went wrong. Please contact administrator.");
+    }
+  };
+
+  private closeBroadcastPreview = (): void => {
+    this.setState({
+      showPreview: false,
+      previewItem: undefined,
+      previewAttachments: []
+    });
+  };
+
+  private openEventPreview = async (
+    item: ICorporateNewsItem
+  ): Promise<void> => {
+    try {
+      const [previewItem, attachments] = await Promise.all([
+        this._service.getEventPreviewItem(item.Id),
+        this._service.getAttachments(item.Id)
+      ]);
+
+      if (!previewItem) return;
+
+      this.setState({
+        showEventPreview: true,
+        previewEventItem: previewItem,
+        previewEventAttachments: attachments
+      });
+    } catch (error) {
+      console.error("Something went wrong. Please contact administrator.");
+    }
+  };
+
+  private closeEventPreview = (): void => {
+    this.setState({
+      showEventPreview: false,
+      previewEventItem: undefined,
+      previewEventAttachments: []
+    });
+  };
+
+  private handleNewsLike = async (
+    item: ICorporateNewsItem
+  ): Promise<void> => {
+    try {
+      const updatedLikes = await this._service.toggleLike(
+        item.Id,
+        item.liked === true
+      );
+
+      this.setState((prev) => ({
+        corporateNews: prev.corporateNews.map((n) =>
+          n.Id === item.Id
+            ? {
+              ...n,
+              LikesCount: updatedLikes,
+              liked: !n.liked
+            }
+            : n
+        ),
+      }));
+    } catch (error) {
+      console.error("Something went wrong. Please contact administrator.");
+    }
+  };
+
+  private handleEventLike = async (
+    event: ICorporateNewsItem
+  ): Promise<void> => {
+
+    try {
+
+      const updatedLikes = await this._service.toggleLike(
+        event.Id,
+        event.liked === true
+      );
+
+      this.setState((prev) => ({
+        events: prev.events.map((e) =>
+          e.Id === event.Id
+            ? {
+              ...e,
+              LikesCount: updatedLikes,
+              liked: !e.liked
+            }
+            : e
+        ),
+      }));
+
+    } catch (error) {
+      console.error("Something went wrong. Please contact administrator.");
+    }
+  };
+
+  private toggleBroadcast = (): void => {
+    this.setState(prevState => ({
+      isBroadcastPaused: !prevState.isBroadcastPaused
+    }));
+  };
+
+  private toggleEvent = (): void => {
+    this.setState(prevState => ({
+      isEventPaused: !prevState.isEventPaused
+    }));
+  };
+
   public render(): React.ReactElement<IBpclMrVSupportProps> {
 
     const selectedLanguage = localStorage.getItem("MRLanguage") || "English";
@@ -342,7 +553,32 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
         />
       );
     }
+    if (this.state.showBusinessPlanPage) {
+      return (
+        <ViewAllBusinessPlan
+          {...this.props}
+          onBack={() =>
+            this.setState({
+              showBusinessPlanPage: false
+            })
+          }
+        />
+      );
+    }
 
+    const handleTitleRef = (text: string) => (el: HTMLElement | null) => {
+      if (!el) return;
+
+      setTimeout(() => {
+        const isOverflowing = el.scrollWidth > el.clientWidth;
+
+        if (isOverflowing) {
+          el.setAttribute("title", text);
+        } else {
+          el.removeAttribute("title");
+        }
+      }, 0);
+    };
 
     const performanceData = [
       {
@@ -441,7 +677,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
     return (
       <section>
-
+        <Loader show={this.state.isLoading} />
         <Navbar sticky="top" className={styles.mainNavbar}>
           <Container fluid>
 
@@ -693,9 +929,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 className={`${styles.customOutlinePills} flex-wrap`}
               >
                 {[
-                  { key: "safetydashboard", label: "Safety Dashboard" },
-                  { key: "successStories", label: "Success Stories" },
-                  { key: "testimonials", label: "Testimonials" }
+                  { key: "safetydashboard", label: t.safetyDashboard },
+                  { key: "successStories", label: t.successStories },
+                  { key: "testimonials", label: t.testimonials }
                 ].map(tab => (
                   <Nav.Item key={tab.key}>
                     <Nav.Link eventKey={tab.key}>{tab.label}</Nav.Link>
@@ -1000,138 +1236,274 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
           <div className={styles.newsBanner}>
             <h2 className={styles.sectionHeading}>
-              MR - Announcements, Broadcasts & Events
+             {t.mrAnnouncementsBroadcastsEventsNews}
             </h2>
 
             <Row>
-              {/* ----------- News & Announcements ----------- */}
               <Col xs={12} md={6}>
                 <div className={styles.newsannounceBanner}>
                   <div className={styles.bannerTitle}>
-                    <h4>News & Announcements</h4>
-                    <span className={styles.seeAll}>See All</span>
+                    <h4>{t.newsAnnouncements}</h4>
+                    <span
+                      className={styles.seeAll}
+                      role="link"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        const folderUrl = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/ViewAllNews.aspx`;
+                        window.open(folderUrl, "_blank");
+                      }}
+                    >
+                      See All
+                    </span>
                   </div>
 
-                  <Carousel controls={false} interval={8000} indicators>
-                    <Carousel.Item>
-                      <div className={styles.slide}>
-                        <img
-                          src={NewsAnnouncement}
-                          alt="News Title"
-                        />
+                  {this.state.corporateNews.length === 0 ? (
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
+                    </div>
+                  ) : (
+                    <Carousel controls={false} interval={8000} indicators>
+                      {this.state.corporateNews.map((item) => (
+                        <Carousel.Item key={item.Id}>
+                          <div
+                            className={styles.slide}
+                            role="button"
+                            tabIndex={0}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              this.openNewsPreview(item).catch(() => {
+                                console.log("Something went wrong. Please contact administrator.");
+                              });
+                            }}
 
-                        <div className={styles.contentDiv}>
-                          <div className={styles.announceContent}>
-                            <h3>Sample News Title goes here</h3>
-                            <h6>April 2026</h6>
+                          >
+                            <img
+                              src={item.ImageUrl}
+                              alt={item.Title}
+                            // onError={(e) => {
+                            //   e.currentTarget.src = "/SiteAssets/default-news.jpg";
+                            // }}
+
+                            />
+
+                            <div className={styles.contentDiv}>
+                              <div className={styles.announceContent}>
+                                <h3
+                                  style={{ WebkitLineClamp: 2 }}
+                                  ref={(el) => {
+                                    if (el) {
+                                      setTimeout(() => {
+                                        const isOverflowing = el.scrollHeight > el.clientHeight;
+
+                                        if (isOverflowing) {
+                                          el.setAttribute("title", el.innerText);
+                                        } else {
+                                          el.removeAttribute("title");
+                                        }
+                                      }, 0);
+                                    }
+                                  }}
+
+                                >{item.Title}</h3>
+                                <h6>
+                                  {new Date(item.PublishedDate).toLocaleDateString("en-IN", {
+                                    month: "long",
+                                    year: "numeric",
+                                  })}
+                                </h6>
+                              </div>
+                            </div>
+
+                            {/* Like Overlay */}
+                            <div
+                              className={`${styles.likeBox} ${item.liked ? styles.liked : ""
+                                }`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                this.handleNewsLike(item).catch(() => {
+                                  console.log("Something went wrong. Please contact administrator.");
+                                });
+                              }}
+                            >
+                              <i className="bi bi-hand-thumbs-up-fill" />
+                              <span className={styles.likeCount}>{item.LikesCount ?? 0}</span>
+                            </div>
+
                           </div>
-                        </div>
-
-                        <div className={styles.likeBox}>
-                          <i className="bi bi-hand-thumbs-up-fill" />
-                          <span className={styles.likeCount}>10</span>
-                        </div>
-                      </div>
-                    </Carousel.Item>
-                  </Carousel>
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  )}
                 </div>
               </Col>
-
-              {/* ----------- Broadcasts + Events ----------- */}
               <Col xs={12} md={6}>
-
                 {/* ----------- Broadcasts ----------- */}
                 <div className={`${styles.broadcastBanner} mt-2 mt-sm-3 mt-md-0`}>
                   <div className={styles.bannerTitle}>
-                    <h4>MR Broadcasts</h4>
-                    <span className={styles.seeAll}>See All</span>
+                    <h4>{t.mrBroadcasts}</h4>
+                    <span
+                      className={styles.seeAll}
+                      role="link"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        const folderUrl = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/ViewAllBroadcast.aspx`;
+                        window.open(folderUrl, "_blank");
+                      }}
+                    >
+                      See All
+                    </span>
                   </div>
 
-                  <div className={styles.verticalMarqueeWrapper}>
-                    <div className={styles.verticalMarquee}>
-                      <div className={styles.marqueeItem}>
-                        <img
-                          width={40}
-                          height={40}
-                          src={NewsAnnouncement}
-                          alt="MR Broadcasts"
-                        />
-                        <h3>MR Broadcasts Title 1</h3>
-                      </div>
-
-                      <div className={styles.marqueeItem}>
-                        <img
-                          width={40}
-                          height={40}
-                          src={NewsAnnouncement}
-                          alt="MR Broadcasts"
-                        />
-                        <h3>MR Broadcasts Title 2</h3>
-                      </div>
+                  {this.state.broadcasts.length === 0 ? (
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
                     </div>
+                  ) : (
+                    <div className={styles.verticalMarqueeWrapper}>
+                      <div
+                        className={`${styles.verticalMarquee} ${this.state.isBroadcastPaused ? styles.paused : ""
+                          }`}
+                      >
+                        {[...this.state.broadcasts, ...this.state.broadcasts].map(
+                          (item, index) => (
+                            <div
+                              key={`${item.Id}-${index}`}
+                              className={styles.marqueeItem}
+                              role="button"
+                              tabIndex={0}
+                              style={{ cursor: "pointer" }}
 
-                    <button className={styles.playPauseBtn}>⏸</button>
-                  </div>
+                              onClick={() => {
+                                this.openBroadcastPreview(item).catch(() => {
+                                  console.log("Something went wrong. Please contact administrator.");
+                                });
+                              }}
+
+                            >
+                              <img
+                                width={40}
+                                height={40}
+                                src={item.IconUrl}
+                                alt={item.Title}
+                              // onError={(e) => {
+                              //   e.currentTarget.src =
+                              //     "/SiteAssets/default-broadcast.png";
+                              // }}
+                              />
+                              <h3 ref={handleTitleRef(item.Title)}>{item.Title}</h3>
+                            </div>
+                          )
+                        )}
+                      </div>
+
+                      <button
+                        className={styles.playPauseBtn}
+                        onClick={this.toggleBroadcast}
+                      >
+                        {this.state.isBroadcastPaused ? "▶" : "⏸"}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* ----------- Events ----------- */}
                 <div className={styles.eventsBanner}>
                   <div className={styles.bannerTitle}>
-                    <h4>MR Events</h4>
-                    <span className={styles.seeAll}>See All</span>
+                    <h4>{t.mrEvents}</h4>
+                    <span
+                      className={styles.seeAll}
+                      role="link"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        const folderUrl = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/ViewAllEvents.aspx`;
+                        window.open(folderUrl, "_blank");
+                      }}
+                    >
+                      See All
+                    </span>
                   </div>
 
-                  <div className={styles.verticalEventMarqueeWrapper}>
-                    <div className={styles.verticalMarquee}>
-                      <div className={styles.marqueeItem}>
-                        <img
-                          src={NewsAnnouncement}
-                          alt="Event"
-                        />
-
-                        <div className={styles.eventContent}>
-                          <div className={styles.likeBox}>
-                            <i className="bi bi-hand-thumbs-up-fill" />
-                            <span className={styles.likeCount}>5</span>
-                          </div>
-
-                          <div className={styles.metaInfo}>
-                            <div className={styles.metaItem}>
-                              <i className="bi bi-calendar3" />
-                              <span>30 Apr 2026</span>
-                            </div>
-                          </div>
-
-                          <h3>Event Title 1</h3>
-                        </div>
-                      </div>
-
-                      <div className={styles.marqueeItem}>
-                        <img
-                          src={NewsAnnouncement}
-                          alt="Event"
-                        />
-
-                        <div className={styles.eventContent}>
-                          <div className={styles.likeBox}>
-                            <i className="bi bi-hand-thumbs-up-fill" />
-                            <span className={styles.likeCount}>8</span>
-                          </div>
-
-                          <div className={styles.metaInfo}>
-                            <div className={styles.metaItem}>
-                              <i className="bi bi-calendar3" />
-                              <span>01 May 2026</span>
-                            </div>
-                          </div>
-
-                          <h3>Event Title 2</h3>
-                        </div>
-                      </div>
+                  {this.state.events.length === 0 ? (
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
                     </div>
+                  ) : (
+                    <div className={styles.verticalEventMarqueeWrapper}>
+                      <div
+                        className={`${styles.verticalMarquee} ${this.state.isEventPaused ? styles.paused : ""
+                          }`}
+                      >
+                        {[...this.state.events, ...this.state.events].map((item, index) => (
+                          <div
+                            key={`${item.Id}-${index}`}
+                            className={styles.marqueeItem}
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => this.openEventPreview(item)}
 
-                    <button className={styles.playPauseBtn}>⏸</button>
-                  </div>
+                          >
+                            <img
+                              src={item.ImageUrl}
+                              alt={item.Title}
+                            // onError={(e) => {
+                            //   e.currentTarget.src = "/SiteAssets/default-event.jpg";
+                            // }}
+                            />
+
+                            <div className={styles.eventContent}>
+                              {/* 🔹 Floating Like Badge (Top Right) */}
+                              <div
+                                className={`${styles.likeBox} ${item.liked ? styles.liked : ""
+                                  }`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  this.handleEventLike(item).catch(() => {
+                                    console.log("Something went wrong. Please contact administrator.");
+                                  });
+                                }}
+                              >
+                                <i className="bi bi-hand-thumbs-up-fill" />
+                                <span className={styles.likeCount}>
+                                  {item.LikesCount ?? 0}
+                                </span>
+                              </div>
+
+                              {/* 🔹 Meta Row (Like Count + Date) */}
+                              <div className={styles.metaInfo}>
+                                {/* <div className={styles.metaItem}>
+                                  <i className="bi bi-hand-thumbs-up"></i>
+                                  <span>{item.LikesCount ?? 0}</span>
+                                </div> */}
+
+                                <div className={styles.metaItem}>
+                                  <i className="bi bi-calendar3" />
+                                  <span>
+                                    {new Date(item.PublishedDate).toLocaleDateString("en-IN", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    })}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <h3 ref={handleTitleRef(item.Title)}>{item.Title}</h3>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        className={styles.playPauseBtn}
+                        onClick={this.toggleEvent}
+                      >
+                        {this.state.isEventPaused ? "▶" : "⏸"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </Col>
             </Row>
@@ -1193,7 +1565,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               <div className={styles.rightContent}>
 
                                 <h3 className={styles.title}>
-                                  Weekly Notices
+                                  {t.weeklyNotices}
                                 </h3>
 
                                 <p
@@ -1246,79 +1618,66 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       interval={12000}
                       className={styles.businessPlanCarousel}
                     >
+                      {this.state.businessPlan.map((item) => (
 
-                      {/* Slide 1 */}
-                      <Carousel.Item>
-                        <a
-                          href="#"
-                          className="text-decoration-none"
-                        >
-                          <div className={styles.bannerCard}>
-                            <div className={styles.leftContent}>
+                        <Carousel.Item key={item.Id}>
 
-                              <img
-                                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"
-                                alt="Reports"
-                                className={styles.profileImg}
-                              />
+                          <a
+                            href={item.FileUrl || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-decoration-none"
+                          >
 
-                              <div className={styles.rightContent}>
-                                <h3 className={styles.title}>
-                                  MR Business Plan
-                                </h3>
+                            <div className={styles.bannerCard}>
 
-                                <p
-                                  className={styles.desc}
-                                  style={{ WebkitLineClamp: 2 }}
-                                >
-                                  Energy Efficiency & Emission Reduction Strategy Plan
-                                </p>
-                                <span className={styles.yearBadge}>
-                                  2025-2028
-                                </span>
+                              <div className={styles.leftContent}>
+
+                                <img
+                                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"
+                                  alt="Business Plan"
+                                  className={styles.profileImg}
+                                />
+
+                                <div className={styles.rightContent}>
+
+                                  <h3 className={styles.title}>
+                                    {t.mrBusinessPlan}
+                                  </h3>
+
+                                  <p
+                                    className={styles.desc}
+                                    style={{ WebkitLineClamp: 2 }}
+                                  >
+                                    {item.Title}
+                                  </p>
+
+                                  <span
+                                    className={styles.yearBadge}
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+
+                                      this.setState({
+                                        showBusinessPlanPage: true
+                                      });
+                                    }}
+                                  >
+                                    {new Date(item.DateReleased).getFullYear()}
+                                  </span>
+
+                                </div>
+
                               </div>
 
                             </div>
-                          </div>
-                        </a>
-                      </Carousel.Item>
 
-                      {/* Slide 2 */}
-                      <Carousel.Item>
-                        <a
-                          href="#"
-                          className="text-decoration-none"
-                        >
-                          <div className={styles.bannerCard}>
-                            <div className={styles.leftContent}>
+                          </a>
 
-                              <img
-                                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"
-                                alt="Reports"
-                                className={styles.profileImg}
-                              />
+                        </Carousel.Item>
 
-                              <div className={styles.rightContent}>
-                                <h3 className={styles.title}>
-                                  MR Business Plan-2
-                                </h3>
-
-                                <p
-                                  className={styles.desc}
-                                  style={{ WebkitLineClamp: 2 }}
-                                >
-                                  Energy Efficiency & Emission Reduction Strategy Plan
-                                </p>
-                                <span className={styles.yearBadge}>
-                                  2025-2028
-                                </span>
-                              </div>
-
-                            </div>
-                          </div>
-                        </a>
-                      </Carousel.Item>
-
+                      ))}
                     </Carousel>
 
                   </Card.Body>
@@ -1661,7 +2020,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                   <Card.Body>
 
                     <h3 className={`${styles.title} mx-2`}>
-                      Team Operating Principles
+                      {t.teamOperatingPrinciples}
                     </h3>
 
                     <Carousel
@@ -1748,7 +2107,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 {/* Header */}
                 <div className={styles.missionHeader}>
                   <h4 className={styles.sectionHeading}>
-                    Vision & Mission
+                    {t.visionMission}
                   </h4>
 
                   <div className={styles.topRightControls}>
@@ -1930,6 +2289,28 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
             </Col>
           </Row>
+
+
+          <PreviewBroadcastModal
+            show={this.state.showPreview}
+            onClose={this.closeBroadcastPreview}
+            item={this.state.previewItem}
+            attachments={this.state.previewAttachments}
+          />
+
+          <PreviewEventsModal
+            show={this.state.showEventPreview}
+            onClose={this.closeEventPreview}
+            item={this.state.previewEventItem}
+            attachments={this.state.previewEventAttachments}
+          />
+
+          <PreviewNewsModal
+            show={this.state.showNewsPreview}
+            onClose={this.closeNewsPreview}
+            item={this.state.selectedNewsItem}
+            attachments={this.state.newsAttachments}
+          />
 
         </Container>
       </section >
