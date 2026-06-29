@@ -322,3 +322,470 @@ Form.Control {
     padding: 12px;
   }
 }
+
+/* ==========================
+   News Card
+========================== */
+
+.newsCard {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+
+  text-decoration: none !important;
+  color: inherit !important;
+
+  font-family: 'Inter', system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.newsCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
+
+  text-decoration: none;
+  color: inherit;
+}
+
+.newsCard:hover .cardImage {
+  transform: scale(1.05);
+}
+
+/* ==========================
+   Image Section
+========================== */
+
+.cardImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+
+  transition: transform 0.4s ease;
+}
+
+/* ==========================
+   Content Overlay
+========================== */
+
+.cardOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  min-height: 88px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  padding: 10px 12px;
+
+  background: #ffffff;
+
+  transition: all 0.3s ease;
+}
+
+.newsCard:hover .cardOverlay {
+  background: rgba(0, 118, 192, 0.88);
+}
+
+/* ==========================
+   Title
+========================== */
+
+.cardTitle {
+  margin: 0 0 6px;
+
+  color: #1f2937;
+
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.4;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  min-height: 40px;
+
+  transition: color 0.3s ease;
+}
+
+/* ==========================
+   Date
+========================== */
+
+.cardDate {
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #6b7280;
+
+  font-size: 0.72rem;
+  font-weight: 600;
+
+  transition: color 0.3s ease;
+}
+
+.cardDate i {
+  color: #0076c0;
+  font-size: 0.8rem;
+
+  transition: color 0.3s ease;
+}
+
+/* ==========================
+   Hover Text
+========================== */
+
+.newsCard:hover .cardTitle,
+.newsCard:hover .cardDate,
+.newsCard:hover .cardDate i {
+  color: #ffffff;
+}
+
+/* ==========================
+   Mobile
+========================== */
+
+@media (max-width: 576px) {
+  .cardImageWrapper {
+    height: 240px;
+  }
+
+  .cardOverlay {
+    min-height: 80px;
+    padding: 10px;
+  }
+
+  .cardTitle {
+    font-size: 0.84rem;
+    min-height: 38px;
+  }
+
+  .cardDate {
+    font-size: 0.68rem;
+  }
+
+  .cardDate i {
+    font-size: 0.75rem;
+  }
+}
+
+/* ===========================
+   Event Card
+=========================== */
+
+.eventCard {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5edf6;
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+
+  text-decoration: none !important;
+  color: inherit !important;
+
+  display: flex;
+  flex-direction: column;
+
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+
+  // &::before {
+  //   content: '';
+  //   position: absolute;
+  //   top: 0;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 4px;
+
+  //   background: linear-gradient(
+  //     90deg,
+  //     #0076c0,
+  //     #00a6ff
+  //   );
+  // }
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: #0076c0;
+    box-shadow: 0 12px 24px rgba(0, 118, 192, 0.15);
+
+    text-decoration: none;
+    color: inherit;
+  }
+}
+
+/* Event Icon */
+
+.eventIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+
+  background: rgba(0, 118, 192, 0.08);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 16px;
+
+  i {
+    font-size: 1.3rem;
+    color: #0076c0;
+  }
+}
+
+/* Event Title */
+
+.eventTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.5;
+
+  margin-bottom: 16px;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
+  line-clamp: 3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  min-height: 68px;
+}
+
+/* Date Row */
+
+.eventDateRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: auto;
+
+  background: #f8fbff;
+  border: 1px solid #e3edf8;
+  border-radius: 10px;
+
+  padding: 10px 12px;
+}
+
+.eventDateRow i {
+  color: #0076c0;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.dateText {
+  font-size: 0.8rem;
+  color: #1f2937;
+  line-height: 1.4;
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+.dateSeparator {
+  color: #98a2b3;
+  margin: 0 4px;
+}
+
+/* Mobile */
+
+@media (max-width: 576px) {
+
+  .eventCard {
+    padding: 16px;
+  }
+
+  .eventIcon {
+    width: 46px;
+    height: 46px;
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+
+  .eventTitle {
+    font-size: 0.88rem;
+    min-height: 60px;
+  }
+
+  .eventDateRow {
+    padding: 8px 10px;
+  }
+
+  .dateText {
+    font-size: 0.75rem;
+  }
+}
+
+// Broadcast Cards
+.broadcastCard {
+  width: 100%;
+  border: 1px solid #e5edf6;
+  border-radius: 16px;
+  background: #fff;
+
+  text-decoration: none !important;
+  color: inherit !important;
+
+  display: flex;
+  flex-direction: column;
+
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: #0076c0;
+    box-shadow: 0 12px 24px rgba(0, 118, 192, 0.12);
+
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.broadcastBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.broadcastIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: rgba(0, 118, 192, 0.08);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 16px;
+
+  i {
+    color: #0076c0;
+    font-size: 1.2rem;
+  }
+}
+
+/* Maximum 3 lines */
+
+.broadcastTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.5;
+
+  margin-bottom: 14px;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  min-height: 68px;
+}
+
+/* Simple date */
+
+.broadcastDate {
+  margin-top: auto;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 500;
+
+  i {
+    color: #0076c0;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .broadcastBody {
+    padding: 16px;
+  }
+
+  .broadcastTitle {
+    font-size: 0.88rem;
+    min-height: 60px;
+  }
+
+  .broadcastDate {
+    font-size: 0.75rem;
+  }
+}
+
+
+// backbutton
+.backIcon {
+  width: 38px;
+  height: 38px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(-2px);
+  }
+
+  i {
+    font-size: 1rem;
+  }
+}

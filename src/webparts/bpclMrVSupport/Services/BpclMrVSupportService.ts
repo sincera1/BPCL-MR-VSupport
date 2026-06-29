@@ -396,7 +396,7 @@ export default class BpclMrVSupportService {
             .expand("AttachmentFiles", "LikedBy")
             .filter(filterQuery)
             .orderBy("PublishedDate", false)
-            .top(15)();
+            .top(2)();
 
         const currentUserId = await this.getCurrentUserId();
 
@@ -452,7 +452,7 @@ export default class BpclMrVSupportService {
                 )
                 .filter(filterQuery)
                 .orderBy("PublishedDate", false)
-                .top(15)(),
+                .top(5)(),
 
             this.getBroadcastIcons()
         ]);
