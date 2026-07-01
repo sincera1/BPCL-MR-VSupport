@@ -13,7 +13,6 @@ import Loader from "../Services/Loader";
 
 import NewsAnnouncement from '../assets/governance.jpg';
 import BDcelebration from '../assets/celebration-BD.png';
-import Blueship from '../assets/blue-ship.png';
 import GoldShild from '../assets/gold-shield-png.png';
 import Savemoney from '../assets/Savemoney.png';
 import BpclMrVSupportService, { INavigationMenuItem, IBusinessUnit, ISafetyDashBoardItem, ITestimonialItem, ISuccessStoryItem, IEmployeeGreetingItem, IWeeklyNoticeItem, IWelcomeBannerItem, IQuickLinkItem, ILateralMoveItem, IHolidayItem, IFavouriteLinkItem, ISafetyTipItem, ITeamOperatingPrincipleItem, IVissionMissionItem, IAttachment, ICorporateNewsItem, INewsPreviewItem, IEventPreviewItem, IBroadcastItem, IBusinessPlanItem } from '../Services/BpclMrVSupportService';
@@ -125,7 +124,7 @@ interface IVsupportState {
   showBusinessPlanPage: boolean;
   showWeeklyNoticesPage: boolean;
   showHolidayListPage: boolean;
-  showLateralMovesPage:boolean;
+  showLateralMovesPage: boolean;
   windowWidth: number;
   visibleMenus: INavigationMenuItem[];
   hiddenMenus: INavigationMenuItem[];
@@ -177,7 +176,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       showOverflowMenus: false,
       showViewAllNewsPage: false,
       showViewAllEventsPage: false,
-      showLateralMovesPage:false,
+      showLateralMovesPage: false,
       showBroadcastPage: false,
       directorCorner: [],
       businessUnits: [],
@@ -579,7 +578,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     }
 
 
-      if (this.state.showLateralMovesPage) {
+    if (this.state.showLateralMovesPage) {
       return (
         <ViewAllLateralMoves
           {...this.props}
@@ -631,20 +630,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       }, 0);
     };
 
-    const performanceData = [
-      {
-        img: Blueship,
-        title: "Transportation Fuel Approximately 75% By Volume"
-      },
-      {
-        img: Blueship,
-        title: "Refinery Grade Propylene - Benzene, Toluene"
-      },
-      {
-        img: Blueship,
-        title: "Transportation Fuel Approximately 75% By Volume"
-      }
-    ];
+
 
 
     const isMobile = this.state.windowWidth <= 1024;
@@ -1110,46 +1096,17 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               </div>
             </Col>
 
-
-            {/* Performance */}
-            <Col lg={3} md={6}>
-              <div className={styles.sideCard}>
-                <div className={styles.sideCardHeader}>
-                  <h5>Performance</h5>
-                </div>
-
-                <div className={styles.performanceList}>
-                  {performanceData.map((item, index) => (
-                    <div key={index} className={styles.performanceItem}>
-                      <img src={item.img} alt="" />
-
-                      <div className={styles.performanceContent}>
-                        <p>{item.title}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className={styles.viewMore}>
-                  <a href="#">View More</a>
-                </div>
-              </div>
-            </Col>
-
             {/* Quick links */}
-            <Col lg={3} md={6}>
+            <Col lg={6} md={12}>
 
+              <div className={styles.sideCardHeader}>
+                <h5>{t.quickLinks}</h5>
+              </div>
               <div className={styles.sideCard}>
-
-                <div className={styles.sideCardHeader}>
-                  <h5>{t.quickLinks}</h5>
-                </div>
 
                 <div className={styles.quickLinksList}>
-
                   {this.state.quickLinks.map(
                     (item) => (
-
                       <a
                         key={item.Id}
                         href={
@@ -1161,38 +1118,25 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                           styles.quickLinkItem
                         }
                       >
-
                         <div className={styles.quickIcon}>
-
                           {item.ImageUrl ? (
-
                             <img
                               src={item.ImageUrl}
                               alt={item.Title}
-                              width="24"
-                              height="24"
+                              width="40"
+                              height="40"
                             />
-
                           ) : (
-
                             <i className="bi bi-stars" />
-
                           )}
-
                         </div>
-
                         <span>
                           {item.Title}
                         </span>
-
                       </a>
-
                     ))}
-
                 </div>
-
               </div>
-
             </Col>
 
           </Row>
@@ -1573,6 +1517,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               <div className={styles.weeklyNoticesCarouselSection}>
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
+                    <div className={styles.weeklyNoticesHead}>
+                      <h4>Weekly Notices</h4>
+                      <span className={styles.weeklyNoticesViewmore}>View More</span>
+                    </div>
 
                     <Carousel
                       indicators
@@ -1619,7 +1567,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               <div className={styles.rightContent}>
 
                                 <h3 className={styles.title}>
-                                  {t.weeklyNotices}
+                                  
+                                  {t.weeklyNotices}#{this.getWeekNumber(item.DateReleased)}
                                 </h3>
 
                                 <p
@@ -1665,6 +1614,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               <div className={styles.businessPlanCarouselSection}>
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
+                    <div className={styles.weeklyNoticesHead}>
+                      <h4>MR Business Plan</h4>
+                      <span className={styles.weeklyNoticesViewmore}>View More</span>
+                    </div>
 
                     <Carousel
                       indicators

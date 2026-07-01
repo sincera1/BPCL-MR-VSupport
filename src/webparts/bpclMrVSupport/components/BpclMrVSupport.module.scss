@@ -851,7 +851,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  margin-top: 56px;
+  margin-top: 20px;
   height: 330px;
 }
 
@@ -867,7 +867,7 @@
 
 
 .sideCardHeader {
-  margin-bottom: 14px;
+  margin-top: 14px;
 
   h5 {
     color: #fff;
@@ -1161,9 +1161,11 @@
 /* ================= QUICK LINKS ================= */
 
 .quickLinksList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+ display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  flex: 1;
+  align-content: flex-start;
 
   max-height: 360px;
   /* around 6 items visible */
@@ -1219,10 +1221,10 @@
 }
 
 .quickIcon {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
-  background: rgba(255, 215, 0, 0.12);
+
 
   display: flex;
   align-items: center;
@@ -2524,6 +2526,25 @@
   position: relative;
 }
 
+.weeklyNoticesHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.weeklyNoticesHead h4 {
+  font-size: 15px;
+  font-weight: 500;
+  color: #037ec4;
+  text-decoration: none;
+}
+
+.weeklyNoticesViewmore {
+  font-size: 14px;
+  cursor: pointer;
+  color: #037ec4;
+  text-decoration: none !important;
+}
 
 .businessPlanCarouselSection {
   background: #003296;
@@ -2907,6 +2928,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   flex: 1;
+  align-content: flex-start;
 }
 
 .portalQuickBox {
