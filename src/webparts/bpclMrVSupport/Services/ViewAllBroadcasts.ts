@@ -5,7 +5,7 @@ import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import "@pnp/sp/attachments";
 
-export interface INewsItem {
+export interface IBroadcastItem {
     Id: number;
     Title: string;
     PublishedDate: string;
@@ -18,8 +18,7 @@ export interface IAttachment {
     ServerRelativeUrl: string;
 }
 
-
-export default class ViewAllNewsService {
+export default class ViewAllBroadcastsService {
     
     public publishingHubSp: SPFI;
     private readonly PUBLISHING_HUB_URL: string;
@@ -43,9 +42,9 @@ export default class ViewAllNewsService {
         
     }
 
-    public async getCorporateNews(): Promise<INewsItem[]> {
+    public async getBroadcasts(): Promise<IBroadcastItem[]> {
 
-        const filterQuery = `CommunicationType eq 'News' and Status eq 'Published'`;
+        const filterQuery = `CommunicationType eq 'BroadCast' and Status eq 'Published'`;
 
         const items = await this.publishingHubSp.web.lists
             .getByTitle("CorpCommunication")

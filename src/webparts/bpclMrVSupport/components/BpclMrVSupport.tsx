@@ -23,6 +23,10 @@ import ViewAllHolidayList from './ViewAllHolidayList';
 import PreviewEventsModal from '../Services/PreviewEventsModal';
 import PreviewBroadcastModal from '../Services/PreviewBroadcastModal';
 import PreviewNewsModal from '../Services/PreviewNewsModal';
+import ViewAllNews from "./ViewAllNews";
+import ViewAllEvents from "./ViewAllEvents";
+import ViewAllLateralMoves from "./ViewAllLateralMoves";
+import ViewAllBroadcasts from "./ViewAllBroadcasts";
 
 const translations: any = {
   English: {
@@ -99,6 +103,9 @@ interface IVsupportState {
   isLoading: boolean;
   isMobileMenuOpen: boolean;
   showOverflowMenus: boolean;
+  showViewAllNewsPage: boolean;
+  showBroadcastPage: boolean;
+  showViewAllEventsPage: boolean;
   navigationMenuItem: INavigationMenuItem[];
   businessUnits: IBusinessUnit[];
   welcomeBanners: IWelcomeBannerItem[];
@@ -118,6 +125,7 @@ interface IVsupportState {
   showBusinessPlanPage: boolean;
   showWeeklyNoticesPage: boolean;
   showHolidayListPage: boolean;
+  showLateralMovesPage:boolean;
   windowWidth: number;
   visibleMenus: INavigationMenuItem[];
   hiddenMenus: INavigationMenuItem[];
@@ -167,6 +175,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       activeTab: "safetydashboard",
       isMobileMenuOpen: false,
       showOverflowMenus: false,
+      showViewAllNewsPage: false,
+      showViewAllEventsPage: false,
+      showLateralMovesPage:false,
+      showBroadcastPage: false,
       directorCorner: [],
       businessUnits: [],
       navigationMenuItem: [],
@@ -457,58 +469,58 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     });
   };
 
-  private handleNewsLike = async (
-    item: ICorporateNewsItem
-  ): Promise<void> => {
-    try {
-      const updatedLikes = await this._service.toggleLike(
-        item.Id,
-        item.liked === true
-      );
+  // private handleNewsLike = async (
+  //   item: ICorporateNewsItem
+  // ): Promise<void> => {
+  //   try {
+  //     const updatedLikes = await this._service.toggleLike(
+  //       item.Id,
+  //       item.liked === true
+  //     );
 
-      this.setState((prev) => ({
-        corporateNews: prev.corporateNews.map((n) =>
-          n.Id === item.Id
-            ? {
-              ...n,
-              LikesCount: updatedLikes,
-              liked: !n.liked
-            }
-            : n
-        ),
-      }));
-    } catch (error) {
-      console.error("Something went wrong. Please contact administrator.");
-    }
-  };
+  //     this.setState((prev) => ({
+  //       corporateNews: prev.corporateNews.map((n) =>
+  //         n.Id === item.Id
+  //           ? {
+  //             ...n,
+  //             LikesCount: updatedLikes,
+  //             liked: !n.liked
+  //           }
+  //           : n
+  //       ),
+  //     }));
+  //   } catch (error) {
+  //     console.error("Something went wrong. Please contact administrator.");
+  //   }
+  // };
 
-  private handleEventLike = async (
-    event: ICorporateNewsItem
-  ): Promise<void> => {
+  // private handleEventLike = async (
+  //   event: ICorporateNewsItem
+  // ): Promise<void> => {
 
-    try {
+  //   try {
 
-      const updatedLikes = await this._service.toggleLike(
-        event.Id,
-        event.liked === true
-      );
+  //     const updatedLikes = await this._service.toggleLike(
+  //       event.Id,
+  //       event.liked === true
+  //     );
 
-      this.setState((prev) => ({
-        events: prev.events.map((e) =>
-          e.Id === event.Id
-            ? {
-              ...e,
-              LikesCount: updatedLikes,
-              liked: !e.liked
-            }
-            : e
-        ),
-      }));
+  //     this.setState((prev) => ({
+  //       events: prev.events.map((e) =>
+  //         e.Id === event.Id
+  //           ? {
+  //             ...e,
+  //             LikesCount: updatedLikes,
+  //             liked: !e.liked
+  //           }
+  //           : e
+  //       ),
+  //     }));
 
-    } catch (error) {
-      console.error("Something went wrong. Please contact administrator.");
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Something went wrong. Please contact administrator.");
+  //   }
+  // };
 
   private toggleBroadcast = (): void => {
     this.setState(prevState => ({
@@ -527,6 +539,31 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     const selectedLanguage = localStorage.getItem("MRLanguage") || "English";
     const t = translations[selectedLanguage];
 
+    if (this.state.showViewAllNewsPage) {
+      return (
+        <ViewAllNews
+          {...this.props}
+          onBack={() => this.setState({ showViewAllNewsPage: false })}
+        />
+      );
+    }
+
+    if (this.state.showBroadcastPage) {
+      return (
+        <ViewAllBroadcasts
+          {...this.props}
+          onBack={() => this.setState({ showBroadcastPage: false })}
+        />
+      );
+    }
+    if (this.state.showViewAllEventsPage) {
+      return (
+        <ViewAllEvents
+          {...this.props}
+          onBack={() => this.setState({ showViewAllEventsPage: false })}
+        />
+      );
+    }
 
     if (this.state.showWeeklyNoticesPage) {
       return (
@@ -535,6 +572,20 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
           onBack={() =>
             this.setState({
               showWeeklyNoticesPage: false
+            })
+          }
+        />
+      );
+    }
+
+
+      if (this.state.showLateralMovesPage) {
+      return (
+        <ViewAllLateralMoves
+          {...this.props}
+          onBack={() =>
+            this.setState({
+              showLateralMovesPage: false
             })
           }
         />
@@ -1236,7 +1287,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
           <div className={styles.newsBanner}>
             <h2 className={styles.sectionHeading}>
-             {t.mrAnnouncementsBroadcastsEventsNews}
+              {t.mrAnnouncementsBroadcastsEventsNews}
             </h2>
 
             <Row>
@@ -1250,8 +1301,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       tabIndex={0}
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        const folderUrl = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/ViewAllNews.aspx`;
-                        window.open(folderUrl, "_blank");
+                        this.setState({
+                          showViewAllNewsPage: true
+                        });
                       }}
                     >
                       See All
@@ -1316,7 +1368,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             </div>
 
                             {/* Like Overlay */}
-                            <div
+                            {/* <div
                               className={`${styles.likeBox} ${item.liked ? styles.liked : ""
                                 }`}
                               onClick={(e) => {
@@ -1328,7 +1380,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             >
                               <i className="bi bi-hand-thumbs-up-fill" />
                               <span className={styles.likeCount}>{item.LikesCount ?? 0}</span>
-                            </div>
+                            </div> */}
 
                           </div>
                         </Carousel.Item>
@@ -1348,8 +1400,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       tabIndex={0}
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        const folderUrl = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/ViewAllBroadcast.aspx`;
-                        window.open(folderUrl, "_blank");
+                        this.setState({
+                          showBroadcastPage: true
+                        });
                       }}
                     >
                       See All
@@ -1418,8 +1471,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       tabIndex={0}
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        const folderUrl = `${this.props.context.pageContext.web.absoluteUrl}/SitePages/ViewAllEvents.aspx`;
-                        window.open(folderUrl, "_blank");
+                        this.setState({
+                          showViewAllEventsPage: true
+                        });
                       }}
                     >
                       See All
@@ -1455,7 +1509,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                             <div className={styles.eventContent}>
                               {/* 🔹 Floating Like Badge (Top Right) */}
-                              <div
+                              {/* <div
                                 className={`${styles.likeBox} ${item.liked ? styles.liked : ""
                                   }`}
                                 onClick={(e) => {
@@ -1469,7 +1523,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                                 <span className={styles.likeCount}>
                                   {item.LikesCount ?? 0}
                                 </span>
-                              </div>
+                              </div> */}
 
                               {/* 🔹 Meta Row (Like Count + Date) */}
                               <div className={styles.metaInfo}>
@@ -1763,6 +1817,12 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     className={
                       styles.portalActionBtn
                     }
+                    onClick={() =>
+                      this.setState({
+                        showLateralMovesPage: true
+                      })
+                    }
+
                   >
                     View All
                   </button>
