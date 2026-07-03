@@ -34,7 +34,8 @@ export default class BpclMrVSupportWebPart extends BaseClientSideWebPart<IBpclMr
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
         context: this.context,
-        sp: this._sp
+        sp: this._sp,
+        userId: this.context.pageContext.legacyPageContext.userId
       }
     );
 

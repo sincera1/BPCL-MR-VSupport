@@ -13,4 +13,5 @@ export interface IBpclMrVSupportProps {
 
   context: WebPartContext;
   sp: SPFI;
+  userId: number;
 }

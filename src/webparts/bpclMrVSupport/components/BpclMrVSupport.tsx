@@ -26,6 +26,7 @@ import ViewAllNews from "./ViewAllNews";
 import ViewAllEvents from "./ViewAllEvents";
 import ViewAllLateralMoves from "./ViewAllLateralMoves";
 import ViewAllBroadcasts from "./ViewAllBroadcasts";
+import ViewAllFavouriteLinks from "./ViewAllFavouriteLinks";
 
 const translations: any = {
   English: {
@@ -107,6 +108,7 @@ interface IVsupportState {
   showOverflowMenus: boolean;
   showViewAllNewsPage: boolean;
   showBroadcastPage: boolean;
+  showViewAllFavouriteLinksPage: boolean;
   showViewAllEventsPage: boolean;
   navigationMenuItem: INavigationMenuItem[];
   businessUnits: IBusinessUnit[];
@@ -172,6 +174,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       showBusinessPlanPage: false,
       showWeeklyNoticesPage: false,
       showHolidayListPage: false,
+      showViewAllFavouriteLinksPage: false,
       showModal: false,
       selectedItem: null,
       activeTab: "safetydashboard",
@@ -596,6 +599,20 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
         />
       );
     }
+     if (this.state.showViewAllFavouriteLinksPage) {
+      return (
+        <ViewAllFavouriteLinks
+          {...this.props}
+          onBack={() =>
+            this.setState({
+              showViewAllFavouriteLinksPage: false
+            })
+          }
+        />
+      );
+    }
+
+    
 
 
     if (this.state.showLateralMovesPage) {
@@ -1952,8 +1969,15 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                   </div>
 
-                  <button className={`${styles.portalActionBtn} mt-2`}>
-                    Manage Links
+                 <button
+                    className={styles.portalActionBtn}
+                    onClick={() =>
+                      this.setState({
+                        showViewAllFavouriteLinksPage: true
+                      })
+                    }
+                  >
+                     Manage Links
                   </button>
 
                 </div>
