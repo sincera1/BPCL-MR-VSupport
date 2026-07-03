@@ -45,6 +45,7 @@ const translations: any = {
     favouriteLinks: "Favourite Links",
     safetyTips: "Safety Tips",
     teamOperatingPrinciples: "Team Operating Principles",
+    lateralMovesholidaylistquicklinks:"Lateral Moves, Holiday List & Quick Links",
     visionMission: "Vision & Mission",
     businessUnits: "Business Units"
   },
@@ -66,6 +67,7 @@ const translations: any = {
     favouriteLinks: "पसंदीदा लिंक",
     safetyTips: "सुरक्षा सुझाव",
     teamOperatingPrinciples: "टीम संचालन सिद्धांत",
+    lateralMovesholidaylistquicklinks:"लेटरल मूव्स, छुट्टियों की सूची एवं त्वरित लिंक",
     visionMission: "विजन एवं मिशन",
     businessUnits: "बिजनेस यूनिट्स"
   },
@@ -87,6 +89,7 @@ const translations: any = {
     favouriteLinks: "आवडते दुवे",
     safetyTips: "सुरक्षा सूचना",
     teamOperatingPrinciples: "टीम ऑपरेटिंग प्रिन्सिपल्स",
+    lateralMovesholidaylistquicklinks:"लेटरल मूव्ह्स, सुट्टी यादी व द्रुत दुवे",
     visionMission: "दृष्टी व ध्येय",
     businessUnits: "व्यवसाय युनिट्स"
   }
@@ -220,6 +223,23 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     };
 
   }
+
+  private getMenuTitle = (menu: INavigationMenuItem): string => {
+
+    const language = localStorage.getItem("MRLanguage") || "English";
+
+    switch (language) {
+
+      case "Hindi":
+        return menu.TitleHindi || menu.Title;
+
+      case "Marathi":
+        return menu.TitleMarathi || menu.Title;
+
+      default:
+        return menu.Title;
+    }
+  };
 
   private getWeekNumber(dateString: string): number {
 
@@ -752,19 +772,16 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                         {mobileMenus.map(parentMenu => {
 
-                          const childMenus =
-                            getChildMenus(parentMenu.Id);
+                          const childMenus = getChildMenus(parentMenu.Id);
 
                           return (
                             <div key={parentMenu.Id}>
 
                               <Nav.Link
-                                href={
-                                  parentMenu.MenuUrl?.Url || "#"
-                                }
+                                href={parentMenu.MenuUrl?.Url || "#"}
                                 className={styles.menuItem}
                               >
-                                {parentMenu.Title}
+                                {this.getMenuTitle(parentMenu)}
                               </Nav.Link>
 
                               {childMenus.length > 0 && (
@@ -775,12 +792,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                                     <Nav.Link
                                       key={child.Id}
-                                      href={
-                                        child.MenuUrl?.Url || "#"
-                                      }
+                                      href={child.MenuUrl?.Url || "#"}
                                       className={styles.menuItem}
                                     >
-                                      • {child.Title}
+                                      • {this.getMenuTitle(child)}
                                     </Nav.Link>
 
                                   ))}
@@ -801,21 +816,23 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               ) : (
                 <>
                   {/* DESKTOP MENU */}
-                  <div className={styles.firstRow} ref={this.menuContainerRef}>
+                  <div
+                    className={styles.firstRow}
+                    ref={this.menuContainerRef}
+                  >
 
                     <Nav className={styles.menuNav}>
 
                       {visibleMenus.map(parentMenu => {
 
-                        const childMenus =
-                          getChildMenus(parentMenu.Id);
+                        const childMenus = getChildMenus(parentMenu.Id);
 
                         if (childMenus.length > 0) {
 
                           return (
                             <NavDropdown
                               key={parentMenu.Id}
-                              title={parentMenu.Title}
+                              title={this.getMenuTitle(parentMenu)}
                               id={`menu-${parentMenu.Id}`}
                               className={styles.menuDropdown}
                             >
@@ -827,13 +844,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         return (
                           <Nav.Link
                             key={parentMenu.Id}
-                            href={
-                              parentMenu.MenuUrl?.Url || "#"
-                            }
+                            href={parentMenu.MenuUrl?.Url || "#"}
                             target="_blank"
                             className={styles.menuItem}
                           >
-                            {parentMenu.Title}
+                            {this.getMenuTitle(parentMenu)}
                           </Nav.Link>
                         );
 
@@ -848,8 +863,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         className={styles.chevronBtn}
                         onClick={() =>
                           this.setState(prev => ({
-                            showOverflowMenus:
-                              !prev.showOverflowMenus
+                            showOverflowMenus: !prev.showOverflowMenus
                           }))
                         }
                       >
@@ -874,15 +888,14 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                           {hiddenMenus.map(parentMenu => {
 
-                            const childMenus =
-                              getChildMenus(parentMenu.Id);
+                            const childMenus = getChildMenus(parentMenu.Id);
 
                             if (childMenus.length > 0) {
 
                               return (
                                 <NavDropdown
                                   key={parentMenu.Id}
-                                  title={parentMenu.Title}
+                                  title={this.getMenuTitle(parentMenu)}
                                   id={`hidden-${parentMenu.Id}`}
                                   className={styles.menuDropdown}
                                 >
@@ -894,13 +907,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             return (
                               <Nav.Link
                                 key={parentMenu.Id}
-                                href={
-                                  parentMenu.MenuUrl?.Url || "#"
-                                }
+                                href={parentMenu.MenuUrl?.Url || "#"}
                                 target="_blank"
                                 className={styles.menuItem}
                               >
-                                {parentMenu.Title}
+                                {this.getMenuTitle(parentMenu)}
                               </Nav.Link>
                             );
 
@@ -1518,8 +1529,18 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
                     <div className={styles.weeklyNoticesHead}>
-                      <h4>Weekly Notices</h4>
-                      <span className={styles.weeklyNoticesViewmore}>View More</span>
+                      <h4>{t.weeklynotices}</h4>
+                      <span
+                        className={styles.weeklyNoticesViewmore}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          this.setState({
+                            showWeeklyNoticesPage: true
+                          })
+                        }
+                      >
+                        View More
+                      </span>
                     </div>
 
                     <Carousel
@@ -1567,7 +1588,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               <div className={styles.rightContent}>
 
                                 <h3 className={styles.title}>
-                                  
+
                                   {t.weeklyNotices}#{this.getWeekNumber(item.DateReleased)}
                                 </h3>
 
@@ -1584,9 +1605,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                                   onClick={(e) => {
                                     e.stopPropagation();
 
-                                    this.setState({
-                                      showWeeklyNoticesPage: true
-                                    });
+                                    if (item.FileUrl) {
+                                      window.open(item.FileUrl, "_blank");
+                                    }
                                   }}
                                 >
                                   KNOW MORE
@@ -1615,8 +1636,18 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
                     <div className={styles.weeklyNoticesHead}>
-                      <h4>MR Business Plan</h4>
-                      <span className={styles.weeklyNoticesViewmore}>View More</span>
+                      <h4>{t.mrBusinessPlan}</h4>
+                      <span
+                        className={styles.weeklyNoticesViewmore}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          this.setState({
+                            showBusinessPlanPage: true
+                          })
+                        }
+                      >
+                        View More
+                      </span>
                     </div>
 
                     <Carousel
@@ -1666,9 +1697,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                                       e.preventDefault();
                                       e.stopPropagation();
 
-                                      this.setState({
-                                        showBusinessPlanPage: true
-                                      });
+                                      if (item.FileUrl) {
+                                        window.open(item.FileUrl, "_blank");
+                                      }
                                     }}
                                   >
                                     {new Date(item.DateReleased).getFullYear()}
@@ -1702,7 +1733,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
           <div className={styles.portalMainWrapper}>
             <h4 className={styles.sectionHeading}>
-              Lateral Moves, Holiday List & Quick Links
+              {t.lateralMovesholidaylistquicklinks}
             </h4>
 
             <Row className={styles.portalRow}>

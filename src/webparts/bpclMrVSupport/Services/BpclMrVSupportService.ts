@@ -10,6 +10,8 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 export interface INavigationMenuItem {
     Id: number;
     Title: string;
+    TitleHindi?: string;
+    TitleMarathi?: string;
     MenuUrl: {
         Url: string;
         Description: string;
@@ -232,7 +234,9 @@ export default class BpclMrVSupportService {
                 "MenuUrl",
                 "Sequence",
                 "ParentId/Id",
-                "ParentId/Title"
+                "ParentId/Title",
+                "TitleHindi",
+                "TitleMarathi"
             )
             .expand("ParentId")
             .filter("IsActive eq 1")
@@ -240,6 +244,8 @@ export default class BpclMrVSupportService {
 
         return items;
     }
+
+    
 
     // Welcome Banner
     public async getWelcomeBanners(): Promise<IWelcomeBannerItem[]> {
