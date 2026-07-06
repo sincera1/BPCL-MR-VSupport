@@ -15,13 +15,11 @@ import NewsAnnouncement from '../assets/governance.jpg';
 import BDcelebration from '../assets/celebration-BD.png';
 import GoldShild from '../assets/gold-shield-png.png';
 import Savemoney from '../assets/Savemoney.png';
-import BpclMrVSupportService, { INavigationMenuItem, IBusinessUnit, ISafetyDashBoardItem, ITestimonialItem, ISuccessStoryItem, IEmployeeGreetingItem, IWeeklyNoticeItem, IWelcomeBannerItem, IQuickLinkItem, ILateralMoveItem, IHolidayItem, IFavouriteLinkItem, ISafetyTipItem, ITeamOperatingPrincipleItem, IVissionMissionItem, IAttachment, ICorporateNewsItem, INewsPreviewItem, IEventPreviewItem, IBroadcastItem, IBusinessPlanItem } from '../Services/BpclMrVSupportService';
+import BpclMrVSupportService, { INavigationMenuItem, IBusinessUnit, ISafetyDashBoardItem, ITestimonialItem, ISuccessStoryItem, IEmployeeGreetingItem, IWeeklyNoticeItem, IWelcomeBannerItem, IQuickLinkItem, ILateralMoveItem, IHolidayItem, IFavouriteLinkItem, ISafetyTipItem, ITeamOperatingPrincipleItem, IVissionMissionItem, ICorporateNewsItem, IBroadcastItem, IBusinessPlanItem } from '../Services/BpclMrVSupportService';
 import ViewAllBusinessPlan from './VIewAllBusinessPlan';
 import ViewAllWeeklyNotices from './ViewAllWeeklyNotices';
 import ViewAllHolidayList from './ViewAllHolidayList';
-import PreviewEventsModal from '../Services/PreviewEventsModal';
-import PreviewBroadcastModal from '../Services/PreviewBroadcastModal';
-import PreviewNewsModal from '../Services/PreviewNewsModal';
+
 import ViewAllNews from "./ViewAllNews";
 import ViewAllEvents from "./ViewAllEvents";
 import ViewAllLateralMoves from "./ViewAllLateralMoves";
@@ -46,7 +44,7 @@ const translations: any = {
     favouriteLinks: "Favourite Links",
     safetyTips: "Safety Tips",
     teamOperatingPrinciples: "Team Operating Principles",
-    lateralMovesholidaylistquicklinks:"Lateral Moves, Holiday List & Quick Links",
+    lateralMovesholidaylistquicklinks: "Lateral Moves, Holiday List & Quick Links",
     visionMission: "Vision & Mission",
     businessUnits: "Business Units"
   },
@@ -68,7 +66,7 @@ const translations: any = {
     favouriteLinks: "पसंदीदा लिंक",
     safetyTips: "सुरक्षा सुझाव",
     teamOperatingPrinciples: "टीम संचालन सिद्धांत",
-    lateralMovesholidaylistquicklinks:"लेटरल मूव्स, छुट्टियों की सूची एवं त्वरित लिंक",
+    lateralMovesholidaylistquicklinks: "लेटरल मूव्स, छुट्टियों की सूची एवं त्वरित लिंक",
     visionMission: "विजन एवं मिशन",
     businessUnits: "बिजनेस यूनिट्स"
   },
@@ -90,7 +88,7 @@ const translations: any = {
     favouriteLinks: "आवडते दुवे",
     safetyTips: "सुरक्षा सूचना",
     teamOperatingPrinciples: "टीम ऑपरेटिंग प्रिन्सिपल्स",
-    lateralMovesholidaylistquicklinks:"लेटरल मूव्ह्स, सुट्टी यादी व द्रुत दुवे",
+    lateralMovesholidaylistquicklinks: "लेटरल मूव्ह्स, सुट्टी यादी व द्रुत दुवे",
     visionMission: "दृष्टी व ध्येय",
     businessUnits: "व्यवसाय युनिट्स"
   }
@@ -140,16 +138,8 @@ interface IVsupportState {
 
   showPreview: boolean;
   previewItem?: IBroadcastItem;
-  previewAttachments: IAttachment[];
-
   showEventPreview: boolean;
-  previewEventItem?: IEventPreviewItem;
-  previewEventAttachments: IAttachment[];
-
   showNewsPreview: boolean;
-  selectedNewsItem?: INewsPreviewItem;
-  newsAttachments: IAttachment[];
-
   isBroadcastPaused: boolean;
   isEventPaused: boolean;
 }
@@ -207,16 +197,16 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       events: [],
       broadcasts: [],
       showEventPreview: false,
-      previewEventItem: undefined,
-      previewEventAttachments: [],
+     
+      
 
       showNewsPreview: false,
-      selectedNewsItem: undefined,
-      newsAttachments: [],
+    
+      
       // Broadcast preview
       showPreview: false,
       previewItem: undefined,
-      previewAttachments: [],
+
 
       isBroadcastPaused: false,
       isEventPaused: false,
@@ -408,141 +398,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
   };
 
-  private openNewsPreview = async (
-    item: ICorporateNewsItem
-  ): Promise<void> => {
-    try {
 
-      const [previewItem, attachments] = await Promise.all([
-        this._service.getNewsPreviewItem(item.Id),
-        this._service.getAttachments(item.Id)
-      ]);
 
-      if (!previewItem) return;
 
-      this.setState({
-        showNewsPreview: true,
-        selectedNewsItem: previewItem,
-        newsAttachments: attachments
-      });
-
-    } catch (error) {
-      console.error("Something went wrong. Please contact administrator.", error);
-    }
-  };
-
-  private closeNewsPreview = (): void => {
-    this.setState({
-      showNewsPreview: false,
-      selectedNewsItem: undefined,
-      newsAttachments: []
-    });
-  };
-
-  private openBroadcastPreview = async (item: IBroadcastItem): Promise<void> => {
-    try {
-      const attachments = await this._service.getAttachments(item.Id);
-      console.log("Broadcast attachments from service:", attachments);
-
-      this.setState({
-        showPreview: true,
-        previewItem: item,
-        previewAttachments: attachments
-      });
-    } catch (error) {
-      console.error("Something went wrong. Please contact administrator.");
-    }
-  };
-
-  private closeBroadcastPreview = (): void => {
-    this.setState({
-      showPreview: false,
-      previewItem: undefined,
-      previewAttachments: []
-    });
-  };
-
-  private openEventPreview = async (
-    item: ICorporateNewsItem
-  ): Promise<void> => {
-    try {
-      const [previewItem, attachments] = await Promise.all([
-        this._service.getEventPreviewItem(item.Id),
-        this._service.getAttachments(item.Id)
-      ]);
-
-      if (!previewItem) return;
-
-      this.setState({
-        showEventPreview: true,
-        previewEventItem: previewItem,
-        previewEventAttachments: attachments
-      });
-    } catch (error) {
-      console.error("Something went wrong. Please contact administrator.");
-    }
-  };
-
-  private closeEventPreview = (): void => {
-    this.setState({
-      showEventPreview: false,
-      previewEventItem: undefined,
-      previewEventAttachments: []
-    });
-  };
-
-  // private handleNewsLike = async (
-  //   item: ICorporateNewsItem
-  // ): Promise<void> => {
-  //   try {
-  //     const updatedLikes = await this._service.toggleLike(
-  //       item.Id,
-  //       item.liked === true
-  //     );
-
-  //     this.setState((prev) => ({
-  //       corporateNews: prev.corporateNews.map((n) =>
-  //         n.Id === item.Id
-  //           ? {
-  //             ...n,
-  //             LikesCount: updatedLikes,
-  //             liked: !n.liked
-  //           }
-  //           : n
-  //       ),
-  //     }));
-  //   } catch (error) {
-  //     console.error("Something went wrong. Please contact administrator.");
-  //   }
-  // };
-
-  // private handleEventLike = async (
-  //   event: ICorporateNewsItem
-  // ): Promise<void> => {
-
-  //   try {
-
-  //     const updatedLikes = await this._service.toggleLike(
-  //       event.Id,
-  //       event.liked === true
-  //     );
-
-  //     this.setState((prev) => ({
-  //       events: prev.events.map((e) =>
-  //         e.Id === event.Id
-  //           ? {
-  //             ...e,
-  //             LikesCount: updatedLikes,
-  //             liked: !e.liked
-  //           }
-  //           : e
-  //       ),
-  //     }));
-
-  //   } catch (error) {
-  //     console.error("Something went wrong. Please contact administrator.");
-  //   }
-  // };
 
   private toggleBroadcast = (): void => {
     this.setState(prevState => ({
@@ -599,7 +457,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
         />
       );
     }
-     if (this.state.showViewAllFavouriteLinksPage) {
+    if (this.state.showViewAllFavouriteLinksPage) {
       return (
         <ViewAllFavouriteLinks
           {...this.props}
@@ -612,7 +470,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       );
     }
 
-    
+
 
 
     if (this.state.showLateralMovesPage) {
@@ -1296,9 +1154,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             tabIndex={0}
                             style={{ cursor: "pointer" }}
                             onClick={() => {
-                              this.openNewsPreview(item).catch(() => {
-                                console.log("Something went wrong. Please contact administrator.");
-                              });
+                              if (item.FileUrl) {
+                                window.open(item.FileUrl, "_blank");
+                              }
                             }}
 
                           >
@@ -1339,20 +1197,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               </div>
                             </div>
 
-                            {/* Like Overlay */}
-                            {/* <div
-                              className={`${styles.likeBox} ${item.liked ? styles.liked : ""
-                                }`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                this.handleNewsLike(item).catch(() => {
-                                  console.log("Something went wrong. Please contact administrator.");
-                                });
-                              }}
-                            >
-                              <i className="bi bi-hand-thumbs-up-fill" />
-                              <span className={styles.likeCount}>{item.LikesCount ?? 0}</span>
-                            </div> */}
+
 
                           </div>
                         </Carousel.Item>
@@ -1401,22 +1246,15 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               style={{ cursor: "pointer" }}
 
                               onClick={() => {
-                                this.openBroadcastPreview(item).catch(() => {
-                                  console.log("Something went wrong. Please contact administrator.");
-                                });
+                                if (item.FileUrl) {
+                                  window.open(item.FileUrl, "_blank");
+                                }
                               }}
 
                             >
-                              <img
-                                width={40}
-                                height={40}
-                                src={item.IconUrl}
-                                alt={item.Title}
-                              // onError={(e) => {
-                              //   e.currentTarget.src =
-                              //     "/SiteAssets/default-broadcast.png";
-                              // }}
-                              />
+                              <div className={styles.broadcastIcon}>
+                                <i className="bi bi-broadcast"></i>
+                              </div>
                               <h3 ref={handleTitleRef(item.Title)}>{item.Title}</h3>
                             </div>
                           )
@@ -1468,7 +1306,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             className={styles.marqueeItem}
                             role="button"
                             tabIndex={0}
-                            onClick={() => this.openEventPreview(item)}
+                            onClick={() => {
+                              if (item.FileUrl) {
+                                window.open(item.FileUrl, "_blank");
+                              }
+                            }}
 
                           >
                             <img
@@ -1969,7 +1811,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                   </div>
 
-                 <button
+                  <button
                     className={styles.portalActionBtn}
                     onClick={() =>
                       this.setState({
@@ -1977,7 +1819,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       })
                     }
                   >
-                     Manage Links
+                    Manage Links
                   </button>
 
                 </div>
@@ -2359,26 +2201,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
           </Row>
 
 
-          <PreviewBroadcastModal
-            show={this.state.showPreview}
-            onClose={this.closeBroadcastPreview}
-            item={this.state.previewItem}
-            attachments={this.state.previewAttachments}
-          />
 
-          <PreviewEventsModal
-            show={this.state.showEventPreview}
-            onClose={this.closeEventPreview}
-            item={this.state.previewEventItem}
-            attachments={this.state.previewEventAttachments}
-          />
 
-          <PreviewNewsModal
-            show={this.state.showNewsPreview}
-            onClose={this.closeNewsPreview}
-            item={this.state.selectedNewsItem}
-            attachments={this.state.newsAttachments}
-          />
+
 
         </Container>
       </section >

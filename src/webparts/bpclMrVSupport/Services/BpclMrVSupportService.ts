@@ -65,13 +65,7 @@ export interface ICorporateNewsItem {
     Title: string;
     PublishedDate: string;
     ImageUrl: string;
-    LikesCount: number;
-    liked?: boolean;
-    NewsTypes?: {
-        WssId?: number;
-        TermGuid?: string;
-        Label?: string;
-    };
+    FileUrl?: string;
     MainDescription?: string;
 }
 
@@ -83,11 +77,8 @@ export interface IAttachment {
 export interface IBroadcastItem {
     Id: number;
     Title: string;
-    BroadcastType: {
-        Label: string;
-        TermGuid: string;
-    };
-    IconUrl: string;
+    PublishedDate: string;
+    FileUrl: string;
 }
 
 
@@ -186,7 +177,6 @@ export interface INewsPreviewItem {
 export interface IEventPreviewItem {
     Id: number;
     Title: string;
-    liked?: boolean;
     PublishedDate?: string;
     MainDescription?: string;
     Thumbnail?: string;
@@ -199,7 +189,7 @@ export interface IEventPreviewItem {
 export default class BpclMrVSupportService {
     private sp: SPFI;
     public publishingHubSp: SPFI;
-    private publishingHubUserId!: number;
+
     private siteUrl: string;
     private readonly PUBLISHING_HUB_URL: string;
     constructor(context: WebPartContext) {
@@ -245,7 +235,7 @@ export default class BpclMrVSupportService {
         return items;
     }
 
-    
+
 
     // Welcome Banner
     public async getWelcomeBanners(): Promise<IWelcomeBannerItem[]> {
@@ -344,23 +334,7 @@ export default class BpclMrVSupportService {
 
     }
 
-    private async getCurrentUserId(): Promise<number> {
 
-        if (!this.publishingHubUserId) {
-
-            // Get logged-in user email from current site
-            const currentUser = await this.sp.web.currentUser
-                .select("Email")();
-
-            // Ensure the user exists in Publishing Hub site
-            const ensuredUser = await this.publishingHubSp.web.ensureUser(currentUser.Email);
-
-            // Store Publishing Hub user ID
-            this.publishingHubUserId = ensuredUser.Id;
-        }
-
-        return this.publishingHubUserId;
-    }
 
     public async getEmployeeGreetings(): Promise<IEmployeeGreetingItem[]> {
 
@@ -392,49 +366,41 @@ export default class BpclMrVSupportService {
                 "Id",
                 "Title",
                 "PublishedDate",
-                "LikesCount",
-                "Thumbnail",
-                "NewsTypes",
-                "NewsTypes/Label",
-                "LikedBy/Id",
                 "AttachmentFiles"
             )
-            .expand("AttachmentFiles", "LikedBy")
+            .expand("AttachmentFiles")
             .filter(filterQuery)
             .orderBy("PublishedDate", false)
             .top(2)();
 
-        const currentUserId = await this.getCurrentUserId();
 
-        const results = await Promise.all(
-            items.map(async (item) => {
+        const results = items.map((item) => {
 
-                const imageRelativeUrl = this.getThumbnailFromAttachments(
-                    item.AttachmentFiles,
-                    item.Thumbnail
-                );
+            const imageFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|jfif)$/)
+            );
 
-                const resolvedLabel = await this.getTaxonomyLabelByWssId(
-                    item.NewsTypes?.WssId
-                );
+            const pdfFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase().endsWith(".pdf")
+            );
 
-                const likedUsers = item.LikedBy
-                    ? item.LikedBy.map((u: { Id: number }) => u.Id)
-                    : [];
 
-                const isLiked = likedUsers.includes(currentUserId);
+            return {
+                Id: item.Id,
+                Title: item.Title,
+                PublishedDate: item.PublishedDate,
 
-                return {
-                    Id: item.Id,
-                    Title: item.Title,
-                    PublishedDate: item.PublishedDate,
-                    LikesCount: item.LikesCount || 0,
-                    ImageUrl: imageRelativeUrl,
-                    liked: isLiked,
-                    newsType: resolvedLabel
-                };
-            })
-        );
+                ImageUrl: imageFile
+                    ? imageFile.ServerRelativeUrl
+                    : "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery/SiteAssets/Images/News&Announcement.png",
+
+                FileUrl: pdfFile
+                    ? pdfFile.ServerRelativeUrl
+                    : ""
+            };
+        });
 
         return results;
     }
@@ -444,65 +410,39 @@ export default class BpclMrVSupportService {
         const filterQuery =
             `CommunicationType eq 'BroadCast' and Status eq 'Published'`;
 
-        const [items, iconMap] = await Promise.all([
+        const items = await this.publishingHubSp.web.lists
+            .getByTitle("CorpCommunication")
+            .items
+            .select(
+                "Id",
+                "Title",
+                "PublishedDate",
+                "AttachmentFiles"
 
-            this.publishingHubSp.web.lists
-                .getByTitle("CorpCommunication")
-                .items
-                .select(
-                    "Id",
-                    "Title",
-                    "PublishedDate",
-                    "BroadcastType/Label",
-                    "BroadcastType/TermGuid"
-                )
-                .filter(filterQuery)
-                .orderBy("PublishedDate", false)
-                .top(5)(),
-
-            this.getBroadcastIcons()
-        ]);
+            )
+            .expand("AttachmentFiles")
+            .filter(filterQuery)
+            .orderBy("PublishedDate", false)
+            .top(5)();
 
         return items.map(item => ({
             Id: item.Id,
             Title: item.Title,
             PublishedDate: item.PublishedDate,
-            BroadcastType: {
-                Label: item.BroadcastType?.Label || "",
-                TermGuid: item.BroadcastType?.TermGuid || ""
-            },
-            IconUrl: item.BroadcastType?.TermGuid
-                ? iconMap.get(item.BroadcastType.TermGuid) || ""
-                : ""
+            FileUrl:
+                item.AttachmentFiles?.length > 0
+                    ? item.AttachmentFiles[0].ServerRelativeUrl
+                    : ""
         }));
     }
 
-    private async getBroadcastIcons(): Promise<Map<string, string>> {
 
-        const items = await this.publishingHubSp.web.lists
-            .getByTitle("BroadCastIcons")
-            .items
-            .select(
-                "FileRef",
-                "BroadcastType/TermGuid"
-            )();
-        const iconMap = new Map<string, string>();
-
-        items.forEach(item => {
-            if (item.BroadcastType?.TermGuid) {
-                iconMap.set(item.BroadcastType.TermGuid, item.FileRef);
-            }
-        });
-
-        return iconMap;
-    }
 
     public async getEvents(): Promise<ICorporateNewsItem[]> {
 
         const filterQuery =
             `Created ge datetime'2024-08-01T00:00:00Z' and CommunicationType eq 'Event' and Status eq 'Published'`;
 
-        const currentUserId = await this.getCurrentUserId();
 
         const items = await this.publishingHubSp.web.lists
             .getByTitle("CorpCommunication")
@@ -511,117 +451,50 @@ export default class BpclMrVSupportService {
                 "Id",
                 "Title",
                 "PublishedDate",
-                "LikesCount",
-                "LikedBy/Id",
+
                 "AttachmentFiles",
                 "ThumbnailCaption"
             )
-            .expand("AttachmentFiles", "LikedBy")
+            .expand("AttachmentFiles")
             .filter(filterQuery)
             .orderBy("PublishedDate", false)
             .top(15)();
 
         return items.map(item => {
 
-            const likedUsers = item.LikedBy
-                ? item.LikedBy.map((u: { Id: number }) => u.Id)
-                : [];
+            const imageFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|jfif)$/)
+            );
 
-            const isLiked = likedUsers.includes(currentUserId);
+            const pdfFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase().endsWith(".pdf")
+            );
+
 
             return {
                 Id: item.Id,
                 Title: item.Title,
                 PublishedDate: item.PublishedDate,
-                LikesCount: item.LikesCount ?? 0,
-                ImageUrl:
-                    item.AttachmentFiles && item.AttachmentFiles.length > 0
-                        ? item.AttachmentFiles[0].ServerRelativeUrl
-                        : "",
-                liked: isLiked,
+
+                ImageUrl: imageFile
+                    ? imageFile.ServerRelativeUrl
+                    : "",
+
+                FileUrl: pdfFile
+                    ? pdfFile.ServerRelativeUrl
+                    : "",
+
                 ThumbnailCaption: item.ThumbnailCaption
             };
         });
     }
 
-    private getThumbnailFromAttachments(
-        attachmentFiles: IAttachment[],
-        thumbnailFileName: string
-    ): string {
 
-        if (!attachmentFiles || attachmentFiles.length === 0) {
-            return "";
-        }
 
-        // If thumbnail name is available, try to match it
-        if (thumbnailFileName) {
-            for (let i = 0; i < attachmentFiles.length; i++) {
-                if (
-                    attachmentFiles[i].FileName &&
-                    attachmentFiles[i].FileName.toLowerCase() === thumbnailFileName.toLowerCase()
-                ) {
-                    return attachmentFiles[i].ServerRelativeUrl;
-                }
-            }
-        }
 
-        // If thumbnail is blank or not found → return first attachment
-        return attachmentFiles[0].ServerRelativeUrl;
-    }
 
-    private async getTaxonomyLabelByWssId(wssId: number): Promise<string> {
-        if (!wssId) return "";
-
-        try {
-            const items = await this.publishingHubSp.web.lists
-                .getByTitle("TaxonomyHiddenList")
-                .items
-                .filter(`ID eq ${wssId}`)
-                .select("Id", "Term")();
-
-            return items.length > 0 ? items[0].Title : "";
-        } catch (error) {
-            console.error("Something went wrong. Please contact administrator.");
-            return "";
-        }
-    }
-
-    public async toggleLike(
-        itemId: number,
-        isLiked: boolean
-    ): Promise<number> {
-
-        const currentUserId = await this.getCurrentUserId();
-
-        const list = this.publishingHubSp.web.lists.getByTitle("CorpCommunication");
-        const itemRef = list.items.getById(itemId);
-
-        const item = await itemRef
-            .select("LikedBy/Id")
-            .expand("LikedBy")();
-
-        let likedUsers: number[] = item.LikedBy
-            ? item.LikedBy.map((u: { Id: number }) => u.Id)
-            : [];
-
-        // Remove like
-        if (isLiked) {
-            likedUsers = likedUsers.filter(id => id !== currentUserId);
-        }
-        // Add like
-        else if (!likedUsers.includes(currentUserId)) {
-            likedUsers.push(currentUserId);
-        }
-
-        const updatedLikes = likedUsers.length;
-
-        await itemRef.update({
-            LikesCount: updatedLikes,
-            LikedById: likedUsers
-        });
-
-        return updatedLikes;
-    }
 
     public async getWeeklyNotices(): Promise<IWeeklyNoticeItem[]> {
 
@@ -1002,59 +875,5 @@ export default class BpclMrVSupportService {
         }
     }
 
-    public async getNewsPreviewItem(itemId: number): Promise<INewsPreviewItem | undefined> {
-        try {
-            const item = await this.publishingHubSp.web.lists
-                .getByTitle("CorpCommunication")
-                .items
-                .getById(itemId)
-                .select(
-                    "Id",
-                    "Title",
-                    "EventDate",
-                    "MainDescription",
-                    "NewsTypes",
-                    "NewsTypes/Label",
-                    "Thumbnail",
-                    "Picture1",
-                    "Picture2",
-                    "Picture3",
-                    "ThumbnailCaption",
-                    "Pic1Caption",
-                    "Pic2Caption",
-                    "Pic3Caption"
-                )();
-
-            return item;
-        } catch (error) {
-            console.error("Something went wrong. Please contact administrator.");
-            return undefined;
-        }
-    }
-
-    public async getEventPreviewItem(itemId: number): Promise<IEventPreviewItem | undefined> {
-        try {
-            const item = await this.publishingHubSp.web.lists
-                .getByTitle("CorpCommunication")
-                .items
-                .getById(itemId)
-                .select(
-                    "Id",
-                    "Title",
-                    "PublishedDate",
-                    "MainDescription",
-                    "Thumbnail",
-                    "Picture1",
-                    "Picture2",
-                    "Picture3",
-                    "ThumbnailCaption"
-                )();
-
-            return item;
-        } catch (error) {
-            console.error("Something went wrong. Please contact administrator.");
-            return undefined;
-        }
-    }
 
 }

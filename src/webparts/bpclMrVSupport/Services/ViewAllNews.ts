@@ -10,7 +10,8 @@ export interface INewsItem {
     Title: string;
     PublishedDate: string;
     ImageUrl: string;
-  
+    FileUrl: string;
+
 }
 
 export interface IAttachment {
@@ -20,7 +21,7 @@ export interface IAttachment {
 
 
 export default class ViewAllNewsService {
-    
+
     public publishingHubSp: SPFI;
     private readonly PUBLISHING_HUB_URL: string;
     constructor(context: WebPartContext) {
@@ -38,14 +39,15 @@ export default class ViewAllNewsService {
         }
 
         //this.context = context;
-        
+
         this.publishingHubSp = spfi(this.PUBLISHING_HUB_URL).using(SPFx(context));
-        
+
     }
 
     public async getCorporateNews(): Promise<INewsItem[]> {
 
-        const filterQuery = `CommunicationType eq 'News' and Status eq 'Published'`;
+        const filterQuery =
+            `CommunicationType eq 'News' and Status eq 'Published'`;
 
         const items = await this.publishingHubSp.web.lists
             .getByTitle("CorpCommunication")
@@ -54,7 +56,6 @@ export default class ViewAllNewsService {
                 "Id",
                 "Title",
                 "PublishedDate",
-                "Thumbnail",
                 "AttachmentFiles"
             )
             .expand("AttachmentFiles")
@@ -63,52 +64,49 @@ export default class ViewAllNewsService {
             .top(15)();
 
 
-        const results = await Promise.all(
-            items.map(async (item) => {
-
-                const imageRelativeUrl = this.getThumbnailFromAttachments(
-                    item.AttachmentFiles,
-                    item.Thumbnail
-                );
-
-                return {
-                    Id: item.Id,
-                    Title: item.Title,
-                    PublishedDate: item.PublishedDate,
-                    ImageUrl: imageRelativeUrl,
+        const results = items.map((item) => {
 
 
-                };
-            })
-        );
+            const imageFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase()
+                        .match(/\.(jpg|jpeg|png|gif|webp|jfif)$/)
+            );
+
+
+            const pdfFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase()
+                        .endsWith(".pdf")
+            );
+
+
+            return {
+
+                Id: item.Id,
+
+                Title: item.Title,
+
+                PublishedDate: item.PublishedDate,
+
+
+                ImageUrl: imageFile
+                    ? imageFile.ServerRelativeUrl
+                    : "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery/SiteAssets/Images/News&Announcement.png",
+
+
+                FileUrl: pdfFile
+                    ? pdfFile.ServerRelativeUrl
+                    : ""
+
+            };
+
+        });
+
 
         return results;
     }
 
 
-    private getThumbnailFromAttachments(
-        attachmentFiles: IAttachment[],
-        thumbnailFileName: string
-    ): string {
-
-        if (!attachmentFiles || attachmentFiles.length === 0) {
-            return "";
-        }
-
-        // If thumbnail name is available, try to match it
-        if (thumbnailFileName) {
-            for (let i = 0; i < attachmentFiles.length; i++) {
-                if (
-                    attachmentFiles[i].FileName &&
-                    attachmentFiles[i].FileName.toLowerCase() === thumbnailFileName.toLowerCase()
-                ) {
-                    return attachmentFiles[i].ServerRelativeUrl;
-                }
-            }
-        }
-
-        // If thumbnail is blank or not found → return first attachment
-        return attachmentFiles[0].ServerRelativeUrl;
-    }
 
 }
