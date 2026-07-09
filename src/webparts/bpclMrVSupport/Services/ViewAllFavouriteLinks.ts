@@ -13,7 +13,7 @@ export interface IFavouriteLink {
 
 export default class FavouriteLinksService {
   private sp: SPFI;
-  private readonly listName: string = "MR_FavouriteLinks";
+  private readonly listName: string = "MR_SL_FavouriteLinks";
 
   constructor(sp: SPFI) {
     this.sp = sp;

@@ -119,6 +119,7 @@
   color: #434975;
   margin-bottom: 0.2rem;
 }
+
 .searchBtn {
   width: 100%;
   height: 36px;
@@ -329,6 +330,7 @@ Form.Control {
   font-weight: 400;
   margin-bottom: 0.25rem;
 }
+
 .primaryOutlineBtn {
   border: 1px solid #013396 !important;
   background: #fff !important;
@@ -337,11 +339,14 @@ Form.Control {
   height: 40px;
   --bs-btn-padding-x: 1.6rem !important;
 }
+
 .cancelBtn {
   border: 1px solid #013396 !important;
   background: #fff !important;
   color: #013396 !important;
-} /***** End modal *****/
+}
+
+/***** End modal *****/
 
 /***** buttons *****/
 .saveBtn,
@@ -349,4 +354,35 @@ Form.Control {
 .primaryBtn {
   background: #013396 !important;
   border: 1px solid #013396 !important;
-} /***** End buttons *****/
+}
+
+/***** End buttons *****/
+
+
+// backbutton
+.backIcon {
+  width: 38px;
+  height: 38px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(-2px);
+  }
+
+  i {
+    font-size: 1rem;
+  }
+}

@@ -24,7 +24,7 @@ import FavouriteLinksService from "../Services/ViewAllFavouriteLinks";
 import PopupModal from "../Services/ViewAllFavouriteLinksPopupModel";
 
 interface IFavouriteLinksProps extends IBpclMrVSupportProps {
-    onBack?: () => void;
+  onBack?: () => void;
 }
 
 const ViewAllFavouriteLinks: React.FC<
@@ -114,7 +114,7 @@ const ViewAllFavouriteLinks: React.FC<
         searchText,
         sortField,
         sortDirection,
-          props.userId
+        props.userId
 
       );
 
@@ -249,6 +249,13 @@ const ViewAllFavouriteLinks: React.FC<
 
         {/* ================= HEADER ================= */}
         <div className={styles.banner}>
+
+          <button
+            className={styles.backIcon}
+            onClick={() => props.onBack?.()}
+          >
+            <i className="bi bi-chevron-left"></i>
+          </button>
           <div className={styles.bannerIcon}>
             <i className="bi bi-link-45deg"></i>
           </div>

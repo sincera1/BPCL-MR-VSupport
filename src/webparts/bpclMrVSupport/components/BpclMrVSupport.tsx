@@ -197,12 +197,12 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       events: [],
       broadcasts: [],
       showEventPreview: false,
-     
-      
+
+
 
       showNewsPreview: false,
-    
-      
+
+
       // Broadcast preview
       showPreview: false,
       previewItem: undefined,
@@ -1494,8 +1494,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               <div className={styles.businessPlanCarouselSection}>
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
+
                     <div className={styles.weeklyNoticesHead}>
                       <h4>{t.mrBusinessPlan}</h4>
+
                       <span
                         className={styles.weeklyNoticesViewmore}
                         style={{ cursor: "pointer" }}
@@ -1515,15 +1517,25 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       interval={12000}
                       className={styles.businessPlanCarousel}
                     >
+
                       {this.state.businessPlan.map((item) => (
 
                         <Carousel.Item key={item.Id}>
 
                           <a
-                            href={item.FileUrl || "#"}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href="#"
                             className="text-decoration-none"
+                            onClick={(e) => {
+                              e.preventDefault();
+
+                              if (item.FileUrl) {
+                                window.open(
+                                  item.FileUrl,
+                                  "_blank",
+                                  "noopener,noreferrer"
+                                );
+                              }
+                            }}
                           >
 
                             <div className={styles.bannerCard}>
@@ -1557,7 +1569,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                                       e.stopPropagation();
 
                                       if (item.FileUrl) {
-                                        window.open(item.FileUrl, "_blank");
+                                        window.open(
+                                          item.FileUrl,
+                                          "_blank",
+                                          "noopener,noreferrer"
+                                        );
                                       }
                                     }}
                                   >
@@ -1575,6 +1591,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         </Carousel.Item>
 
                       ))}
+
                     </Carousel>
 
                   </Card.Body>

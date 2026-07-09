@@ -153,13 +153,13 @@ const WeeklyNotices: React.FC<IWeeklyNoticesProps> = (props) => {
     <div className={styles.pageContainer}>
 
       <div className={styles.banner}>
-        <Button
-          variant="light"
-          className="me-3"
+        <button
+          className={styles.backIcon}
           onClick={() => props.onBack?.()}
         >
-          <i className="bi bi-arrow-left"></i> Back
-        </Button>
+          <i className="bi bi-chevron-left"></i>
+        </button>
+       
         <div className={styles.bannerIcon}>
           <i className="bi bi-megaphone-fill"></i>
         </div>
