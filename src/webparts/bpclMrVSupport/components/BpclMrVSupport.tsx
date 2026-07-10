@@ -14,7 +14,7 @@ import Loader from "../Services/Loader";
 import NewsAnnouncement from '../assets/governance.jpg';
 import BDcelebration from '../assets/celebration-BD.png';
 import GoldShild from '../assets/gold-shield-png.png';
-import Savemoney from '../assets/Savemoney.png';
+import Savemoney from '../assets/Save-money.png';
 import BpclMrVSupportService, { INavigationMenuItem, IBusinessUnit, ISafetyDashBoardItem, ITestimonialItem, ISuccessStoryItem, IEmployeeGreetingItem, IWeeklyNoticeItem, IWelcomeBannerItem, IQuickLinkItem, ILateralMoveItem, IHolidayItem, IFavouriteLinkItem, ISafetyTipItem, ITeamOperatingPrincipleItem, IVissionMissionItem, ICorporateNewsItem, IBroadcastItem, IBusinessPlanItem } from '../Services/BpclMrVSupportService';
 import ViewAllBusinessPlan from './VIewAllBusinessPlan';
 import ViewAllWeeklyNotices from './ViewAllWeeklyNotices';
@@ -1387,9 +1387,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               <div className={styles.weeklyNoticesCarouselSection}>
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
-                    <div className={styles.weeklyNoticesHead}>
-                      <h4>{t.weeklynotices}</h4>
-                      <span
+                    {/* <div className={styles.weeklyNoticesHead}>
+                      <h4>{t.weeklynotices}</h4> */}
+                      <a
                         className={styles.weeklyNoticesViewmore}
                         style={{ cursor: "pointer" }}
                         onClick={() =>
@@ -1399,8 +1399,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         }
                       >
                         View More
-                      </span>
-                    </div>
+                      </a>
+                    {/* </div> */}
 
                     <Carousel
                       indicators
@@ -1495,10 +1495,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
 
-                    <div className={styles.weeklyNoticesHead}>
-                      <h4>{t.mrBusinessPlan}</h4>
+                    {/* <div className={styles.weeklyNoticesHead}>
+                      <h4>{t.mrBusinessPlan}</h4> */}
 
-                      <span
+                      <a
                         className={styles.weeklyNoticesViewmore}
                         style={{ cursor: "pointer" }}
                         onClick={() =>
@@ -1508,8 +1508,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         }
                       >
                         View More
-                      </span>
-                    </div>
+                      </a>
+                    {/* </div> */}
 
                     <Carousel
                       indicators
