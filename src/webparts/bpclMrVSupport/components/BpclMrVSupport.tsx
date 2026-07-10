@@ -2121,7 +2121,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
           {/* ---------------- Business Units ---------------- */}
 
           <Row>
-            <Col md={12} className="px-2 mb-3">
+            <Col md={12} className="px-2">
 
               <div className={styles.businessUnitsSection}>
 
