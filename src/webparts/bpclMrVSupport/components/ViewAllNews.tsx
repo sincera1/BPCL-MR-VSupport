@@ -214,10 +214,12 @@ const ViewAllNews = (props: IViewAllNewsProps): React.ReactElement => {
               key={card.Id}
             >
 
-              <a
-                href="#"
-                className={styles.newsCard}
-              >
+              <a href="#" className={styles.newsCard}   
+               onClick={(e) => {e.preventDefault();
+                if (card.FileUrl) {
+                  window.open(card.FileUrl, "_blank");
+                   }
+                  }}>
 
                 <div className={styles.cardImageWrapper}>
 

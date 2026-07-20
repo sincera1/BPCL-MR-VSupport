@@ -10,13 +10,11 @@ export interface IEventItem {
     Title: string;
     PublishedDate: string;
     ImageUrl: string;
+    FileUrl?: string;
+    ThumbnailCaption?: string;
   
 }
 
-export interface IAttachment {
-    FileName: string;
-    ServerRelativeUrl: string;
-}
 
 
 export default class ViewAllEventsService {
@@ -28,7 +26,7 @@ export default class ViewAllEventsService {
         const currentUrl = context.pageContext.web.absoluteUrl.toLowerCase();
         if (currentUrl.includes("dev-")) {
             this.PUBLISHING_HUB_URL =
-                "https://bharatpetroleum.sharepoint.com/sites/dev-corporate-publishing-hub";
+                "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery-cph";
         } else if (currentUrl.includes("qa-")) {
             this.PUBLISHING_HUB_URL =
                 "https://bharatpetroleum.sharepoint.com/sites/qa-corporate-publishing-hub";
@@ -43,9 +41,13 @@ export default class ViewAllEventsService {
         
     }
 
+    
+
     public async getEvents(): Promise<IEventItem[]> {
 
-        const filterQuery = `CommunicationType eq 'Event' and Status eq 'Published'`;
+        const filterQuery =
+            `CommunicationType eq 'Event' and Status eq 'Published'`;
+
 
         const items = await this.publishingHubSp.web.lists
             .getByTitle("CorpCommunication")
@@ -54,61 +56,47 @@ export default class ViewAllEventsService {
                 "Id",
                 "Title",
                 "PublishedDate",
-                "Thumbnail",
-                "AttachmentFiles"
+
+                "AttachmentFiles",
+                "ThumbnailCaption"
             )
             .expand("AttachmentFiles")
             .filter(filterQuery)
             .orderBy("PublishedDate", false)
-            .top(15)();
+            .top(5000)();
+
+        return items.map(item => {
+
+            const imageFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|jfif)$/)
+            );
+
+            const pdfFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase().endsWith(".pdf")
+            );
 
 
-        const results = await Promise.all(
-            items.map(async (item) => {
+            return {
+                Id: item.Id,
+                Title: item.Title,
+                PublishedDate: item.PublishedDate,
 
-                const imageRelativeUrl = this.getThumbnailFromAttachments(
-                    item.AttachmentFiles,
-                    item.Thumbnail
-                );
+                ImageUrl: imageFile
+                    ? imageFile.ServerRelativeUrl
+                    : "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery/SiteAssets/Images/Events.png",
 
-                return {
-                    Id: item.Id,
-                    Title: item.Title,
-                    PublishedDate: item.PublishedDate,
-                    ImageUrl: imageRelativeUrl,
+                FileUrl: pdfFile
+                    ? pdfFile.ServerRelativeUrl
+                    : "",
 
-
-                };
-            })
-        );
-
-        return results;
+                ThumbnailCaption: item.ThumbnailCaption
+            };
+        });
     }
 
 
-    private getThumbnailFromAttachments(
-        attachmentFiles: IAttachment[],
-        thumbnailFileName: string
-    ): string {
-
-        if (!attachmentFiles || attachmentFiles.length === 0) {
-            return "";
-        }
-
-        // If thumbnail name is available, try to match it
-        if (thumbnailFileName) {
-            for (let i = 0; i < attachmentFiles.length; i++) {
-                if (
-                    attachmentFiles[i].FileName &&
-                    attachmentFiles[i].FileName.toLowerCase() === thumbnailFileName.toLowerCase()
-                ) {
-                    return attachmentFiles[i].ServerRelativeUrl;
-                }
-            }
-        }
-
-        // If thumbnail is blank or not found → return first attachment
-        return attachmentFiles[0].ServerRelativeUrl;
-    }
+    
 
 }

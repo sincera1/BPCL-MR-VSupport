@@ -1141,7 +1141,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                   </div>
 
                   {this.state.corporateNews.length === 0 ? (
-                    <div className={styles.noDataWrapper}>
+                    <div className={styles.noDataWrapperNewsAnnouncements}>
                       <p className={styles.noDataText}>No data to display</p>
                     </div>
                   ) : (

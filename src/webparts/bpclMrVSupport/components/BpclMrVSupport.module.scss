@@ -3501,6 +3501,15 @@
    Misc styles (unchanged)
    =============================== */
 
+.noDataWrapperNewsAnnouncements {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 427px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
 .noDataWrapper {
   display: flex;
   align-items: center;

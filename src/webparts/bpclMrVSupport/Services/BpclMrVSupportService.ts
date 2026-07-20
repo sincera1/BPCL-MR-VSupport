@@ -197,7 +197,7 @@ export default class BpclMrVSupportService {
         const currentUrl = context.pageContext.web.absoluteUrl.toLowerCase();
         if (currentUrl.includes("dev-")) {
             this.PUBLISHING_HUB_URL =
-                "https://bharatpetroleum.sharepoint.com/sites/dev-corporate-publishing-hub";
+                "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery-cph";
         } else if (currentUrl.includes("qa-")) {
             this.PUBLISHING_HUB_URL =
                 "https://bharatpetroleum.sharepoint.com/sites/qa-corporate-publishing-hub";
@@ -371,7 +371,7 @@ export default class BpclMrVSupportService {
             .expand("AttachmentFiles")
             .filter(filterQuery)
             .orderBy("PublishedDate", false)
-            .top(2)();
+            .top(15)();
 
 
         const results = items.map((item) => {
@@ -407,41 +407,47 @@ export default class BpclMrVSupportService {
 
     public async getBroadcasts(): Promise<IBroadcastItem[]> {
 
-        const filterQuery =
-            `CommunicationType eq 'BroadCast' and Status eq 'Published'`;
+    const filterQuery =
+        `CommunicationType eq 'BroadCast' and Status eq 'Published'`;
 
-        const items = await this.publishingHubSp.web.lists
-            .getByTitle("CorpCommunication")
-            .items
-            .select(
-                "Id",
-                "Title",
-                "PublishedDate",
-                "AttachmentFiles"
+    const items = await this.publishingHubSp.web.lists
+        .getByTitle("CorpCommunication")
+        .items
+        .select(
+            "Id",
+            "Title",
+            "PublishedDate",
+            "AttachmentFiles"
+        )
+        .expand("AttachmentFiles")
+        .filter(filterQuery)
+        .orderBy("PublishedDate", false)
+        .top(15)();
 
-            )
-            .expand("AttachmentFiles")
-            .filter(filterQuery)
-            .orderBy("PublishedDate", false)
-            .top(5)();
+    return items.map(item => {
 
-        return items.map(item => ({
+        const pdfFile = item.AttachmentFiles?.find(
+            (file: any) =>
+                file.FileName.toLowerCase().endsWith(".pdf")
+        );
+
+        return {
             Id: item.Id,
             Title: item.Title,
             PublishedDate: item.PublishedDate,
-            FileUrl:
-                item.AttachmentFiles?.length > 0
-                    ? item.AttachmentFiles[0].ServerRelativeUrl
-                    : ""
-        }));
-    }
+            FileUrl: pdfFile
+                ? pdfFile.ServerRelativeUrl
+                : ""
+        };
+    });
+}
 
 
 
     public async getEvents(): Promise<ICorporateNewsItem[]> {
 
         const filterQuery =
-            `Created ge datetime'2024-08-01T00:00:00Z' and CommunicationType eq 'Event' and Status eq 'Published'`;
+            `CommunicationType eq 'Event' and Status eq 'Published'`;
 
 
         const items = await this.publishingHubSp.web.lists
@@ -480,7 +486,7 @@ export default class BpclMrVSupportService {
 
                 ImageUrl: imageFile
                     ? imageFile.ServerRelativeUrl
-                    : "",
+                    : "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery/SiteAssets/Images/Events.png",
 
                 FileUrl: pdfFile
                     ? pdfFile.ServerRelativeUrl

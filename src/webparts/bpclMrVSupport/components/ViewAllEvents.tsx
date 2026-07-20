@@ -224,6 +224,10 @@ const ViewAllEvents = (props: IViewAllEventsProps): React.ReactElement => {
                             <a
                                 href="#"
                                 className={styles.newsCard}
+                                 onClick={() => {
+                                  if (card.FileUrl) {window.open(card.FileUrl, "_blank");}
+
+                                  }}
                             >
 
                                 <div className={styles.cardImageWrapper}>

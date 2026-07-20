@@ -27,7 +27,7 @@ export default class ViewAllBroadcastsService {
         const currentUrl = context.pageContext.web.absoluteUrl.toLowerCase();
         if (currentUrl.includes("dev-")) {
             this.PUBLISHING_HUB_URL =
-                "https://bharatpetroleum.sharepoint.com/sites/dev-corporate-publishing-hub";
+                "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery-cph";
         } else if (currentUrl.includes("qa-")) {
             this.PUBLISHING_HUB_URL =
                 "https://bharatpetroleum.sharepoint.com/sites/qa-corporate-publishing-hub";
@@ -59,22 +59,24 @@ export default class ViewAllBroadcastsService {
             .expand("AttachmentFiles")
             .filter(filterQuery)
             .orderBy("PublishedDate", false)
-            .top(15)();
+            .top(5000)();
 
 
         const results = await Promise.all(
             items.map(async (item) => {
 
-                const imageRelativeUrl = this.getThumbnailFromAttachments(
-                    item.AttachmentFiles,
-                    item.Thumbnail
-                );
+               const pdfFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase().endsWith(".pdf")
+            );
 
                 return {
                     Id: item.Id,
                     Title: item.Title,
                     PublishedDate: item.PublishedDate,
-                    ImageUrl: imageRelativeUrl,
+                     ImageUrl: pdfFile
+                    ? pdfFile.ServerRelativeUrl
+                    : ""
 
 
                 };
@@ -85,29 +87,6 @@ export default class ViewAllBroadcastsService {
     }
 
 
-    private getThumbnailFromAttachments(
-        attachmentFiles: IAttachment[],
-        thumbnailFileName: string
-    ): string {
-
-        if (!attachmentFiles || attachmentFiles.length === 0) {
-            return "";
-        }
-
-        // If thumbnail name is available, try to match it
-        if (thumbnailFileName) {
-            for (let i = 0; i < attachmentFiles.length; i++) {
-                if (
-                    attachmentFiles[i].FileName &&
-                    attachmentFiles[i].FileName.toLowerCase() === thumbnailFileName.toLowerCase()
-                ) {
-                    return attachmentFiles[i].ServerRelativeUrl;
-                }
-            }
-        }
-
-        // If thumbnail is blank or not found → return first attachment
-        return attachmentFiles[0].ServerRelativeUrl;
-    }
+    
 
 }
