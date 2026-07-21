@@ -44,7 +44,7 @@ const translations: any = {
     favouriteLinks: "Favourite Links",
     safetyTips: "Safety Tips",
     teamOperatingPrinciples: "Team Operating Principles",
-    lateralMovesholidaylistquicklinks: "Lateral Moves, Holiday List & Quick Links",
+    lateralMovesholidaylistquicklinks: "Lateral Moves, Holiday List & Favourite Links",
     visionMission: "Vision & Mission",
     businessUnits: "Business Units"
   },
@@ -102,6 +102,7 @@ interface IVsupportState {
   selectedItem: any;
   activeTab: string;
   isLoading: boolean;
+  hoveredMenuId?: number;
   isMobileMenuOpen: boolean;
   showOverflowMenus: boolean;
   showViewAllNewsPage: boolean;
@@ -169,7 +170,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       selectedItem: null,
       activeTab: "safetydashboard",
       isMobileMenuOpen: false,
-      showOverflowMenus: false,
+      showOverflowMenus: true,
       showViewAllNewsPage: false,
       showViewAllEventsPage: false,
       showLateralMovesPage: false,
@@ -197,7 +198,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       events: [],
       broadcasts: [],
       showEventPreview: false,
-
+      hoveredMenuId: undefined,
 
 
       showNewsPreview: false,
@@ -413,6 +414,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       isEventPaused: !prevState.isEventPaused
     }));
   };
+
+
 
   public render(): React.ReactElement<IBpclMrVSupportProps> {
 
@@ -705,11 +708,24 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         if (childMenus.length > 0) {
 
                           return (
+                            // <NavDropdown
+                            //   key={parentMenu.Id}
+                            //   title={this.getMenuTitle(parentMenu)}
+                            //   id={`menu-${parentMenu.Id}`}
+                            //   className={styles.menuDropdown}
+                            // >
                             <NavDropdown
                               key={parentMenu.Id}
-                              title={this.getMenuTitle(parentMenu)}
                               id={`menu-${parentMenu.Id}`}
+                              title={this.getMenuTitle(parentMenu)}
                               className={styles.menuDropdown}
+                              show={this.state.hoveredMenuId === parentMenu.Id}
+                              onMouseEnter={() =>
+                                this.setState({ hoveredMenuId: parentMenu.Id })
+                              }
+                              onMouseLeave={() =>
+                                this.setState({ hoveredMenuId: undefined })
+                              }
                             >
                               {renderChildMenus(parentMenu.Id)}
                             </NavDropdown>
@@ -768,11 +784,24 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             if (childMenus.length > 0) {
 
                               return (
+                                // <NavDropdown
+                                //   key={parentMenu.Id}
+                                //   title={this.getMenuTitle(parentMenu)}
+                                //   id={`hidden-${parentMenu.Id}`}
+                                //   className={styles.menuDropdown}
+                                // >
                                 <NavDropdown
                                   key={parentMenu.Id}
-                                  title={this.getMenuTitle(parentMenu)}
                                   id={`hidden-${parentMenu.Id}`}
+                                  title={this.getMenuTitle(parentMenu)}
                                   className={styles.menuDropdown}
+                                  show={this.state.hoveredMenuId === parentMenu.Id}
+                                  onMouseEnter={() =>
+                                    this.setState({ hoveredMenuId: parentMenu.Id })
+                                  }
+                                  onMouseLeave={() =>
+                                    this.setState({ hoveredMenuId: undefined })
+                                  }
                                 >
                                   {renderChildMenus(parentMenu.Id)}
                                 </NavDropdown>
@@ -1155,7 +1184,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             style={{ cursor: "pointer" }}
                             onClick={() => {
                               if (item.FileUrl) {
+                                // Open PDF if available
                                 window.open(item.FileUrl, "_blank");
+                              } else if (item.ImageUrl) {
+                                // Otherwise open the image
+                                window.open(item.ImageUrl, "_blank");
                               }
                             }}
 
@@ -1308,7 +1341,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             tabIndex={0}
                             onClick={() => {
                               if (item.FileUrl) {
+                                // Open PDF if available
                                 window.open(item.FileUrl, "_blank");
+                              } else if (item.ImageUrl) {
+                                // Otherwise open the image
+                                window.open(item.ImageUrl, "_blank");
                               }
                             }}
 
@@ -1389,17 +1426,17 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                   <Card.Body>
                     {/* <div className={styles.weeklyNoticesHead}>
                       <h4>{t.weeklynotices}</h4> */}
-                      <a
-                        className={styles.weeklyNoticesViewmore}
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                          this.setState({
-                            showWeeklyNoticesPage: true
-                          })
-                        }
-                      >
-                        View More
-                      </a>
+                    <a
+                      className={styles.weeklyNoticesViewmore}
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        this.setState({
+                          showWeeklyNoticesPage: true
+                        })
+                      }
+                    >
+                      View More
+                    </a>
                     {/* </div> */}
 
                     <Carousel
@@ -1498,17 +1535,17 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     {/* <div className={styles.weeklyNoticesHead}>
                       <h4>{t.mrBusinessPlan}</h4> */}
 
-                      <a
-                        className={styles.weeklyNoticesViewmore}
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                          this.setState({
-                            showBusinessPlanPage: true
-                          })
-                        }
-                      >
-                        View More
-                      </a>
+                    <a
+                      className={styles.weeklyNoticesViewmore}
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        this.setState({
+                          showBusinessPlanPage: true
+                        })
+                      }
+                    >
+                      View More
+                    </a>
                     {/* </div> */}
 
                     <Carousel
@@ -1543,7 +1580,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               <div className={styles.leftContent}>
 
                                 <img
-                                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"
+                                  src={`${this.props.context.pageContext.web.absoluteUrl}/SiteAssets/Images/MRBusinessPlan.jpg`}
                                   alt="Business Plan"
                                   className={styles.profileImg}
                                 />
@@ -1695,7 +1732,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               <Col lg={4} md={6} className="mb-4 d-flex">
 
                 <div
-                  className={`${styles.portalInfoCard} ${styles.portalBlueTheme}`}
+                  className={`${styles.portalInfoCard} ${styles.portalYellowTheme}`}
                 >
 
                   <div className={styles.portalCardTop}>
@@ -1770,7 +1807,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               {/* Favourite Links */}
               <Col lg={4} md={12} className="mb-4 d-flex">
 
-                <div className={`${styles.portalInfoCard} ${styles.portalYellowTheme}`}>
+                <div className={`${styles.portalInfoCard} ${styles.portalBlueTheme}`}>
 
 
 
@@ -1882,11 +1919,13 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                           >
 
                             <a
-                              href={
-                                item.FileUrl || "#"
-                              }
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (item.FileUrl) {
+                                  window.open(item.FileUrl, "_blank", "noopener,noreferrer");
+                                }
+                              }}
                               className="text-decoration-none"
                             >
 
@@ -1967,11 +2006,13 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                           >
 
                             <a
-                              href={
-                                item.FileUrl || "#"
-                              }
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (item.FileUrl) {
+                                  window.open(item.FileUrl, "_blank", "noopener,noreferrer");
+                                }
+                              }}
                               className="text-decoration-none"
                             >
 

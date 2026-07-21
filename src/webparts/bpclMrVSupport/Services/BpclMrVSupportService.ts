@@ -407,40 +407,43 @@ export default class BpclMrVSupportService {
 
     public async getBroadcasts(): Promise<IBroadcastItem[]> {
 
-    const filterQuery =
-        `CommunicationType eq 'BroadCast' and Status eq 'Published'`;
+        const filterQuery =
+            `CommunicationType eq 'BroadCast' and Status eq 'Published'`;
 
-    const items = await this.publishingHubSp.web.lists
-        .getByTitle("CorpCommunication")
-        .items
-        .select(
-            "Id",
-            "Title",
-            "PublishedDate",
-            "AttachmentFiles"
-        )
-        .expand("AttachmentFiles")
-        .filter(filterQuery)
-        .orderBy("PublishedDate", false)
-        .top(15)();
+        const items = await this.publishingHubSp.web.lists
+            .getByTitle("CorpCommunication")
+            .items
+            .select(
+                "Id",
+                "Title",
+                "PublishedDate",
+                "AttachmentFiles"
+            )
+            .expand("AttachmentFiles")
+            .filter(filterQuery)
+            .orderBy("PublishedDate", false)
+            .top(15)();
 
-    return items.map(item => {
+        return items.map(item => {
 
-        const pdfFile = item.AttachmentFiles?.find(
-            (file: any) =>
-                file.FileName.toLowerCase().endsWith(".pdf")
-        );
+            const pdfFile = item.AttachmentFiles?.find(
+                (file: any) =>
+                    file.FileName.toLowerCase().endsWith(".pdf")
+            );
 
-        return {
-            Id: item.Id,
-            Title: item.Title,
-            PublishedDate: item.PublishedDate,
-            FileUrl: pdfFile
-                ? pdfFile.ServerRelativeUrl
-                : ""
-        };
-    });
-}
+            // If no PDF exists, use the first available attachment
+            const attachmentToOpen = pdfFile || item.AttachmentFiles?.[0];
+
+            return {
+                Id: item.Id,
+                Title: item.Title,
+                PublishedDate: item.PublishedDate,
+                FileUrl: attachmentToOpen
+                    ? attachmentToOpen.ServerRelativeUrl
+                    : ""
+            };
+        });
+    }
 
 
 
@@ -729,22 +732,30 @@ export default class BpclMrVSupportService {
 
     public async getFavouriteLinks(): Promise<IFavouriteLinkItem[]> {
 
-        const items = await this.sp.web.lists
+        const currentUser = await this.sp.web.currentUser();
 
+        const items = await this.sp.web.lists
             .getByTitle("MR_SL_FavouriteLinks")
             .items
-            .select("Id", "Title", "RedirectURL", "DisplayOrder", "IsActive")
-            .filter("IsActive eq 1")
+            .select(
+                "Id",
+                "Title",
+                "RedirectURL",
+                "DisplayOrder",
+                "IsActive",
+                "Author/Id",
+                "Author/EMail"
+            )
+            .expand("Author")
+            .filter(`IsActive eq 1 and Author/EMail eq '${currentUser.Email}'`)
             .orderBy("DisplayOrder", true)();
 
-        return items.map(
-            (item: any) => ({
-                Id: item.Id,
-                Title: item.Title,
-                DisplayOrder: item.DisplayOrder,
-                RedirectURL: item.RedirectURL
-            })
-        );
+        return items.map((item: any) => ({
+            Id: item.Id,
+            Title: item.Title,
+            DisplayOrder: item.DisplayOrder,
+            RedirectURL: item.RedirectURL
+        }));
     }
 
     public async getSafetyTips(): Promise<ISafetyTipItem[]> {

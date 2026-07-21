@@ -133,7 +133,9 @@ const ViewAllFavouriteLinks: React.FC<
 
   const handleSave = async (): Promise<void> => {
     try {
+      
       if (!title.trim() || !url.trim()) {
+        closeAddModal();
         setPopupType("danger");
         setPopupMessage("Please enter Title and URL.");
         setShowPopup(true);

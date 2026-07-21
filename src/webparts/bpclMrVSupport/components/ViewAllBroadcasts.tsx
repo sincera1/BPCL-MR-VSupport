@@ -69,54 +69,55 @@ const ViewAllBroadcasts = (props: IViewAllBroadcastsProps): React.ReactElement =
 
     const handleSearch = (): void => {
 
-        if (!fromDate && !toDate) {
-
-            setPopupMessage("Please select From Date or To Date.");
+        // From Date is mandatory
+        if (!fromDate) {
+            setPopupMessage("Please select From Date.");
             setShowPopup(true);
             return;
-
         }
 
-        if (fromDate && toDate && new Date(fromDate) > new Date(toDate)) {
+        const from = new Date(fromDate);
+        from.setHours(0, 0, 0, 0);
 
-            setPopupMessage("From Date cannot be greater than To Date.");
-            setShowPopup(true);
-            return;
-
-        }
-
-        let filtered = [...broadcastCards];
-
-        if (fromDate) {
-
-            const from = new Date(fromDate);
-
-            filtered = filtered.filter(item =>
-                new Date(item.PublishedDate) >= from
-            );
-
-        }
+        let filtered = [];
 
         if (toDate) {
 
             const to = new Date(toDate);
             to.setHours(23, 59, 59, 999);
 
-            filtered = filtered.filter(item =>
-                new Date(item.PublishedDate) <= to
-            );
+            // Validate date range
+            if (from > to) {
+                setPopupMessage("From Date cannot be greater than To Date.");
+                setShowPopup(true);
+                return;
+            }
+
+            // Filter by date range
+            filtered = broadcastCards.filter(item => {
+                const published = new Date(item.PublishedDate);
+                return published >= from && published <= to;
+            });
+
+        } else {
+
+            // Only From Date selected - filter for that day
+            const endOfDay = new Date(from);
+            endOfDay.setHours(23, 59, 59, 999);
+
+            filtered = broadcastCards.filter(item => {
+                const published = new Date(item.PublishedDate);
+                return published >= from && published <= endOfDay;
+            });
 
         }
 
         if (filtered.length === 0) {
-
-            setPopupMessage("No broadcasts found for the selected date range.");
+            setPopupMessage("No broadcasts found for the selected date.");
             setShowPopup(true);
-
         }
 
         setFilteredBroadcasts(filtered);
-
     };
 
     return (
@@ -241,10 +242,15 @@ const ViewAllBroadcasts = (props: IViewAllBroadcastsProps): React.ReactElement =
                         >
 
                             <a
-                                href={card.ImageUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href="#"
                                 className={`h-100 text-decoration-none ${styles.broadcastCard}`}
+                                onClick={(e) => {
+                                    e.preventDefault();
+
+                                    if (card.ImageUrl) {
+                                        window.open(card.ImageUrl, "_blank", "noopener,noreferrer");
+                                    }
+                                }}
                             >
 
                                 <div className={styles.broadcastBody}>

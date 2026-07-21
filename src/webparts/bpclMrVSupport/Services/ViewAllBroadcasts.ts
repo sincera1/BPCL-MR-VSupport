@@ -10,7 +10,7 @@ export interface IBroadcastItem {
     Title: string;
     PublishedDate: string;
     ImageUrl: string;
-  
+
 }
 
 export interface IAttachment {
@@ -19,7 +19,7 @@ export interface IAttachment {
 }
 
 export default class ViewAllBroadcastsService {
-    
+
     public publishingHubSp: SPFI;
     private readonly PUBLISHING_HUB_URL: string;
     constructor(context: WebPartContext) {
@@ -37,9 +37,9 @@ export default class ViewAllBroadcastsService {
         }
 
         //this.context = context;
-        
+
         this.publishingHubSp = spfi(this.PUBLISHING_HUB_URL).using(SPFx(context));
-        
+
     }
 
     public async getBroadcasts(): Promise<IBroadcastItem[]> {
@@ -61,24 +61,25 @@ export default class ViewAllBroadcastsService {
             .orderBy("PublishedDate", false)
             .top(5000)();
 
-
         const results = await Promise.all(
             items.map(async (item) => {
 
-               const pdfFile = item.AttachmentFiles?.find(
-                (file: any) =>
-                    file.FileName.toLowerCase().endsWith(".pdf")
-            );
+                const pdfFile = item.AttachmentFiles?.find(
+                    (file: any) =>
+                        file.FileName.toLowerCase().endsWith(".pdf")
+                );
+
+                // If no PDF exists, use the first available attachment
+                const attachmentToOpen = pdfFile || item.AttachmentFiles?.[0];
 
                 return {
                     Id: item.Id,
                     Title: item.Title,
                     PublishedDate: item.PublishedDate,
-                     ImageUrl: pdfFile
-                    ? pdfFile.ServerRelativeUrl
-                    : ""
 
-
+                    ImageUrl: attachmentToOpen
+                        ? attachmentToOpen.ServerRelativeUrl
+                        : ""
                 };
             })
         );
@@ -87,6 +88,6 @@ export default class ViewAllBroadcastsService {
     }
 
 
-    
+
 
 }

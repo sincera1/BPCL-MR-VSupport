@@ -38,10 +38,15 @@ a {
 
 .pageContainer {
   background: #f4f7fb;
+  height: 76vh;
 }
 
 /* Banner */
 
+body{
+  background: #f4f7fb;
+  
+}
 .banner {
   display: flex;
   align-items: center;

@@ -63,39 +63,50 @@ const ViewAllNews = (props: IViewAllNewsProps): React.ReactElement => {
 
   const handleSearch = (): void => {
 
-    if (!fromDate && !toDate) {
-      setPopupMessage("Please select From Date or To Date.");
+    // At least From Date is mandatory
+    if (!fromDate) {
+      setPopupMessage("Please select From Date.");
       setShowPopup(true);
       return;
     }
 
-    if (fromDate && toDate && new Date(fromDate) > new Date(toDate)) {
-      setPopupMessage("From Date cannot be greater than To Date.");
-      setShowPopup(true);
-      return;
-    }
+    const from = new Date(fromDate);
+    from.setHours(0, 0, 0, 0);
 
-    let filtered = [...newsCards];
+    let filtered = [];
 
-    if (fromDate) {
-      const from = new Date(fromDate);
-
-      filtered = filtered.filter(item =>
-        new Date(item.PublishedDate) >= from
-      );
-    }
-
+    // If To Date is selected, filter by range
     if (toDate) {
+
       const to = new Date(toDate);
       to.setHours(23, 59, 59, 999);
 
-      filtered = filtered.filter(item =>
-        new Date(item.PublishedDate) <= to
-      );
+      // Validate date range
+      if (from > to) {
+        setPopupMessage("From Date cannot be greater than To Date.");
+        setShowPopup(true);
+        return;
+      }
+
+      filtered = newsCards.filter(item => {
+        const published = new Date(item.PublishedDate);
+        return published >= from && published <= to;
+      });
+
+    } else {
+
+      // Only From Date selected - show news for that date
+      const endOfDay = new Date(from);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      filtered = newsCards.filter(item => {
+        const published = new Date(item.PublishedDate);
+        return published >= from && published <= endOfDay;
+      });
     }
 
     if (filtered.length === 0) {
-      setPopupMessage("No news found for the selected date range.");
+      setPopupMessage("No news found for the selected date.");
       setShowPopup(true);
     }
 
@@ -214,12 +225,21 @@ const ViewAllNews = (props: IViewAllNewsProps): React.ReactElement => {
               key={card.Id}
             >
 
-              <a href="#" className={styles.newsCard}   
-               onClick={(e) => {e.preventDefault();
-                if (card.FileUrl) {
-                  window.open(card.FileUrl, "_blank");
-                   }
-                  }}>
+              <a
+                href="#"
+                className={styles.newsCard}
+                onClick={(e) => {
+                  e.preventDefault();
+
+                  if (card.FileUrl) {
+                    // Open PDF if available
+                    window.open(card.FileUrl, "_blank", "noopener,noreferrer");
+                  } else if (card.ImageUrl) {
+                    // Otherwise open the image
+                    window.open(card.ImageUrl, "_blank", "noopener,noreferrer");
+                  }
+                }}
+              >
 
                 <div className={styles.cardImageWrapper}>
 

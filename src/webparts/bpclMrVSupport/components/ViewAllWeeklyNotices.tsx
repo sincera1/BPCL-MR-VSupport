@@ -57,49 +57,52 @@ const WeeklyNotices: React.FC<IWeeklyNoticesProps> = (props) => {
 
   const handleSearch = (): void => {
 
-    if (!fromDate && !toDate) {
-      setPopupMessage("Please select From Date and To Date.");
-      setShowPopup(true);
-      return;
-    }
-
-    if (fromDate && !toDate) {
-      setPopupMessage("Please select To Date.");
-      setShowPopup(true);
-      return;
-    }
-
-    if (!fromDate && toDate) {
+    // From Date is mandatory
+    if (!fromDate) {
       setPopupMessage("Please select From Date.");
       setShowPopup(true);
       return;
     }
 
-    if (
-      fromDate &&
-      toDate &&
-      new Date(fromDate) > new Date(toDate)
-    ) {
-      setPopupMessage("From Date cannot be greater than To Date.");
-      setShowPopup(true);
-      return;
-    }
+    const from = new Date(fromDate);
+    from.setHours(0, 0, 0, 0);
 
-    let filtered = [...notices];
-
-    if (fromDate) {
-      filtered = filtered.filter(item =>
-        new Date(item.DateReleased) >= new Date(fromDate)
-      );
-    }
+    let filtered = [];
 
     if (toDate) {
-      const endDate = new Date(toDate);
-      endDate.setHours(23, 59, 59, 999);
 
-      filtered = filtered.filter(item =>
-        new Date(item.DateReleased) <= endDate
-      );
+      const to = new Date(toDate);
+      to.setHours(23, 59, 59, 999);
+
+      // Validate date range
+      if (from > to) {
+        setPopupMessage("From Date cannot be greater than To Date.");
+        setShowPopup(true);
+        return;
+      }
+
+      // Filter by date range
+      filtered = notices.filter(item => {
+        const released = new Date(item.DateReleased);
+        return released >= from && released <= to;
+      });
+
+    } else {
+
+      // Only From Date selected - filter for that specific day
+      const endOfDay = new Date(from);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      filtered = notices.filter(item => {
+        const released = new Date(item.DateReleased);
+        return released >= from && released <= endOfDay;
+      });
+
+    }
+
+    if (filtered.length === 0) {
+      setPopupMessage("No notices found for the selected date.");
+      setShowPopup(true);
     }
 
     setFilteredNotices(filtered);
@@ -159,7 +162,7 @@ const WeeklyNotices: React.FC<IWeeklyNoticesProps> = (props) => {
         >
           <i className="bi bi-chevron-left"></i>
         </button>
-       
+
         <div className={styles.bannerIcon}>
           <i className="bi bi-megaphone-fill"></i>
         </div>
@@ -260,9 +263,18 @@ const WeeklyNotices: React.FC<IWeeklyNoticesProps> = (props) => {
                           <i className={`bi bi-file-earmark-pdf-fill ${styles.pdfIcon}`}></i>
 
                           <a
-                            href={item.FileUrl}
-                            target="_blank"
-                            rel="noreferrer"
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+
+                              if (item.FileUrl) {
+                                const url = item.FileUrl.startsWith("http")
+                                  ? item.FileUrl
+                                  : `${window.location.origin}${item.FileUrl}`;
+
+                                window.open(url, "_blank", "noopener,noreferrer");
+                              }
+                            }}
                           >
                             {item.Title}
                           </a>
@@ -274,9 +286,14 @@ const WeeklyNotices: React.FC<IWeeklyNoticesProps> = (props) => {
 
                         <td className="text-end">
                           <a
-                            href={item.FileUrl}
-                            target="_blank"
-                            rel="noreferrer"
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+
+                              if (item.FileUrl) {
+                                window.open(item.FileUrl, "_blank", "noopener,noreferrer");
+                              }
+                            }}
                           >
                             <i className="bi bi-chevron-right"></i>
                           </a>
