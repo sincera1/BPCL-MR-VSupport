@@ -838,34 +838,35 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
           {/* ================= WELCOME BANNER ================= */}
           <div className={styles.welcomeBanner}>
-            <Carousel
-              indicators={true}
-              controls={true}
-              interval={3000}
-              pause={false}
-            >
-              {this.state.welcomeBanners.map((item) => (
-
-                <Carousel.Item key={item.Id}>
-
-                  <a
-                    href={item.RedirectURL?.Url || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-
-                    <img
-                      src={item.ImageUrl}
-                      alt={item.Title}
-                      className={styles.bannerImg}
-                    />
-
-                  </a>
-
-                </Carousel.Item>
-
-              ))}
-            </Carousel>
+            {this.state.welcomeBanners &&
+              this.state.welcomeBanners.length > 0 ? (
+              <Carousel
+                indicators
+                controls
+                interval={3000}
+                pause={false}
+              >
+                {this.state.welcomeBanners.map((item) => (
+                  <Carousel.Item key={item.Id}>
+                    <a
+                      href={item.RedirectURL?.Url || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={item.ImageUrl}
+                        alt={item.Title}
+                        className={styles.bannerImg}
+                      />
+                    </a>
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+            ) : (
+              <div className={styles.noDataText}>
+                No Data to Display
+              </div>
+            )}
           </div>
 
           {/* ================= PERFORMANCE SECTION ================= */}
@@ -895,117 +896,130 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               <div className="tab-content p-1">
 
                 {/* ================= SAFETY DASHBOARD ================= */}
-                {this.state.activeTab === "safetydashboard" &&
-                  this.state.safetyDashBoard.length > 0 && (() => {
+                {this.state.activeTab === "safetydashboard" && (
+                  this.state.safetyDashBoard.length > 0 ? (
+                    (() => {
+                      const latestItem = this.state.safetyDashBoard[0];
 
-                    const latestItem = this.state.safetyDashBoard[0]; // Latest record because orderBy(ID,false)
+                      const formattedDate = latestItem.AFDaysDate
+                        ? new Date(latestItem.AFDaysDate).toLocaleDateString("en-GB")
+                        : "";
 
-                    const formattedDate = latestItem.AFDaysDate
-                      ? new Date(latestItem.AFDaysDate).toLocaleDateString("en-GB")
-                      : "";
+                      return (
+                        <div className={styles.staticHighlights}>
 
-                    return (
-                      <div className={styles.staticHighlights}>
+                          <div className={`${styles.staticHighCard} col-6 sm-12`}>
+                            <img
+                              src={GoldShild}
+                              className={styles.staticImg}
+                              alt="Gold Shield"
+                            />
 
-                        <div className={`${styles.staticHighCard} col-6 sm-12`}>
-                          <img
-                            src={GoldShild}
-                            className={styles.staticImg}
-                            alt="Gold Shield"
-                          />
+                            <div>
+                              <h4 className={styles.staticTitle}>
+                                {latestItem.AFDCount} Days
+                              </h4>
 
-                          <div>
-                            <h4 className={styles.staticTitle}>
-                              {latestItem.AFDCount} Days
-                            </h4>
-
-                            <p className={styles.staticDescription}>
-                              Accident Free Days
-                            </p>
+                              <p className={styles.staticDescription}>
+                                Accident Free Days
+                              </p>
+                            </div>
                           </div>
-                        </div>
 
-                        <div className={`${styles.staticHighCard} col-6 sm-12`}>
-                          <img
-                            src={Savemoney}
-                            className={styles.staticImg}
-                            alt="Save Money"
-                          />
+                          <div className={`${styles.staticHighCard} col-6 sm-12`}>
+                            <img
+                              src={Savemoney}
+                              className={styles.staticImg}
+                              alt="Save Money"
+                            />
 
-                          <div>
-                            <h4 className={styles.staticTitle}>
-                              {latestItem.AFManHours} Million Manhours
-                            </h4>
+                            <div>
+                              <h4 className={styles.staticTitle}>
+                                {latestItem.AFManHours} Million Manhours
+                              </h4>
 
-                            <p className={styles.staticDescription}>
-                              Without Any Accident As On {formattedDate}
-                            </p>
+                              <p className={styles.staticDescription}>
+                                Without Any Accident As On {formattedDate}
+                              </p>
+                            </div>
                           </div>
-                        </div>
 
-                      </div>
-                    );
-                  })()
-                }
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    <div className={styles.noDataText}>
+                      No Data to Display
+                    </div>
+                  )
+                )}
 
                 {/* ================= SUCCESS STORIES ================= */}
                 {this.state.activeTab === "successStories" && (
-                  <Carousel
-                    className={styles.customCarousel}
-                    controls={false}
-                    indicators={true}
-                    interval={3000}
-                    pause={false}
-                  >
-                    {this.state.successStories.map((item) => (
-                      <Carousel.Item key={item.Id}>
+                  this.state.successStories.length > 0 ? (
+                    <Carousel
+                      className={styles.customCarousel}
+                      controls={false}
+                      indicators
+                      interval={3000}
+                      pause={false}
+                    >
+                      {this.state.successStories.map((item) => (
+                        <Carousel.Item key={item.Id}>
+                          <div className={styles.carouselCard}>
+                            <img
+                              src={item.ImageUrl}
+                              alt="Success Story"
+                              className={styles.tabCarouselImg}
+                            />
 
-                        <div className={styles.carouselCard}>
-                          <img
-                            src={item.ImageUrl}
-                            alt="Success Story"
-                            className={styles.tabCarouselImg}
-                          />
-
-                          <div className={styles.carouselContent}>
-                            <h4>Project Success 1</h4>
-                            <p>Succes story 1 Succes story 1</p>
+                            <div className={styles.carouselContent}>
+                              <h4>Project Success 1</h4>
+                              <p>Succes story 1 Succes story 1</p>
+                            </div>
                           </div>
-                        </div>
-
-                      </Carousel.Item>
-                    ))}
-                  </Carousel>
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  ) : (
+                    <div className={styles.noDataText}>
+                      No Data to Display
+                    </div>
+                  )
                 )}
 
                 {/* ================= TESTIMONIALS ================= */}
                 {this.state.activeTab === "testimonials" && (
-                  <Carousel
-                    className={styles.customCarousel}
-                    controls={false}
-                    indicators={true}
-                    interval={3000}
-                    pause={false}
-                  >
-                    {this.state.testimonials.map((item) => (
-                      <Carousel.Item key={item.Id}>
+                  this.state.testimonials.length > 0 ? (
+                    <Carousel
+                      className={styles.customCarousel}
+                      controls={false}
+                      indicators
+                      interval={3000}
+                      pause={false}
+                    >
+                      {this.state.testimonials.map((item) => (
+                        <Carousel.Item key={item.Id}>
+                          <div className={styles.carouselCard}>
+                            <img
+                              src={item.ImageUrl}
+                              alt="Testimonial"
+                              className={styles.tabCarouselImg}
+                            />
 
-                        <div className={styles.carouselCard}>
-                          <img
-                            src={item.ImageUrl}
-                            alt="Testimonial"
-                            className={styles.tabCarouselImg}
-                          />
-
-                          <div className={styles.carouselContent}>
-                            <h4>Testimonial 1</h4>
-                            <p>Testimonial 1 Testimonial 1</p>
+                            <div className={styles.carouselContent}>
+                              <h4>Testimonial 1</h4>
+                              <p>Testimonial 1 Testimonial 1</p>
+                            </div>
                           </div>
-                        </div>
-
-                      </Carousel.Item>
-                    ))}
-                  </Carousel>
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  ) : (
+                    <div className={styles.noDataText}>
+                      No Data to Display
+                    </div>
+                  )
                 )}
 
               </div>
@@ -1013,25 +1027,21 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
             {/* Quick links */}
             <Col lg={6} md={12}>
-
               <div className={styles.sideCardHeader}>
                 <h5>{t.quickLinks}</h5>
               </div>
-              <div className={styles.sideCard}>
 
+              <div className={styles.sideCard}>
                 <div className={styles.quickLinksList}>
-                  {this.state.quickLinks.map(
-                    (item) => (
+                  {this.state.quickLinks &&
+                    this.state.quickLinks.length > 0 ? (
+                    this.state.quickLinks.map((item) => (
                       <a
                         key={item.Id}
-                        href={
-                          item.RedirectURL?.Url || "#"
-                        }
+                        href={item.RedirectURL?.Url || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={
-                          styles.quickLinkItem
-                        }
+                        className={styles.quickLinkItem}
                       >
                         <div className={styles.quickIcon}>
                           {item.ImageUrl ? (
@@ -1045,11 +1055,15 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             <i className="bi bi-stars" />
                           )}
                         </div>
-                        <span>
-                          {item.Title}
-                        </span>
+
+                        <span>{item.Title}</span>
                       </a>
-                    ))}
+                    ))
+                  ) : (
+                    <div className={styles.noDataText}>
+                      No Data to Display
+                    </div>
+                  )}
                 </div>
               </div>
             </Col>
@@ -1059,81 +1073,77 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
           {/* ---------------- today's birthday section ---------------- */}
 
           <Row>
-            <Col md={12} className='px-2'>
+            <Col md={12} className="px-2">
               <div className={styles.birthdayCarouselSection}>
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
 
-                    <Carousel
-                      indicators
-                      controls={false}
-                      interval={5000}
-                      className={styles.messageCarousel}
-                    >
+                    {this.state.employeeGreetings &&
+                      this.state.employeeGreetings.length > 0 ? (
+                      <Carousel
+                        indicators
+                        controls={false}
+                        interval={5000}
+                        className={styles.messageCarousel}
+                      >
+                        {this.state.employeeGreetings.map((item) => {
+                          const email =
+                            item.EmailID ||
+                            item.EmpName?.EMail ||
+                            "";
 
-                      {this.state.employeeGreetings.map(item => {
+                          const profilePic =
+                            `${this.props.context.pageContext.web.absoluteUrl}/_layouts/15/userphoto.aspx?size=L&accountname=${email}`;
 
-                        const email =
-                          item.EmailID ||
-                          item.EmpName?.EMail ||
-                          "";
+                          return (
+                            <Carousel.Item key={item.Id}>
+                              <div className={styles.bannerCard}>
+                                <div className={styles.leftContent}>
+                                  <img
+                                    src={profilePic}
+                                    alt={item.EmpName?.Title}
+                                    className={styles.profileImg}
+                                  />
 
-                        const profilePic =
-                          `${this.props.context.pageContext.web.absoluteUrl}/_layouts/15/userphoto.aspx?size=L&accountname=${email}`;
+                                  <div className={styles.textContent}>
+                                    <h3 className={styles.name}>
+                                      {item.EmpName?.Title}
+                                    </h3>
 
-                        return (
+                                    <p className={styles.email}>
+                                      {email}
+                                    </p>
 
-                          <Carousel.Item key={item.Id}>
+                                    <p className={styles.desc}>
+                                      "Happy Birthday Wishing you a fantastic day filled
+                                      with joy and success. May this year bring you new
+                                      opportunities and achievements. Enjoy your special
+                                      day to the fullest"
+                                    </p>
 
-                            <div className={styles.bannerCard}>
-
-                              <div className={styles.leftContent}>
-
-                                <img
-                                  src={profilePic}
-                                  alt={item.EmpName?.Title}
-                                  className={styles.profileImg}
-                                />
-
-                                <div className={styles.textContent}>
-
-                                  <h3 className={styles.name}>
-                                    {item.EmpName?.Title}
-                                  </h3>
-
-                                  <p className={styles.email}>
-                                    {email}
-                                  </p>
-
-                                  <p className={styles.desc}>
-                                    "Happy Birthday Wishing you a fantastic day filled with joy and success. May this year bring you new opportunities and achievements. Enjoy your special day to the fullest"
-                                  </p>
-
-                                  <button className={styles.ctaBtn}>
-                                    WELCOME
-                                  </button>
-
+                                    <button className={styles.ctaBtn}>
+                                      WELCOME
+                                    </button>
+                                  </div>
                                 </div>
 
+                                <div className={styles.rightIcon}>
+                                  <img
+                                    src={BDcelebration}
+                                    alt="Celebration"
+                                    width={100}
+                                  />
+                                </div>
                               </div>
-
-                              <div className={styles.rightIcon}>
-                                <img
-                                  src={BDcelebration}
-                                  alt="Celebration"
-                                  width={100}
-                                />
-                              </div>
-
-                            </div>
-
-                          </Carousel.Item>
-
-                        );
-
-                      })}
-
-                    </Carousel>
+                            </Carousel.Item>
+                          );
+                        })}
+                      </Carousel>
+                    ) : (
+                      <div className={styles.noDataText}>
+                        No Data to Display
+                      </div>
+                    )}
 
                   </Card.Body>
                 </Card>
@@ -1424,103 +1434,95 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
               <div className={styles.weeklyNoticesCarouselSection}>
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
-                    {/* <div className={styles.weeklyNoticesHead}>
-                      <h4>{t.weeklynotices}</h4> */}
-                    <a
-                      className={styles.weeklyNoticesViewmore}
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        this.setState({
-                          showWeeklyNoticesPage: true
-                        })
-                      }
-                    >
-                      View More
-                    </a>
-                    {/* </div> */}
 
-                    <Carousel
-                      indicators
-                      controls={false}
-                      interval={10000}
-                      className={styles.governanceCarousel}
-                    >
+                    {this.state.weeklyNotices.length > 0 && (
+                      <a
+                        className={styles.weeklyNoticesViewmore}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          this.setState({
+                            showWeeklyNoticesPage: true,
+                          })
+                        }
+                      >
+                        View More
+                      </a>
+                    )}
 
-                      {this.state.weeklyNotices.map((item) => (
+                    {this.state.weeklyNotices &&
+                      this.state.weeklyNotices.length > 0 ? (
+                      <Carousel
+                        indicators
+                        controls={false}
+                        interval={10000}
+                        className={styles.governanceCarousel}
+                      >
+                        {this.state.weeklyNotices.map((item) => (
+                          <Carousel.Item key={item.Id}>
+                            <div
+                              className={styles.bannerCard}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                if (item.FileUrl) {
+                                  window.open(item.FileUrl, "_blank");
+                                }
+                              }}
+                            >
+                              <div className={styles.leftContent}>
+                                <div className={styles.NoticesleftCard}>
+                                  <h3 className={styles.NoticesName}>
+                                    Week #{this.getWeekNumber(item.DateReleased)}
+                                  </h3>
 
-                        <Carousel.Item key={item.Id}>
+                                  <p className={styles.NoticesDate}>
+                                    {new Date(item.DateReleased).toLocaleDateString(
+                                      "en-GB",
+                                      {
+                                        day: "2-digit",
+                                        month: "long",
+                                        year: "numeric",
+                                      }
+                                    )}
+                                  </p>
+                                </div>
 
-                          <div
-                            className={styles.bannerCard}
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              if (item.FileUrl) {
-                                window.open(item.FileUrl, "_blank");
-                              }
-                            }}
-                          >
+                                <div className={styles.rightContent}>
+                                  <h3 className={styles.title}>
+                                    {t.weeklyNotices}#
+                                    {this.getWeekNumber(item.DateReleased)}
+                                  </h3>
 
-                            <div className={styles.leftContent}>
+                                  <p
+                                    className={styles.desc}
+                                    style={{ WebkitLineClamp: 2 }}
+                                  >
+                                    {item.Title}
+                                  </p>
 
-                              <div className={styles.NoticesleftCard}>
+                                  <button
+                                    type="button"
+                                    className={styles.noticeBtn}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
 
-                                <h3 className={styles.NoticesName}>
-                                  Week #{this.getWeekNumber(item.DateReleased)}
-                                </h3>
-
-                                <p className={styles.NoticesDate}>
-                                  {new Date(item.DateReleased).toLocaleDateString(
-                                    "en-GB",
-                                    {
-                                      day: "2-digit",
-                                      month: "long",
-                                      year: "numeric"
-                                    }
-                                  )}
-                                </p>
-
+                                      if (item.FileUrl) {
+                                        window.open(item.FileUrl, "_blank");
+                                      }
+                                    }}
+                                  >
+                                    KNOW MORE
+                                  </button>
+                                </div>
                               </div>
-
-                              <div className={styles.rightContent}>
-
-                                <h3 className={styles.title}>
-
-                                  {t.weeklyNotices}#{this.getWeekNumber(item.DateReleased)}
-                                </h3>
-
-                                <p
-                                  className={styles.desc}
-                                  style={{ WebkitLineClamp: 2 }}
-                                >
-                                  {item.Title}
-                                </p>
-
-                                <button
-                                  type="button"
-                                  className={styles.noticeBtn}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-
-                                    if (item.FileUrl) {
-                                      window.open(item.FileUrl, "_blank");
-                                    }
-                                  }}
-                                >
-                                  KNOW MORE
-                                </button>
-
-                              </div>
-
                             </div>
-
-                          </div>
-
-                        </Carousel.Item>
-
-                      ))}
-
-                    </Carousel>
-
+                          </Carousel.Item>
+                        ))}
+                      </Carousel>
+                    ) : (
+                      <div className={styles.noDataText}>
+                        No Data to Display
+                      </div>
+                    )}
                   </Card.Body>
                 </Card>
               </div>
@@ -1532,105 +1534,95 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 <Card className={styles.messageBorderCard}>
                   <Card.Body>
 
-                    {/* <div className={styles.weeklyNoticesHead}>
-                      <h4>{t.mrBusinessPlan}</h4> */}
+                    {this.state.businessPlan.length > 0 && (
+                      <a
+                        className={styles.weeklyNoticesViewmore}
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          this.setState({
+                            showBusinessPlanPage: true,
+                          })
+                        }
+                      >
+                        View More
+                      </a>
+                    )}
 
-                    <a
-                      className={styles.weeklyNoticesViewmore}
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        this.setState({
-                          showBusinessPlanPage: true
-                        })
-                      }
-                    >
-                      View More
-                    </a>
-                    {/* </div> */}
+                    {this.state.businessPlan &&
+                      this.state.businessPlan.length > 0 ? (
+                      <Carousel
+                        indicators
+                        controls={false}
+                        interval={12000}
+                        className={styles.businessPlanCarousel}
+                      >
+                        {this.state.businessPlan.map((item) => (
+                          <Carousel.Item key={item.Id}>
+                            <a
+                              href="#"
+                              className="text-decoration-none"
+                              onClick={(e) => {
+                                e.preventDefault();
 
-                    <Carousel
-                      indicators
-                      controls={false}
-                      interval={12000}
-                      className={styles.businessPlanCarousel}
-                    >
+                                if (item.FileUrl) {
+                                  window.open(
+                                    item.FileUrl,
+                                    "_blank",
+                                    "noopener,noreferrer"
+                                  );
+                                }
+                              }}
+                            >
+                              <div className={styles.bannerCard}>
+                                <div className={styles.leftContent}>
+                                  <img
+                                    src={`${this.props.context.pageContext.web.absoluteUrl}/SiteAssets/Images/MRBusinessPlan.jpg`}
+                                    alt="Business Plan"
+                                    className={styles.profileImg}
+                                  />
 
-                      {this.state.businessPlan.map((item) => (
+                                  <div className={styles.rightContent}>
+                                    <h3 className={styles.title}>
+                                      {t.mrBusinessPlan}
+                                    </h3>
 
-                        <Carousel.Item key={item.Id}>
+                                    <p
+                                      className={styles.desc}
+                                      style={{ WebkitLineClamp: 2 }}
+                                    >
+                                      {item.Title}
+                                    </p>
 
-                          <a
-                            href="#"
-                            className="text-decoration-none"
-                            onClick={(e) => {
-                              e.preventDefault();
+                                    <span
+                                      className={styles.yearBadge}
+                                      style={{ cursor: "pointer" }}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
 
-                              if (item.FileUrl) {
-                                window.open(
-                                  item.FileUrl,
-                                  "_blank",
-                                  "noopener,noreferrer"
-                                );
-                              }
-                            }}
-                          >
-
-                            <div className={styles.bannerCard}>
-
-                              <div className={styles.leftContent}>
-
-                                <img
-                                  src={`${this.props.context.pageContext.web.absoluteUrl}/SiteAssets/Images/MRBusinessPlan.jpg`}
-                                  alt="Business Plan"
-                                  className={styles.profileImg}
-                                />
-
-                                <div className={styles.rightContent}>
-
-                                  <h3 className={styles.title}>
-                                    {t.mrBusinessPlan}
-                                  </h3>
-
-                                  <p
-                                    className={styles.desc}
-                                    style={{ WebkitLineClamp: 2 }}
-                                  >
-                                    {item.Title}
-                                  </p>
-
-                                  <span
-                                    className={styles.yearBadge}
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      e.stopPropagation();
-
-                                      if (item.FileUrl) {
-                                        window.open(
-                                          item.FileUrl,
-                                          "_blank",
-                                          "noopener,noreferrer"
-                                        );
-                                      }
-                                    }}
-                                  >
-                                    {new Date(item.DateReleased).getFullYear()}
-                                  </span>
-
+                                        if (item.FileUrl) {
+                                          window.open(
+                                            item.FileUrl,
+                                            "_blank",
+                                            "noopener,noreferrer"
+                                          );
+                                        }
+                                      }}
+                                    >
+                                      {new Date(item.DateReleased).getFullYear()}
+                                    </span>
+                                  </div>
                                 </div>
-
                               </div>
-
-                            </div>
-
-                          </a>
-
-                        </Carousel.Item>
-
-                      ))}
-
-                    </Carousel>
-
+                            </a>
+                          </Carousel.Item>
+                        ))}
+                      </Carousel>
+                    ) : (
+                      <div className={styles.noDataText}>
+                        No Data to Display
+                      </div>
+                    )}
                   </Card.Body>
                 </Card>
               </div>
@@ -1653,231 +1645,166 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
               {/* Lateral Moves */}
               <Col lg={4} md={6} className="mb-4 d-flex">
-
                 <div className={styles.portalInfoCard}>
-
                   <div className={styles.portalCardTop}>
-
                     <div className={styles.portalIconCircle}>
                       <i className="bi bi-arrow-left-right" />
                     </div>
 
-                    <h4>
-                      {t.lateralMoves}
-                    </h4>
-
+                    <h4>{t.lateralMoves}</h4>
                   </div>
 
                   <div className={styles.portalListArea}>
-
-                    {this.state.lateralMoves.map(
-                      (item) => (
-
+                    {this.state.lateralMoves &&
+                      this.state.lateralMoves.length > 0 ? (
+                      this.state.lateralMoves.map((item) => (
                         <div
                           key={item.Id}
-                          className={
-                            styles.portalListRow
-                          }
+                          className={styles.portalListRow}
                           onClick={() => {
-
-                            if (
-                              item.ImageUrl
-                            ) {
-
-                              window.open(
-                                item.ImageUrl,
-                                "_blank"
-                              );
-
+                            if (item.ImageUrl) {
+                              window.open(item.ImageUrl, "_blank");
                             }
-
                           }}
                         >
-
                           <span>
-
                             <i className="bi bi-file-earmark-text" />
-
                             {item.Title}
-
                           </span>
 
                           <i className="bi bi-chevron-right" />
-
                         </div>
-
-                      ))}
-
+                      ))
+                    ) : (
+                      <div className={styles.noDataText}>
+                        No Data to Display
+                      </div>
+                    )}
                   </div>
 
-                  <button
-                    className={
-                      styles.portalActionBtn
-                    }
-                    onClick={() =>
-                      this.setState({
-                        showLateralMovesPage: true
-                      })
-                    }
-
-                  >
-                    View All
-                  </button>
-
+                  {this.state.lateralMoves.length > 0 && (
+                    <button
+                      className={styles.portalActionBtn}
+                      onClick={() =>
+                        this.setState({
+                          showLateralMovesPage: true,
+                        })
+                      }
+                    >
+                      View All
+                    </button>
+                  )}
                 </div>
-
               </Col>
 
               {/* Holiday List */}
               <Col lg={4} md={6} className="mb-4 d-flex">
-
                 <div
                   className={`${styles.portalInfoCard} ${styles.portalYellowTheme}`}
                 >
-
                   <div className={styles.portalCardTop}>
-
                     <div className={styles.portalIconCircle}>
                       <i className="bi bi-calendar-event" />
                     </div>
 
-                    <h4>
-                      {t.holidayList}
-                    </h4>
-
+                    <h4>{t.holidayList}</h4>
                   </div>
 
                   <div className={styles.portalListArea}>
-
-                    {this.state.holidays.map(
-                      (item) => (
-
+                    {this.state.holidays &&
+                      this.state.holidays.length > 0 ? (
+                      this.state.holidays.map((item) => (
                         <div
                           key={item.Id}
-                          className={
-                            styles.portalListRow
-                          }
+                          className={styles.portalListRow}
                           onClick={() => {
-
-                            if (
-                              item.ImageUrl
-                            ) {
-
-                              window.open(
-                                item.ImageUrl,
-                                "_blank"
-                              );
-
+                            if (item.ImageUrl) {
+                              window.open(item.ImageUrl, "_blank");
                             }
-
                           }}
                         >
-
                           <span>
-
                             <i className="bi bi-file-earmark-text" />
-
                             {item.Title}
-
                           </span>
 
                           <i className="bi bi-chevron-right" />
-
                         </div>
-
-                      ))}
-
+                      ))
+                    ) : (
+                      <div className={styles.noDataText}>
+                        No Data to Display
+                      </div>
+                    )}
                   </div>
 
-                  <button
-                    className={styles.portalActionBtn}
-                    onClick={() =>
-                      this.setState({
-                        showHolidayListPage: true
-                      })
-                    }
-                  >
-                    View More
-                  </button>
-
+                  {this.state.holidays.length > 0 && (
+                    <button
+                      className={styles.portalActionBtn}
+                      onClick={() =>
+                        this.setState({
+                          showHolidayListPage: true,
+                        })
+                      }
+                    >
+                      View More
+                    </button>
+                  )}
                 </div>
-
               </Col>
 
               {/* Favourite Links */}
               <Col lg={4} md={12} className="mb-4 d-flex">
-
                 <div className={`${styles.portalInfoCard} ${styles.portalBlueTheme}`}>
-
-
-
                   <div className={styles.portalCardTop}>
-
                     <div className={styles.portalIconCircle}>
                       <i className="bi bi-link-45deg" />
                     </div>
 
-                    <h4>
-                      {t.favouriteLinks}
-                    </h4>
-
+                    <h4>{t.favouriteLinks}</h4>
                   </div>
 
                   <div className={styles.portalQuickGrid}>
-
-                    {this.state.favouriteLinks.map(
-                      (item) => (
-
+                    {this.state.favouriteLinks &&
+                      this.state.favouriteLinks.length > 0 ? (
+                      this.state.favouriteLinks.map((item) => (
                         <div
                           key={item.Id}
-                          className={
-                            styles.portalQuickBox
-                          }
+                          className={styles.portalQuickBox}
                           onClick={() => {
-
-                            if (
-                              item.RedirectURL?.Url
-                            ) {
-
-                              window.open(
-                                item.RedirectURL.Url,
-                                "_blank"
-                              );
-
+                            if (item.RedirectURL?.Url) {
+                              window.open(item.RedirectURL.Url, "_blank");
                             }
-
                           }}
                         >
-
                           <span>
-
                             <i className="bi bi-link-45deg" />
-
                             {item.Title}
-
                           </span>
 
                           <i className="bi bi-chevron-right" />
-
                         </div>
-
-                      ))}
-
+                      ))
+                    ) : (
+                      <div className={styles.noDataText}>
+                        No Data to Display
+                      </div>
+                    )}
                   </div>
 
-                  <button
-                    className={styles.portalActionBtn}
-                    onClick={() =>
-                      this.setState({
-                        showViewAllFavouriteLinksPage: true
-                      })
-                    }
-                  >
-                    Manage Links
-                  </button>
-
+                  {this.state.favouriteLinks.length > 0 && (
+                    <button
+                      className={styles.portalActionBtn}
+                      onClick={() =>
+                        this.setState({
+                          showViewAllFavouriteLinksPage: true,
+                        })
+                      }
+                    >
+                      Manage Links
+                    </button>
+                  )}
                 </div>
-
               </Col>
 
             </Row>
@@ -1891,120 +1818,80 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
             {/* ---------------- Safety tips ---------------- */}
             <Col md={6} className="px-2 mb-3 mt-3">
-
               <div className={styles.SafetyTipsCarouselSection}>
-
                 <Card>
-
                   <Card.Body>
-
                     <h3 className={`${styles.title} mx-2`}>
                       {t.safetyTips}
                     </h3>
 
-                    <Carousel
-                      indicators
-                      controls={false}
-                      interval={10000}
-                      className={
-                        styles.safetyTipsCarousel
-                      }
-                    >
-
-                      {this.state.safetyTips.map(
-                        (item) => (
-
-                          <Carousel.Item
-                            key={item.Id}
-                          >
-
+                    {this.state.safetyTips &&
+                      this.state.safetyTips.length > 0 ? (
+                      <Carousel
+                        indicators
+                        controls={false}
+                        interval={10000}
+                        className={styles.safetyTipsCarousel}
+                      >
+                        {this.state.safetyTips.map((item) => (
+                          <Carousel.Item key={item.Id}>
                             <a
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
                                 if (item.FileUrl) {
-                                  window.open(item.FileUrl, "_blank", "noopener,noreferrer");
+                                  window.open(
+                                    item.FileUrl,
+                                    "_blank",
+                                    "noopener,noreferrer"
+                                  );
                                 }
                               }}
                               className="text-decoration-none"
                             >
-
-                              <div
-                                className={
-                                  styles.bannerCard
-                                }
-                              >
-
-                                <div
-                                  className={
-                                    styles.rightContent
-                                  }
-                                >
-
+                              <div className={styles.bannerCard}>
+                                <div className={styles.rightContent}>
                                   <p
-                                    className={
-                                      styles.desc
-                                    }
-                                    style={{
-                                      WebkitLineClamp: 2
-                                    }}
+                                    className={styles.desc}
+                                    style={{ WebkitLineClamp: 2 }}
                                   >
-
-                                    {
-                                      item.Description
-                                    }
-
+                                    {item.Description}
                                   </p>
-
                                 </div>
-
                               </div>
-
                             </a>
-
                           </Carousel.Item>
-
                         ))}
-
-                    </Carousel>
-
+                      </Carousel>
+                    ) : (
+                      <div className={styles.noDataText}>
+                        No Data to Display
+                      </div>
+                    )}
                   </Card.Body>
-
                 </Card>
-
               </div>
-
             </Col>
 
             {/* ---------------- Team operating Principles ---------------- */}
             <Col md={6} className="px-2 mb-3 mt-3">
-
               <div className={styles.SafetyTipsCarouselSection}>
-
                 <Card>
-
                   <Card.Body>
-
                     <h3 className={`${styles.title} mx-2`}>
                       {t.teamOperatingPrinciples}
                     </h3>
 
-                    <Carousel
-                      indicators
-                      controls={false}
-                      interval={12000}
-                      className={
-                        styles.safetyTipsCarousel
-                      }
-                    >
-
-                      {this.state.teamOperatingPrinciples.map(
-                        (item) => (
-
-                          <Carousel.Item
-                            key={item.Id}
-                          >
-
+                    {this.state.teamOperatingPrinciples &&
+                      this.state.teamOperatingPrinciples.length > 0 ? (
+                      <Carousel
+                        indicators
+                        controls={false}
+                        interval={12000}
+                        className={styles.safetyTipsCarousel}
+                      >
+                        {this.state.teamOperatingPrinciples.map((item) => (
+                          <Carousel.Item key={item.Id}>
                             <a
                               href="#"
                               onClick={(e) => {
@@ -2015,52 +1902,28 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               }}
                               className="text-decoration-none"
                             >
-
-                              <div
-                                className={
-                                  styles.bannerCard
-                                }
-                              >
-
-                                <div
-                                  className={
-                                    styles.rightContent
-                                  }
-                                >
-
+                              <div className={styles.bannerCard}>
+                                <div className={styles.rightContent}>
                                   <p
-                                    className={
-                                      styles.desc
-                                    }
-                                    style={{
-                                      WebkitLineClamp: 2
-                                    }}
+                                    className={styles.desc}
+                                    style={{ WebkitLineClamp: 2 }}
                                   >
-
-                                    {
-                                      item.Description
-                                    }
-
+                                    {item.Description}
                                   </p>
-
                                 </div>
-
                               </div>
-
                             </a>
-
                           </Carousel.Item>
-
                         ))}
-
-                    </Carousel>
-
+                      </Carousel>
+                    ) : (
+                      <div className={styles.noDataText}>
+                        No Data to Display
+                      </div>
+                    )}
                   </Card.Body>
-
                 </Card>
-
               </div>
-
             </Col>
 
           </Row>
@@ -2078,82 +1941,77 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     {t.visionMission}
                   </h4>
 
-                  <div className={styles.topRightControls}>
-                    <button
-                      className={styles.missionPrev}
-                      aria-label="Previous"
-                    >
-                      <i className="bi bi-chevron-left" />
-                    </button>
+                  {this.state.vissionMission.length > 0 && (
+                    <div className={styles.topRightControls}>
+                      <button
+                        className={styles.missionPrev}
+                        aria-label="Previous"
+                      >
+                        <i className="bi bi-chevron-left" />
+                      </button>
 
-                    <button
-                      className={styles.missionNext}
-                      aria-label="Next"
-                    >
-                      <i className="bi bi-chevron-right" />
-                    </button>
-                  </div>
+                      <button
+                        className={styles.missionNext}
+                        aria-label="Next"
+                      >
+                        <i className="bi bi-chevron-right" />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                {/* Swiper */}
-                <Swiper
-                  modules={[Navigation, Autoplay]}
-                  spaceBetween={16}
-                  slidesPerView={2}
-                  navigation={{
-                    prevEl: `.${styles.missionPrev}`,
-                    nextEl: `.${styles.missionNext}`
-                  }}
-                  loop
-                  breakpoints={{
-                    0: { slidesPerView: 1 },
-                    576: { slidesPerView: 1.2 },
-                    768: { slidesPerView: 2 },
-                    992: { slidesPerView: 2 }
-                  }}
-                >
+                {this.state.vissionMission &&
+                  this.state.vissionMission.length > 0 ? (
+                  <Swiper
+                    modules={[Navigation, Autoplay]}
+                    spaceBetween={16}
+                    slidesPerView={2}
+                    navigation={{
+                      prevEl: `.${styles.missionPrev}`,
+                      nextEl: `.${styles.missionNext}`,
+                    }}
+                    loop
+                    breakpoints={{
+                      0: { slidesPerView: 1 },
+                      576: { slidesPerView: 1.2 },
+                      768: { slidesPerView: 2 },
+                      992: { slidesPerView: 2 },
+                    }}
+                  >
+                    {this.state.vissionMission.map((item) => (
+                      <SwiperSlide key={item.Id}>
+                        <Card className={styles.cardCommon}>
+                          <Card.Body>
+                            {item.ImageUrl && (
+                              <img
+                                src={item.ImageUrl}
+                                alt={item.VMTitle}
+                                width={50}
+                              />
+                            )}
 
-                  {this.state.vissionMission.map((item) => (
+                            <div className={styles.missionContent}>
+                              <h5 className={styles.titleText}>
+                                {item.VMTitle}
+                              </h5>
 
-                    <SwiperSlide key={item.Id}>
-
-                      <Card className={styles.cardCommon}>
-
-                        <Card.Body>
-
-                          {item.ImageUrl && (
-                            <img
-                              src={item.ImageUrl}
-                              alt={item.VMTitle}
-                              width={50}
-                            />
-                          )}
-
-                          <div className={styles.missionContent}>
-
-                            <h5 className={styles.titleText}>
-                              {item.VMTitle}
-                            </h5>
-
-                            <p
-                              className={styles.desc}
-                              style={{ WebkitLineClamp: 1 }}
-                            >
-                              {item.VMDescription}
-                            </p>
-
-                          </div>
-
-                        </Card.Body>
-
-                      </Card>
-
-                    </SwiperSlide>
-
-                  ))}
-
-                </Swiper>
-
+                              <p
+                                className={styles.desc}
+                                style={{ WebkitLineClamp: 1 }}
+                              >
+                                {item.VMDescription}
+                              </p>
+                            </div>
+                          </Card.Body>
+                        </Card>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                ) : (
+                  <div className={styles.noDataText}>
+                    No Data to Display
+                  </div>
+                )}
               </div>
             </Col>
           </Row>
@@ -2163,98 +2021,70 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
           <Row>
             <Col md={12} className="px-2">
-
               <div className={styles.businessUnitsSection}>
-
                 <h4 className={`${styles.sectionHeading} px-5`}>
                   {t.businessUnits}
                 </h4>
 
-                <div className={styles.marqueeWrapper}>
-
-                  <div className={styles.marqueeTrack}>
-
-                    {
-                      [
+                {this.state.businessUnits &&
+                  this.state.businessUnits.length > 0 ? (
+                  <div className={styles.marqueeWrapper}>
+                    <div className={styles.marqueeTrack}>
+                      {[
                         ...this.state.businessUnits,
-                        ...this.state.businessUnits
-                      ].map((item, index) => {
-
-                        return (
-
-                          <div key={`${item.Id}_${index}`} className={styles.marqueeItem}>
-
-                            <div
-                              className={styles.unitCard}
-
-                              style={{
-                                cursor:
-                                  item.RedirectURL?.Url
-                                    ? "pointer"
-                                    : "default"
+                        ...this.state.businessUnits,
+                      ].map((item, index) => (
+                        <div
+                          key={`${item.Id}_${index}`}
+                          className={styles.marqueeItem}
+                        >
+                          <div
+                            className={styles.unitCard}
+                            style={{
+                              cursor: item.RedirectURL?.Url
+                                ? "pointer"
+                                : "default",
+                            }}
+                            onClick={() => {
+                              if (item.RedirectURL?.Url) {
+                                window.open(
+                                  item.RedirectURL.Url,
+                                  "_blank"
+                                );
+                              }
+                            }}
+                          >
+                            <img
+                              src={
+                                item.ImageUrl
+                                  ? item.ImageUrl
+                                  : NewsAnnouncement
+                              }
+                              alt={item.BUTitle}
+                              className={styles.unitImage}
+                              onError={(e) => {
+                                (
+                                  e.target as HTMLImageElement
+                                ).src = NewsAnnouncement;
                               }}
+                            />
 
-                              onClick={() => {
-
-                                if (
-                                  item.RedirectURL &&
-                                  item.RedirectURL.Url
-                                ) {
-
-                                  window.open(
-                                    item.RedirectURL.Url,
-                                    "_blank"
-                                  );
-
-                                }
-
-                              }}
-
-                            >
-
-                              <img
-                                src={
-                                  item.ImageUrl
-                                    ? item.ImageUrl
-                                    : NewsAnnouncement
-                                }
-
-                                alt={item.BUTitle}
-
-                                className={styles.unitImage}
-
-                                onError={(e) => {
-
-                                  (
-                                    e.target as HTMLImageElement
-                                  ).src = NewsAnnouncement;
-
-                                }}
-
-                              />
-
-                              <div className={styles.unitOverlay}>
-
-                                <span className={styles.unitTitle}>{item.BUTitle}</span>
-
-                              </div>
-
+                            <div className={styles.unitOverlay}>
+                              <span className={styles.unitTitle}>
+                                {item.BUTitle}
+                              </span>
                             </div>
-
                           </div>
-
-                        );
-
-                      })
-
-                    }
-
+                        </div>
+                      ))}
+                    </div>
                   </div>
-
-                </div>
-
+                ) : (
+                  <div className={styles.noDataText}>
+                    No Data to Display
+                  </div>
+                )}
               </div>
-
             </Col>
           </Row>
 
