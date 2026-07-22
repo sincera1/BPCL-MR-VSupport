@@ -1622,7 +1622,8 @@
   animation-play-state: paused;
 }
 
-.playPauseBtn {
+.playPauseBtn,
+.eventPlayPauseBtn {
   position: absolute;
   bottom: 0px;
   right: 0px;
@@ -1635,6 +1636,9 @@
   cursor: pointer;
 }
 
+.paused {
+  animation-play-state: paused !important;
+}
 
 .eventsBanner {
   max-width: 100%;
@@ -1650,13 +1654,17 @@
   overflow: hidden;
 }
 
-.verticalEventMarqueeWrapper .verticalMarquee {
+.verticalEventMarqueeWrapper .eventVerticalMarquee {
   display: flex;
   flex-direction: column;
-  animation: scrollUp 30s linear infinite !important;
+  animation: scrollUp 30s linear infinite;
 }
 
-.verticalEventMarqueeWrapper:hover .verticalMarquee {
+.verticalEventMarqueeWrapper:hover .eventVerticalMarquee {
+  animation-play-state: paused;
+}
+
+.eventPaused {
   animation-play-state: paused !important;
 }
 
@@ -2202,9 +2210,10 @@
   flex-direction: column;
   overflow: hidden;
 }
- 
+
 .NoticesleftCard::before {
-  content: "\F1F6"; /* Bootstrap Icons - calendar3 */
+  content: "\F1F6";
+  /* Bootstrap Icons - calendar3 */
   font-family: "bootstrap-icons";
   position: absolute;
   font-size: 118px;
@@ -2214,27 +2223,27 @@
   // bottom: -8px;
   z-index: 0;
 }
- 
+
 .NoticesName,
 .NoticesDate {
   position: relative;
   z-index: 1;
 }
- 
+
 .NoticesName {
   font-size: 18px;
   font-weight: 700;
   color: #000;
   margin-bottom: 4px;
-  margin-top:15px;
+  margin-top: 15px;
 }
- 
+
 .NoticesDate {
   font-size: 11px;
   color: #000;
   margin: 0;
 }
- 
+
 
 
 
@@ -2830,7 +2839,7 @@
 
 .portalInfoCard {
   background: #ffffff;
-  border-top:4px solid #003296;
+  border-top: 4px solid #003296;
   border-radius: 18px;
   padding: 20px;
   width: 100%;
@@ -2840,74 +2849,76 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   overflow: hidden;
- 
+
   // &:hover {
   //   transform: translateY(-4px);
   // }
 }
- 
+
 .portalYellowTheme {
   background: #ffffff;
   border-top: 4px solid #FFCD00;
- 
+
   .portalListRow {
     border-bottom: 1px solid #e8edf5;
     color: #495057;
+
     i {
       color: #FFCD00;
     }
   }
- 
+
   .portalActionBtn {
-     background: #ffe23aa6;
-     color:#333;
- 
-      &:hover {
-        background: #FFCD00;
-        color: #fff;
-      }
+    background: #ffe23aa6;
+    color: #333;
+
+    &:hover {
+      background: #FFCD00;
+      color: #fff;
+    }
   }
- 
+
   .portalIconCircle {
     background: #ffe23aa6;
     color: #333;
   }
 }
- 
+
 .portalBlueTheme {
   background: #ffffff;
   border-top: 4px solid #0052CB;
- 
+
   .portalListRow {
     border-bottom: 1px solid #e8edf5;
     color: #495057;
+
     i {
       color: #0052CB;
     }
   }
- 
+
   .portalActionBtn {
-     background: #d3e5ff;
-     color:#0052CB;
- 
-      &:hover {
-        background: #0052CB;
-        color: #fff;
-      }
+    background: #d3e5ff;
+    color: #0052CB;
+
+    &:hover {
+      background: #0052CB;
+      color: #fff;
+    }
   }
- 
+
   .portalIconCircle {
     background: #d3e5ff;
     color: #0052CB;
   }
 }
- 
+
 .portalCardTop {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 18px;
- 
+
   h4 {
     font-size: 16px;
     font-weight: 600;
@@ -2916,7 +2927,7 @@
     word-break: break-word;
   }
 }
- 
+
 .portalIconCircle {
   min-width: 38px;
   width: 38px;
@@ -2929,13 +2940,13 @@
   font-size: 16px;
   color: #003296;
 }
- 
+
 .portalListArea {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
- 
+
 .portalListRow {
   display: flex;
   align-items: center;
@@ -2947,11 +2958,11 @@
   color: #495057;
   cursor: pointer;
   transition: all 0.3s ease;
- 
+
   &:hover {
     padding-left: 5px;
   }
- 
+
   span {
     display: flex;
     align-items: center;
@@ -2960,33 +2971,33 @@
     min-width: 0;
     word-break: break-word;
   }
- 
+
   i {
     font-size: 12px;
     flex-shrink: 0;
-    color:#003296;
+    color: #003296;
   }
 }
- 
+
 .portalActionBtn {
   width: 100%;
   margin-top: 10px;
   border: none;
   background: #acc8ff;
-  color:#003296;
+  color: #003296;
   padding: 11px;
   border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
   transition: 0.3s ease;
   cursor: pointer;
- 
+
   &:hover {
     background: #003296;
     color: #fff;
   }
 }
- 
+
 .portalQuickGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2994,7 +3005,7 @@
   flex: 1;
   align-content: flex-start;
 }
- 
+
 .portalQuickBox {
   background: #d3e5ff;
   // border: 1px solid #f0dfb0;
@@ -3008,7 +3019,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 0;
- 
+
   &:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
@@ -3016,7 +3027,7 @@
     background: #0052CB;
     color: white;
   }
- 
+
   span {
     display: flex;
     align-items: center;
@@ -3025,11 +3036,12 @@
     min-width: 0;
     word-break: break-word;
   }
- 
+
   i {
     flex-shrink: 0;
   }
 }
+
 /* Tablet */
 @media (max-width: 991px) {
   .portalMainWrapper {
@@ -3571,7 +3583,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 120px;
+  min-height: 140px;
   background: #f8f9fa;
   border-radius: 6px;
 }
@@ -3609,9 +3621,7 @@
   margin-top: -16px;
 }
 
-.paused {
-  animation-play-state: paused !important;
-}
+
 
 //model popup
 
@@ -3684,6 +3694,16 @@
 }
 
 @keyframes scrollUp {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes scrollUpEvent {
   0% {
     transform: translateY(0);
   }

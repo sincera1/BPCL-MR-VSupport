@@ -863,8 +863,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 ))}
               </Carousel>
             ) : (
-              <div className={styles.noDataText}>
-                No Data to Display
+              <div className={styles.noDataWrapper}>
+                <p className={styles.noDataText}>No data to display</p>
               </div>
             )}
           </div>
@@ -948,8 +948,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       );
                     })()
                   ) : (
-                    <div className={styles.noDataText}>
-                      No Data to Display
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
                     </div>
                   )
                 )}
@@ -982,8 +982,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       ))}
                     </Carousel>
                   ) : (
-                    <div className={styles.noDataText}>
-                      No Data to Display
+                    <div className={styles.noDataWrapperNewsAnnouncements}>
+                      <p className={styles.noDataText}>No data to display</p>
                     </div>
                   )
                 )}
@@ -1060,8 +1060,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       </a>
                     ))
                   ) : (
-                    <div className={styles.noDataText}>
-                      No Data to Display
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
                     </div>
                   )}
                 </div>
@@ -1140,8 +1140,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         })}
                       </Carousel>
                     ) : (
-                      <div className={styles.noDataText}>
-                        No Data to Display
+                      <div className={styles.noDataWrapper}>
+                        <p className={styles.noDataText}>No data to display</p>
                       </div>
                     )}
 
@@ -1339,16 +1339,16 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     </div>
                   ) : (
                     <div className={styles.verticalEventMarqueeWrapper}>
-                      <div
-                        className={`${styles.verticalMarquee} ${this.state.isEventPaused ? styles.paused : ""
-                          }`}
-                      >
+                  <div className={styles.eventVerticalMarquee} style={{animationPlayState: this.state.isEventPaused ? "paused" : "running"}}>
+                        
+                        
                         {[...this.state.events, ...this.state.events].map((item, index) => (
                           <div
                             key={`${item.Id}-${index}`}
                             className={styles.marqueeItem}
                             role="button"
                             tabIndex={0}
+                            style={{ cursor: "pointer" }}
                             onClick={() => {
                               if (item.FileUrl) {
                                 // Open PDF if available
@@ -1412,7 +1412,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       </div>
 
                       <button
-                        className={styles.playPauseBtn}
+                        className={styles.eventPlayPauseBtn}
                         onClick={this.toggleEvent}
                       >
                         {this.state.isEventPaused ? "▶" : "⏸"}
@@ -1519,8 +1519,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         ))}
                       </Carousel>
                     ) : (
-                      <div className={styles.noDataText}>
-                        No Data to Display
+                      <div className={styles.noDataWrapper}>
+                        <p className={styles.noDataText}>No data to display</p>
                       </div>
                     )}
                   </Card.Body>
@@ -1619,8 +1619,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         ))}
                       </Carousel>
                     ) : (
-                      <div className={styles.noDataText}>
-                        No Data to Display
+                      <div className={styles.noDataWrapper}>
+                        <p className={styles.noDataText}>No data to display</p>
                       </div>
                     )}
                   </Card.Body>
@@ -1676,8 +1676,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         </div>
                       ))
                     ) : (
-                      <div className={styles.noDataText}>
-                        No Data to Display
+                      <div className={styles.noDataWrapper}>
+                        <p className={styles.noDataText}>No data to display</p>
                       </div>
                     )}
                   </div>
@@ -1732,8 +1732,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         </div>
                       ))
                     ) : (
-                      <div className={styles.noDataText}>
-                        No Data to Display
+                      <div className={styles.noDataWrapper}>
+                        <p className={styles.noDataText}>No data to display</p>
                       </div>
                     )}
                   </div>
@@ -1786,8 +1786,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         </div>
                       ))
                     ) : (
-                      <div className={styles.noDataText}>
-                        No Data to Display
+                      <div className={styles.noDataWrapper}>
+                        <p className={styles.noDataText}>No data to display</p>
                       </div>
                     )}
                   </div>
@@ -1864,8 +1864,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         ))}
                       </Carousel>
                     ) : (
-                      <div className={styles.noDataText}>
-                        No Data to Display
+                      <div className={styles.noDataWrapper}>
+                        <p className={styles.noDataText}>No data to display</p>
                       </div>
                     )}
                   </Card.Body>
@@ -1917,8 +1917,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                         ))}
                       </Carousel>
                     ) : (
-                      <div className={styles.noDataText}>
-                        No Data to Display
+                      <div className={styles.noDataWrapper}>
+                        <p className={styles.noDataText}>No data to display</p>
                       </div>
                     )}
                   </Card.Body>
@@ -2008,8 +2008,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     ))}
                   </Swiper>
                 ) : (
-                  <div className={styles.noDataText}>
-                    No Data to Display
+                  <div className={styles.noDataWrapper}>
+                    <p className={styles.noDataText}>No data to display</p>
                   </div>
                 )}
               </div>
@@ -2080,8 +2080,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     </div>
                   </div>
                 ) : (
-                  <div className={styles.noDataText}>
-                    No Data to Display
+                  <div className={styles.noDataWrapper}>
+                    <p className={styles.noDataText}>No data to display</p>
                   </div>
                 )}
               </div>
