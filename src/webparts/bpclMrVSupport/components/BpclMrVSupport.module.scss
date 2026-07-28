@@ -985,58 +985,57 @@
 
 
 .carouselCard {
-  background: #fff;
-  border-radius: 15px;
+  position: relative;
+  height: 330px; // Total card height
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
-
+ 
 .tabCarouselImg {
   width: 100%;
-  height: 230px;
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain; // Shows the complete image
+  background: #f8f9fa; // Fills empty space around image
   display: block;
-  border-radius: 16px 16px 0px 0px;
 }
-
+ 
 .carouselContent {
-  padding: 11px;
-  min-height: 100px;
-  background: #fff;
-
-  h4 {
-    color: #0072b0;
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 6px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-  }
-
-  p {
-    -webkit-box-orient: vertical;
-    color: #1f2937;
-    cursor: pointer;
-    display: -webkit-box;
-    font-size: 12px;
-    font-weight: 500;
-    overflow: hidden;
-    text-decoration: none !important;
-    margin: 0;
-  }
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+ 
+  padding: 18px;
+  color: #fff;
+ 
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.82),
+    rgba(0, 0, 0, 0.45),
+    rgba(0, 0, 0, 0)
+  );
 }
-
+ 
+.carouselContent h4 {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+ 
 .carouselContent p {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+ 
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-
 
 /* ================= PERFORMANCE ================= */
 

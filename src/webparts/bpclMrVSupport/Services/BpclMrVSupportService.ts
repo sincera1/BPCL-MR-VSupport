@@ -26,7 +26,6 @@ export interface INavigationMenuItem {
 
 export interface IWelcomeBannerItem {
     Id: number;
-    Title: string;
     ImageUrl: string;
     RedirectURL?: { Url: string; Description: string; };
 }
@@ -243,13 +242,12 @@ export default class BpclMrVSupportService {
         const items = await this.sp.web.lists
             .getByTitle("MR_DL_WelcomeBanner")
             .items
-            .select("Id", "WelcomeBannerTitle", "RedirectURL", "FileRef")
+            .select("Id",  "RedirectURL", "FileRef")
             .orderBy("Id", false)();
 
         return items.map(
             (item: any) => ({
                 Id: item.Id,
-                Title: item.WelcomeBannerTitle,
                 ImageUrl: item.FileRef,
                 RedirectURL: item.RedirectURL
             })

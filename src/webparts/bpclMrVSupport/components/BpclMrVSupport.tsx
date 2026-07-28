@@ -855,7 +855,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     >
                       <img
                         src={item.ImageUrl}
-                        alt={item.Title}
+                        alt="Welcome Banner"
                         className={styles.bannerImg}
                       />
                     </a>
@@ -1016,8 +1016,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                       ))}
                     </Carousel>
                   ) : (
-                    <div className={styles.noDataText}>
-                      No Data to Display
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
                     </div>
                   )
                 )}
@@ -1339,9 +1339,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     </div>
                   ) : (
                     <div className={styles.verticalEventMarqueeWrapper}>
-                  <div className={styles.eventVerticalMarquee} style={{animationPlayState: this.state.isEventPaused ? "paused" : "running"}}>
-                        
-                        
+                      <div className={styles.eventVerticalMarquee} style={{ animationPlayState: this.state.isEventPaused ? "paused" : "running" }}>
+
+
                         {[...this.state.events, ...this.state.events].map((item, index) => (
                           <div
                             key={`${item.Id}-${index}`}
@@ -1682,18 +1682,18 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     )}
                   </div>
 
-                  {this.state.lateralMoves.length > 0 && (
-                    <button
-                      className={styles.portalActionBtn}
-                      onClick={() =>
-                        this.setState({
-                          showLateralMovesPage: true,
-                        })
-                      }
-                    >
-                      View All
-                    </button>
-                  )}
+
+                  <button
+                    className={styles.portalActionBtn}
+                    onClick={() =>
+                      this.setState({
+                        showLateralMovesPage: true,
+                      })
+                    }
+                  >
+                    View All
+                  </button>
+
                 </div>
               </Col>
 
@@ -1738,18 +1738,18 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     )}
                   </div>
 
-                  {this.state.holidays.length > 0 && (
-                    <button
-                      className={styles.portalActionBtn}
-                      onClick={() =>
-                        this.setState({
-                          showHolidayListPage: true,
-                        })
-                      }
-                    >
-                      View More
-                    </button>
-                  )}
+
+                  <button
+                    className={styles.portalActionBtn}
+                    onClick={() =>
+                      this.setState({
+                        showHolidayListPage: true,
+                      })
+                    }
+                  >
+                    View More
+                  </button>
+
                 </div>
               </Col>
 
@@ -1764,10 +1764,10 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                     <h4>{t.favouriteLinks}</h4>
                   </div>
 
-                  <div className={styles.portalQuickGrid}>
-                    {this.state.favouriteLinks &&
-                      this.state.favouriteLinks.length > 0 ? (
-                      this.state.favouriteLinks.map((item) => (
+                  {this.state.favouriteLinks &&
+                    this.state.favouriteLinks.length > 0 ? (
+                    <div className={styles.portalQuickGrid}>
+                      {this.state.favouriteLinks.map((item) => (
                         <div
                           key={item.Id}
                           className={styles.portalQuickBox}
@@ -1784,26 +1784,24 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                           <i className="bi bi-chevron-right" />
                         </div>
-                      ))
-                    ) : (
-                      <div className={styles.noDataWrapper}>
-                        <p className={styles.noDataText}>No data to display</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {this.state.favouriteLinks.length > 0 && (
-                    <button
-                      className={styles.portalActionBtn}
-                      onClick={() =>
-                        this.setState({
-                          showViewAllFavouriteLinksPage: true,
-                        })
-                      }
-                    >
-                      Manage Links
-                    </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
+                    </div>
                   )}
+
+                  <button
+                    className={styles.portalActionBtn}
+                    onClick={() =>
+                      this.setState({
+                        showViewAllFavouriteLinksPage: true,
+                      })
+                    }
+                  >
+                    Manage Links
+                  </button>
                 </div>
               </Col>
 
