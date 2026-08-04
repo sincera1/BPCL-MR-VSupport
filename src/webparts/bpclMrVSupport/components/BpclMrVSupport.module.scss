@@ -80,6 +80,28 @@
 .menuDropdown :global(.dropdown-menu) {
   z-index: 9999 !important;
   min-width: 220px;
+  font-size: 14px;
+  padding: 0;
+}
+
+.menuDropdown {
+  :global(.dropdown-menu) {
+
+    :global(.dropdown-item:hover),
+    :global(.dropdown-item:focus) {
+      background-color: #e6f0ff !important;
+      color: #0047b1 !important;
+      border-radius: 5px;
+    }
+  }
+}
+
+.menuDropdown {
+  :global(.dropdown-menu) {
+    :global(.dropdown-item) {
+      padding: 10px 16px 10px 16px !important;
+    }
+  }
 }
 
 .secondRow {
@@ -124,9 +146,22 @@
   color: #dba300;
 }
 
-//my code start
+
 .dropdownSubmenu {
   position: relative;
+}
+
+.dropdownSubmenu> :global(.dropdown-toggle)::after {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
+
+  border-top: 0.3em solid transparent;
+  border-bottom: 0.3em solid transparent;
+  border-left: 0.3em solid currentColor;
+  border-right: 0;
+
+  content: "";
 }
 
 .dropdownSubmenuMenu {
@@ -138,10 +173,30 @@
   background: #fff;
   border: 1px solid #ddd;
   z-index: 9999;
+  //padding: 4px 12px;
+  border-radius: 5px;
+}
+
+
+
+.dropdownSubmenu :global(.dropdown-item) {
+  color: #212529 !important;
 }
 
 .dropdownSubmenu:hover .dropdownSubmenuMenu {
   display: block;
+}
+
+.lastDropdown {
+  :global(.dropdown-menu) {
+    right: 0;
+    left: auto;
+  }
+
+  .dropdownSubmenu:last-child .dropdownSubmenuMenu {
+    left: auto;
+    right: 100%;
+  }
 }
 
 //my code end
@@ -730,6 +785,15 @@
   overflow: hidden;
 }
 
+.contentDiv h3.newsTitle {
+
+  display: block !important;
+  width: 100%;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 
 
 .contentDiv i {
@@ -766,6 +830,9 @@
   overflow: hidden;
   cursor: pointer;
 }
+
+
+
 
 .imageTitleOverlay {
   background: rgba(0, 0, 0, .6);
@@ -992,7 +1059,7 @@
   background: #fff;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
- 
+
 .tabCarouselImg {
   width: 100%;
   height: 100%;
@@ -1000,37 +1067,35 @@
   background: #f8f9fa; // Fills empty space around image
   display: block;
 }
- 
+
 .carouselContent {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
- 
+
   padding: 18px;
   color: #fff;
- 
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.82),
-    rgba(0, 0, 0, 0.45),
-    rgba(0, 0, 0, 0)
-  );
+
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.82),
+      rgba(0, 0, 0, 0.45),
+      rgba(0, 0, 0, 0));
 }
- 
+
 .carouselContent h4 {
   color: #fff;
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 6px;
 }
- 
+
 .carouselContent p {
   color: rgba(255, 255, 255, 0.95);
   font-size: 13px;
   line-height: 1.5;
   margin: 0;
- 
+
   display: -webkit-box;
   line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -1880,9 +1945,9 @@
   position: relative;
 }
 
-.missionContentSection .cardCommon {
-  height: 174px !important;
-}
+// .missionContentSection .cardCommon {
+//   height: 174px !important;
+// }
 
 .missionContent {
   margin-top: 12px;
@@ -1930,7 +1995,7 @@
 }
 
 .missionContentSection .cardCommon {
-  height: 174px !important;
+  height: 190px !important;
 }
 
 .missionHeader {
@@ -2322,10 +2387,21 @@
 ========================= */
 .birthdayCarouselSection :global(.carousel-indicators),
 .weeklyNoticesCarouselSection :global(.carousel-indicators),
-.businessPlanCarouselSection :global(.carousel-indicators),
-.SafetyTipsCarouselSection :global(.carousel-indicators) {
+.businessPlanCarouselSection :global(.carousel-indicators) {
   position: absolute;
   bottom: 10px;
+  right: 14px;
+  left: auto;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+.SafetyTipsCarouselSection :global(.carousel-indicators) {
+  position: absolute;
+  bottom: -12px;
   right: 14px;
   left: auto;
   margin: 0;
@@ -2664,6 +2740,10 @@
   position: relative;
 }
 
+.SafetyTipsCarouselSection .SafetyTipsCarouselSectionCard {
+  min-height: 140px !important;
+}
+
 
 // .SafetyTipsCarouselSection {
 //   background: #242424;
@@ -2688,9 +2768,12 @@
 .SafetyTipsCarouselSection .desc {
   font-size: 13px;
   color: #374151;
-  max-width: 520px;
+  // max-width: 520px;
   margin-bottom: 8px;
   line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 // .SafetyTipsCarouselSection .title {
@@ -2710,6 +2793,8 @@
   margin-top: 0px;
   margin-right: 12px;
   margin-left: 12px;
+  height: 68px;
+
 }
 
 
@@ -3573,7 +3658,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 427px;
+  min-height: 397px;
   background: #f8f9fa;
   border-radius: 6px;
 }

@@ -609,6 +609,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     };
 
 
+    
+
 
     return (
       <section>
@@ -718,7 +720,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               key={parentMenu.Id}
                               id={`menu-${parentMenu.Id}`}
                               title={this.getMenuTitle(parentMenu)}
-                              className={styles.menuDropdown}
+                              //className={styles.menuDropdown}
+                              className={`${styles.menuDropdown} ${parentMenu.Id === visibleMenus[visibleMenus.length - 1].Id
+                                  ? styles.lastDropdown
+                                  : ""
+                                }`}
                               show={this.state.hoveredMenuId === parentMenu.Id}
                               onMouseEnter={() =>
                                 this.setState({ hoveredMenuId: parentMenu.Id })
@@ -1206,31 +1212,14 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             <img
                               src={item.ImageUrl}
                               alt={item.Title}
-                            // onError={(e) => {
-                            //   e.currentTarget.src = "/SiteAssets/default-news.jpg";
-                            // }}
+                            
 
                             />
 
                             <div className={styles.contentDiv}>
                               <div className={styles.announceContent}>
-                                <h3
-                                  style={{ WebkitLineClamp: 2 }}
-                                  ref={(el) => {
-                                    if (el) {
-                                      setTimeout(() => {
-                                        const isOverflowing = el.scrollHeight > el.clientHeight;
-
-                                        if (isOverflowing) {
-                                          el.setAttribute("title", el.innerText);
-                                        } else {
-                                          el.removeAttribute("title");
-                                        }
-                                      }, 0);
-                                    }
-                                  }}
-
-                                >{item.Title}</h3>
+                                <h3 className={styles.newsTitle} ref={handleTitleRef(item.Title)}>{item.Title}</h3>
+                                  
                                 <h6>
                                   {new Date(item.PublishedDate).toLocaleDateString("en-IN", {
                                     month: "long",
@@ -1370,28 +1359,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                             <div className={styles.eventContent}>
                               {/* 🔹 Floating Like Badge (Top Right) */}
-                              {/* <div
-                                className={`${styles.likeBox} ${item.liked ? styles.liked : ""
-                                  }`}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  this.handleEventLike(item).catch(() => {
-                                    console.log("Something went wrong. Please contact administrator.");
-                                  });
-                                }}
-                              >
-                                <i className="bi bi-hand-thumbs-up-fill" />
-                                <span className={styles.likeCount}>
-                                  {item.LikesCount ?? 0}
-                                </span>
-                              </div> */}
+                              
 
                               {/* 🔹 Meta Row (Like Count + Date) */}
                               <div className={styles.metaInfo}>
-                                {/* <div className={styles.metaItem}>
-                                  <i className="bi bi-hand-thumbs-up"></i>
-                                  <span>{item.LikesCount ?? 0}</span>
-                                </div> */}
+                               
 
                                 <div className={styles.metaItem}>
                                   <i className="bi bi-calendar3" />
@@ -1817,7 +1789,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
             {/* ---------------- Safety tips ---------------- */}
             <Col md={6} className="px-2 mb-3 mt-3">
               <div className={styles.SafetyTipsCarouselSection}>
-                <Card>
+                <Card className={styles.SafetyTipsCarouselSectionCard}>
                   <Card.Body>
                     <h3 className={`${styles.title} mx-2`}>
                       {t.safetyTips}
@@ -1849,10 +1821,23 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             >
                               <div className={styles.bannerCard}>
                                 <div className={styles.rightContent}>
-                                  <p
-                                    className={styles.desc}
-                                    style={{ WebkitLineClamp: 2 }}
-                                  >
+                                   <p
+                                  className={styles.desc}
+                                  style={{ WebkitLineClamp: 3 }}
+                                  ref={(el) => {
+                                    if (el) {
+                                      setTimeout(() => {
+                                        const isOverflowing = el.scrollHeight > el.clientHeight;
+
+                                        if (isOverflowing) {
+                                          el.setAttribute("title", el.innerText);
+                                        } else {
+                                          el.removeAttribute("title");
+                                        }
+                                      }, 0);
+                                    }
+                                  }}
+                                >
                                     {item.Description}
                                   </p>
                                 </div>
@@ -1874,7 +1859,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
             {/* ---------------- Team operating Principles ---------------- */}
             <Col md={6} className="px-2 mb-3 mt-3">
               <div className={styles.SafetyTipsCarouselSection}>
-                <Card>
+                <Card className={styles.SafetyTipsCarouselSectionCard}>
                   <Card.Body>
                     <h3 className={`${styles.title} mx-2`}>
                       {t.teamOperatingPrinciples}
@@ -1902,10 +1887,23 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             >
                               <div className={styles.bannerCard}>
                                 <div className={styles.rightContent}>
-                                  <p
-                                    className={styles.desc}
-                                    style={{ WebkitLineClamp: 2 }}
-                                  >
+                                   <p
+                                  className={styles.desc}
+                                  style={{ WebkitLineClamp: 3 }}
+                                  ref={(el) => {
+                                    if (el) {
+                                      setTimeout(() => {
+                                        const isOverflowing = el.scrollHeight > el.clientHeight;
+
+                                        if (isOverflowing) {
+                                          el.setAttribute("title", el.innerText);
+                                        } else {
+                                          el.removeAttribute("title");
+                                        }
+                                      }, 0);
+                                    }
+                                  }}
+                                >
                                     {item.Description}
                                   </p>
                                 </div>
@@ -1994,9 +1992,22 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               </h5>
 
                               <p
-                                className={styles.desc}
-                                style={{ WebkitLineClamp: 1 }}
-                              >
+                                  className={styles.desc}
+                                  style={{ WebkitLineClamp: 3 }}
+                                  ref={(el) => {
+                                    if (el) {
+                                      setTimeout(() => {
+                                        const isOverflowing = el.scrollHeight > el.clientHeight;
+
+                                        if (isOverflowing) {
+                                          el.setAttribute("title", el.innerText);
+                                        } else {
+                                          el.removeAttribute("title");
+                                        }
+                                      }, 0);
+                                    }
+                                  }}
+                                >
                                 {item.VMDescription}
                               </p>
                             </div>
