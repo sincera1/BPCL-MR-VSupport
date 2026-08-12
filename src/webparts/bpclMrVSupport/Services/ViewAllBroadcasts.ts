@@ -30,11 +30,12 @@ export default class ViewAllBroadcastsService {
                 "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery-cph";
         } else if (currentUrl.includes("qa-")) {
             this.PUBLISHING_HUB_URL =
-                "https://bharatpetroleum.sharepoint.com/sites/qa-corporate-publishing-hub";
+                "https://bharatpetroleum.sharepoint.com/sites/qa-mumbai-refinery-cph";
         } else {
             this.PUBLISHING_HUB_URL =
                 "https://bharatpetroleum.sharepoint.com/sites/iconnect-corporate-publishing-hub";
         }
+
 
         //this.context = context;
 

@@ -415,7 +415,37 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     }));
   };
 
+  private handleSubmenuPosition = (
+    e: React.MouseEvent<HTMLDivElement>
+  ): void => {
 
+    const menu = e.currentTarget as HTMLElement;
+
+    const submenu = menu.querySelector(
+      `.${styles.dropdownSubmenuMenu}`
+    ) as HTMLElement;
+
+    if (!submenu) return;
+
+    submenu.style.display = "block";
+    submenu.style.visibility = "hidden";
+
+    submenu.style.left = "100%";
+    submenu.style.right = "auto";
+
+    const rect = submenu.getBoundingClientRect();
+
+    if (rect.right > window.innerWidth) {
+      menu.classList.add(styles.openLeft);
+    } else {
+      menu.classList.remove(styles.openLeft);
+    }
+
+    submenu.style.display = "";
+    submenu.style.visibility = "";
+  };
+
+  
 
   public render(): React.ReactElement<IBpclMrVSupportProps> {
 
@@ -586,6 +616,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
           <div
             key={child.Id}
             className={styles.dropdownSubmenu}
+            onMouseEnter={this.handleSubmenuPosition}
           >
             <a
               className="dropdown-item dropdown-toggle"
@@ -609,7 +640,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     };
 
 
-    
+
 
 
     return (
@@ -625,7 +656,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                 <>
                   <div className={styles.mobileHeader}>
                     <h5 className={styles.mobileHeaderText}>
-                      Vsupport
+                      Vsupport aj stark
                     </h5>
 
                     <button
@@ -720,7 +751,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               key={parentMenu.Id}
                               id={`menu-${parentMenu.Id}`}
                               title={this.getMenuTitle(parentMenu)}
-                              //className={styles.menuDropdown}
+                              // className={styles.menuDropdown}
                               className={`${styles.menuDropdown} ${parentMenu.Id === visibleMenus[visibleMenus.length - 1].Id
                                   ? styles.lastDropdown
                                   : ""
@@ -1212,14 +1243,14 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             <img
                               src={item.ImageUrl}
                               alt={item.Title}
-                            
+
 
                             />
 
                             <div className={styles.contentDiv}>
                               <div className={styles.announceContent}>
                                 <h3 className={styles.newsTitle} ref={handleTitleRef(item.Title)}>{item.Title}</h3>
-                                  
+
                                 <h6>
                                   {new Date(item.PublishedDate).toLocaleDateString("en-IN", {
                                     month: "long",
@@ -1359,11 +1390,11 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
                             <div className={styles.eventContent}>
                               {/* 🔹 Floating Like Badge (Top Right) */}
-                              
+
 
                               {/* 🔹 Meta Row (Like Count + Date) */}
                               <div className={styles.metaInfo}>
-                               
+
 
                                 <div className={styles.metaItem}>
                                   <i className="bi bi-calendar3" />
@@ -1821,23 +1852,23 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             >
                               <div className={styles.bannerCard}>
                                 <div className={styles.rightContent}>
-                                   <p
-                                  className={styles.desc}
-                                  style={{ WebkitLineClamp: 3 }}
-                                  ref={(el) => {
-                                    if (el) {
-                                      setTimeout(() => {
-                                        const isOverflowing = el.scrollHeight > el.clientHeight;
+                                  <p
+                                    className={styles.desc}
+                                    style={{ WebkitLineClamp: 3 }}
+                                    ref={(el) => {
+                                      if (el) {
+                                        setTimeout(() => {
+                                          const isOverflowing = el.scrollHeight > el.clientHeight;
 
-                                        if (isOverflowing) {
-                                          el.setAttribute("title", el.innerText);
-                                        } else {
-                                          el.removeAttribute("title");
-                                        }
-                                      }, 0);
-                                    }
-                                  }}
-                                >
+                                          if (isOverflowing) {
+                                            el.setAttribute("title", el.innerText);
+                                          } else {
+                                            el.removeAttribute("title");
+                                          }
+                                        }, 0);
+                                      }
+                                    }}
+                                  >
                                     {item.Description}
                                   </p>
                                 </div>
@@ -1887,23 +1918,23 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                             >
                               <div className={styles.bannerCard}>
                                 <div className={styles.rightContent}>
-                                   <p
-                                  className={styles.desc}
-                                  style={{ WebkitLineClamp: 3 }}
-                                  ref={(el) => {
-                                    if (el) {
-                                      setTimeout(() => {
-                                        const isOverflowing = el.scrollHeight > el.clientHeight;
+                                  <p
+                                    className={styles.desc}
+                                    style={{ WebkitLineClamp: 3 }}
+                                    ref={(el) => {
+                                      if (el) {
+                                        setTimeout(() => {
+                                          const isOverflowing = el.scrollHeight > el.clientHeight;
 
-                                        if (isOverflowing) {
-                                          el.setAttribute("title", el.innerText);
-                                        } else {
-                                          el.removeAttribute("title");
-                                        }
-                                      }, 0);
-                                    }
-                                  }}
-                                >
+                                          if (isOverflowing) {
+                                            el.setAttribute("title", el.innerText);
+                                          } else {
+                                            el.removeAttribute("title");
+                                          }
+                                        }, 0);
+                                      }
+                                    }}
+                                  >
                                     {item.Description}
                                   </p>
                                 </div>
@@ -1992,22 +2023,22 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               </h5>
 
                               <p
-                                  className={styles.desc}
-                                  style={{ WebkitLineClamp: 3 }}
-                                  ref={(el) => {
-                                    if (el) {
-                                      setTimeout(() => {
-                                        const isOverflowing = el.scrollHeight > el.clientHeight;
+                                className={styles.desc}
+                                style={{ WebkitLineClamp: 3 }}
+                                ref={(el) => {
+                                  if (el) {
+                                    setTimeout(() => {
+                                      const isOverflowing = el.scrollHeight > el.clientHeight;
 
-                                        if (isOverflowing) {
-                                          el.setAttribute("title", el.innerText);
-                                        } else {
-                                          el.removeAttribute("title");
-                                        }
-                                      }, 0);
-                                    }
-                                  }}
-                                >
+                                      if (isOverflowing) {
+                                        el.setAttribute("title", el.innerText);
+                                      } else {
+                                        el.removeAttribute("title");
+                                      }
+                                    }, 0);
+                                  }
+                                }}
+                              >
                                 {item.VMDescription}
                               </p>
                             </div>

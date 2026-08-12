@@ -79,7 +79,7 @@
 
 .menuDropdown :global(.dropdown-menu) {
   z-index: 9999 !important;
-  min-width: 220px;
+  //min-width: 220px;
   font-size: 14px;
   padding: 0;
 }
@@ -101,6 +101,12 @@
     :global(.dropdown-item) {
       padding: 10px 16px 10px 16px !important;
     }
+  }
+}
+
+.menuDropdown {
+  :global(.dropdown-menu) {
+    margin-top: -5px !important;
   }
 }
 
@@ -165,17 +171,32 @@
 }
 
 .dropdownSubmenuMenu {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 100%;
-  min-width: 220px;
-  background: #fff;
-  border: 1px solid #ddd;
-  z-index: 9999;
-  //padding: 4px 12px;
-  border-radius: 5px;
+    display: none;
+    position: absolute !important;
+    top: 0;
+    left: 100%;
+    right: auto;
+   // min-width: 220px;
+    background: #fff;
+    border: 1px solid #ddd;
+    z-index: 9999;
+    border-radius: 5px !important;
 }
+
+
+.openLeft {
+  .dropdownSubmenuMenu {
+    left: auto !important;
+    right: 100% !important;
+    border-radius: 5px !important;
+  }
+}
+
+.dropdownSubmenu:hover .dropdownSubmenuMenu {
+  display: block;
+}
+
+
 
 
 
@@ -183,20 +204,56 @@
   color: #212529 !important;
 }
 
-.dropdownSubmenu:hover .dropdownSubmenuMenu {
-  display: block;
-}
+
+
+// .lastDropdown {
+//   :global(.dropdown-menu) {
+//     right: 0;
+//     left: auto;
+//   }
+
+  
+// }
+
 
 .lastDropdown {
+  position: relative;
+ 
+  
   :global(.dropdown-menu) {
-    right: 0;
-    left: auto;
+    left: auto !important;
+    right: 0 !important;
   }
 
-  .dropdownSubmenu:last-child .dropdownSubmenuMenu {
-    left: auto;
-    right: 100%;
+  .dropdownSubmenu {
+    position: relative;
+ 
+    .dropdownSubmenuMenu {
+      top: 0;
+      left: auto !important;
+      right: 100% !important;
+      // margin-right: 2px;
+    }
   }
+}
+
+
+.lastDropdown {
+  .dropdownSubmenu > :global(.dropdown-toggle)::after {
+    border-left: 0 !important;
+    border-right: 0.3em solid currentColor !important;
+ 
+    border-top: 0.3em solid transparent;
+    border-bottom: 0.3em solid transparent;
+ 
+    margin-left: 5px;
+    // margin-right: 10px;
+  }
+}
+
+.dropdownSubmenu.openLeft > .dropdownSubmenuMenu {
+  left: auto !important;
+  right: 100% !important;
 }
 
 //my code end
@@ -1267,12 +1324,15 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: 0.3s ease;
-
+  // transition: 0.3s ease;
+  width: fit-content;
+  text-decoration: none;
+ 
   &:hover {
-    transform: translateX(4px);
+    // transform: translateX(4px);
     color: #ffd54f;
   }
+ 
 
   @media (max-width: 767px) {
     font-size: 13px;

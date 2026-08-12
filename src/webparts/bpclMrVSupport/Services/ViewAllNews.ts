@@ -27,16 +27,17 @@ export default class ViewAllNewsService {
     constructor(context: WebPartContext) {
 
         const currentUrl = context.pageContext.web.absoluteUrl.toLowerCase();
-        if (currentUrl.includes("dev-")) {
+       if (currentUrl.includes("dev-")) {
             this.PUBLISHING_HUB_URL =
                 "https://bharatpetroleum.sharepoint.com/sites/dev-mumbai-refinery-cph";
         } else if (currentUrl.includes("qa-")) {
             this.PUBLISHING_HUB_URL =
-                "https://bharatpetroleum.sharepoint.com/sites/qa-corporate-publishing-hub";
+                "https://bharatpetroleum.sharepoint.com/sites/qa-mumbai-refinery-cph";
         } else {
             this.PUBLISHING_HUB_URL =
                 "https://bharatpetroleum.sharepoint.com/sites/iconnect-corporate-publishing-hub";
         }
+
 
         //this.context = context;
 
