@@ -249,9 +249,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
   }
 
-  public async componentDidMount(): Promise<void> {
-
-    await this.loadPageData();
+  public componentDidMount(): void {
     window.addEventListener(
       "languageChanged",
       this.handleLanguageChange
@@ -261,6 +259,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
       "resize",
       this.handleResize
     );
+
+    void this.loadPageData();
   }
 
   public componentWillUnmount(): void {
@@ -276,46 +276,282 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
 
   }
 
-  private async loadPageData(): Promise<void> {
 
+
+  // private async loadPageData(): Promise<void> {
+
+  //   try {
+
+  //     const navigationMenuItem = await this._service.getNavigationMenu();
+  //     const businessUnits = await this._service.getBusinessUnits();
+  //     const corporateNews = await this._service.getCorporateNews();
+  //     const events = await this._service.getEvents();
+  //     const broadcasts = await this._service.getBroadcasts();
+
+  //     const welcomeBanners = await this._service.getWelcomeBanners();
+  //     const quickLinks = await this._service.getQuickLinks();
+  //     const lateralMoves = await this._service.getLateralMoves();
+  //     const holidays = await this._service.getHolidays();
+  //     const favouriteLinks = await this._service.getFavouriteLinks();
+  //     const safetyTips = await this._service.getSafetyTips();
+  //     const teamOperatingPrinciples = await this._service.getTeamOperatingPrinciples();
+  //     const employeeGreetings = await this._service.getEmployeeGreetings();
+  //     const testimonials = await this._service.getTestimonials();
+  //     const successStories = await this._service.getSuccessStories();
+  //     const safetyDashBoard = await this._service.getSafetyDashBoard();
+  //     const weeklyNotices = await this._service.getWeeklyNotices();
+  //     const businessPlan = await this._service.getBusinessPlan();
+  //     const vissionMission = await this._service.getVissionMission();
+
+
+  //     this.setState({ navigationMenuItem, corporateNews, events, broadcasts, businessUnits, welcomeBanners, quickLinks, lateralMoves, holidays, favouriteLinks, safetyTips, teamOperatingPrinciples, employeeGreetings, testimonials, successStories, safetyDashBoard, weeklyNotices, businessPlan, vissionMission, isLoading: false },
+  //       () => { this.splitMenus(); }
+
+
+  //     );
+
+  //   }
+  //   catch (error) {
+
+  //     console.error("Error loading page data", error);
+
+  //   }
+
+  // }
+
+
+  private async loadSafely<T>(
+    sectionName: string,
+    request: Promise<T>,
+    fallback: T
+  ): Promise<T> {
     try {
-
-      const navigationMenuItem = await this._service.getNavigationMenu();
-      const businessUnits = await this._service.getBusinessUnits();
-      const corporateNews = await this._service.getCorporateNews();
-      const events = await this._service.getEvents();
-      const broadcasts = await this._service.getBroadcasts();
-
-      const welcomeBanners = await this._service.getWelcomeBanners();
-      const quickLinks = await this._service.getQuickLinks();
-      const lateralMoves = await this._service.getLateralMoves();
-      const holidays = await this._service.getHolidays();
-      const favouriteLinks = await this._service.getFavouriteLinks();
-      const safetyTips = await this._service.getSafetyTips();
-      const teamOperatingPrinciples = await this._service.getTeamOperatingPrinciples();
-      const employeeGreetings = await this._service.getEmployeeGreetings();
-      const testimonials = await this._service.getTestimonials();
-      const successStories = await this._service.getSuccessStories();
-      const safetyDashBoard = await this._service.getSafetyDashBoard();
-      const weeklyNotices = await this._service.getWeeklyNotices();
-      const businessPlan = await this._service.getBusinessPlan();
-      const vissionMission = await this._service.getVissionMission();
-
-
-      this.setState({ navigationMenuItem, corporateNews, events, broadcasts, businessUnits, welcomeBanners, quickLinks, lateralMoves, holidays, favouriteLinks, safetyTips, teamOperatingPrinciples, employeeGreetings, testimonials, successStories, safetyDashBoard, weeklyNotices, businessPlan, vissionMission, isLoading: false },
-        () => { this.splitMenus(); }
-
-
-      );
-
+      return await request;
+    } catch (error) {
+      console.error(`Failed to load ${sectionName}:`, error);
+      return fallback;
     }
-    catch (error) {
-
-      console.error("Error loading page data", error);
-
-    }
-
   }
+
+  private async loadPageData(): Promise<void> {
+    const startTime = performance.now();
+
+    // Start navigation independently. It must not delay hiding the loader.
+    void this.loadSafely(
+      "Navigation Menu",
+      this._service.getNavigationMenu(),
+      [] as INavigationMenuItem[]
+    ).then(navigationMenuItem => {
+      this.setState(
+        { navigationMenuItem },
+        () => this.splitMenus()
+      );
+    });
+
+    // PHASE 1: Only News, Broadcasts and Events control the loader.
+    const criticalStart = performance.now();
+
+    const [welcomeBanners, corporateNews, broadcasts, events] = await Promise.all([
+
+      this.loadSafely(
+        "banner",
+        this._service.getWelcomeBanners(),
+        [] as IWelcomeBannerItem[]
+      ),
+
+      this.loadSafely(
+        "Corporate News",
+        this._service.getCorporateNews(),
+        [] as ICorporateNewsItem[]
+      ),
+      this.loadSafely(
+        "Broadcasts",
+        this._service.getBroadcasts(),
+        [] as IBroadcastItem[]
+      ),
+      this.loadSafely(
+        "Events",
+        this._service.getEvents(),
+        [] as ICorporateNewsItem[]
+      )
+    ]);
+
+    this.setState({
+      welcomeBanners,
+      corporateNews,
+      broadcasts,
+      events,
+      isLoading: false
+    });
+
+    console.log(
+      "News, Broadcasts and Events loaded:",
+      (performance.now() - criticalStart).toFixed(2),
+      "ms"
+    );
+
+    console.log(
+      "Initial loader duration:",
+      (performance.now() - startTime).toFixed(2),
+      "ms"
+    );
+
+    // PHASE 2: Load the rest without blocking the initial page.
+    void this.loadRemainingSections();
+  }
+
+
+  private async loadRemainingSections(): Promise<void> {
+    const backgroundStart = performance.now();
+
+    // Load remaining sections in UI order.
+    // Each section updates the UI independently when its request completes.
+    const tasks: Promise<void>[] = [
+      // 1. Safety Dashboard
+      this.loadSafely(
+        "Safety Dashboard",
+        this._service.getSafetyDashBoard(),
+        [] as ISafetyDashBoardItem[]
+      ).then(safetyDashBoard => {
+        this.setState({ safetyDashBoard });
+      }),
+
+      // 2. Success Stories
+      this.loadSafely(
+        "Success Stories",
+        this._service.getSuccessStories(),
+        [] as ISuccessStoryItem[]
+      ).then(successStories => {
+        this.setState({ successStories });
+      }),
+
+      // 3. Testimonials
+      this.loadSafely(
+        "Testimonials",
+        this._service.getTestimonials(),
+        [] as ITestimonialItem[]
+      ).then(testimonials => {
+        this.setState({ testimonials });
+      }),
+
+      // 4. Quick Links
+      this.loadSafely(
+        "Quick Links",
+        this._service.getQuickLinks(),
+        [] as IQuickLinkItem[]
+      ).then(quickLinks => {
+        this.setState({ quickLinks });
+      }),
+
+      // 5. Birthday Section
+      this.loadSafely(
+        "Birthday Section",
+        this._service.getEmployeeGreetings(),
+        [] as IEmployeeGreetingItem[]
+      ).then(employeeGreetings => {
+        this.setState({ employeeGreetings });
+      }),
+
+      // 6. Welcome Banner
+      // this.loadSafely(
+      //   "Welcome Banner",
+      //   this._service.getWelcomeBanners(),
+      //   [] as IWelcomeBannerItem[]
+      // ).then(welcomeBanners => {
+      //   this.setState({ welcomeBanners });
+      // }),
+
+      // 7. Weekly Notices
+      this.loadSafely(
+        "Weekly Notices",
+        this._service.getWeeklyNotices(),
+        [] as IWeeklyNoticeItem[]
+      ).then(weeklyNotices => {
+        this.setState({ weeklyNotices });
+      }),
+
+      // 8. Business Plan
+      this.loadSafely(
+        "Business Plan",
+        this._service.getBusinessPlan(),
+        [] as IBusinessPlanItem[]
+      ).then(businessPlan => {
+        this.setState({ businessPlan });
+      }),
+
+      // 9. Lateral Moves
+      this.loadSafely(
+        "Lateral Moves",
+        this._service.getLateralMoves(),
+        [] as ILateralMoveItem[]
+      ).then(lateralMoves => {
+        this.setState({ lateralMoves });
+      }),
+
+      // 10. Holiday List
+      this.loadSafely(
+        "Holidays",
+        this._service.getHolidays(),
+        [] as IHolidayItem[]
+      ).then(holidays => {
+        this.setState({ holidays });
+      }),
+
+      // 11. Favourite Links
+      this.loadSafely(
+        "Favourite Links",
+        this._service.getFavouriteLinks(),
+        [] as IFavouriteLinkItem[]
+      ).then(favouriteLinks => {
+        this.setState({ favouriteLinks });
+      }),
+
+      // 12. Safety Tips
+      this.loadSafely(
+        "Safety Tips",
+        this._service.getSafetyTips(),
+        [] as ISafetyTipItem[]
+      ).then(safetyTips => {
+        this.setState({ safetyTips });
+      }),
+
+      // 13. Team Operating Principles
+      this.loadSafely(
+        "Team Operating Principles",
+        this._service.getTeamOperatingPrinciples(),
+        [] as ITeamOperatingPrincipleItem[]
+      ).then(teamOperatingPrinciples => {
+        this.setState({ teamOperatingPrinciples });
+      }),
+
+      // 14. Vision and Mission
+      this.loadSafely(
+        "Vision and Mission",
+        this._service.getVissionMission(),
+        [] as IVissionMissionItem[]
+      ).then(vissionMission => {
+        this.setState({ vissionMission });
+      }),
+
+      // 15. Business Units
+      this.loadSafely(
+        "Business Units",
+        this._service.getBusinessUnits(),
+        [] as IBusinessUnit[]
+      ).then(businessUnits => {
+        this.setState({ businessUnits });
+      })
+    ];
+
+    await Promise.all(tasks);
+
+    console.log(
+      "All background sections loaded:",
+      (performance.now() - backgroundStart).toFixed(2),
+      "ms"
+    );
+  }
+
 
   private handleLanguageChange = (): void => {
 
@@ -445,7 +681,7 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
     submenu.style.visibility = "";
   };
 
-  
+
 
   public render(): React.ReactElement<IBpclMrVSupportProps> {
 
@@ -753,8 +989,8 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
                               title={this.getMenuTitle(parentMenu)}
                               // className={styles.menuDropdown}
                               className={`${styles.menuDropdown} ${parentMenu.Id === visibleMenus[visibleMenus.length - 1].Id
-                                  ? styles.lastDropdown
-                                  : ""
+                                ? styles.lastDropdown
+                                : ""
                                 }`}
                               show={this.state.hoveredMenuId === parentMenu.Id}
                               onMouseEnter={() =>
@@ -906,10 +1142,248 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
             )}
           </div>
 
+          {/*----------- NEWS/Event/Broadcaste BANNER ----------- */}
+
+          <div className={styles.newsBanner}>
+             <h2 className={styles.sectionHeading}>
+          {t.mrAnnouncementsBroadcastsEventsNews}
+        </h2> 
+
+            <Row>
+              <Col xs={12} md={6}>
+                <div className={styles.newsannounceBanner}>
+                  <div className={styles.bannerTitle}>
+                    <h4>{t.newsAnnouncements}</h4>
+                    <span
+                      className={styles.seeAll}
+                      role="link"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        this.setState({
+                          showViewAllNewsPage: true
+                        });
+                      }}
+                    >
+                      See All
+                    </span>
+                  </div>
+
+                  {this.state.corporateNews.length === 0 ? (
+                    <div className={styles.noDataWrapperNewsAnnouncements}>
+                      <p className={styles.noDataText}>No data to display</p>
+                    </div>
+                  ) : (
+                    <Carousel controls={false} interval={8000} indicators>
+                      {this.state.corporateNews.map((item) => (
+                        <Carousel.Item key={item.Id}>
+                          <div
+                            className={styles.slide}
+                            role="button"
+                            tabIndex={0}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              if (item.FileUrl) {
+                                // Open PDF if available
+                                window.open(item.FileUrl, "_blank");
+                              } else if (item.ImageUrl) {
+                                // Otherwise open the image
+                                window.open(item.ImageUrl, "_blank");
+                              }
+                            }}
+
+                          >
+                            <img
+                              src={item.ImageUrl}
+                              alt={item.Title}
+
+
+                            />
+
+                            <div className={styles.contentDiv}>
+                              <div className={styles.announceContent}>
+                                <h3 className={styles.newsTitle} ref={handleTitleRef(item.Title)}>{item.Title}</h3>
+
+                                <h6>
+                                  {new Date(item.PublishedDate).toLocaleDateString("en-IN", {
+                                    month: "long",
+                                    year: "numeric",
+                                  })}
+                                </h6>
+                              </div>
+                            </div>
+
+
+
+                          </div>
+                        </Carousel.Item>
+                      ))}
+                    </Carousel>
+                  )}
+                </div>
+              </Col>
+              <Col xs={12} md={6}>
+                {/* ----------- Broadcasts ----------- */}
+                <div className={`${styles.broadcastBanner} mt-2 mt-sm-3 mt-md-0`}>
+                  <div className={styles.bannerTitle}>
+                    <h4>{t.mrBroadcasts}</h4>
+                    <span
+                      className={styles.seeAll}
+                      role="link"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        this.setState({
+                          showBroadcastPage: true
+                        });
+                      }}
+                    >
+                      See All
+                    </span>
+                  </div>
+
+                  {this.state.broadcasts.length === 0 ? (
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
+                    </div>
+                  ) : (
+                    <div className={styles.verticalMarqueeWrapper}>
+                      <div
+                        className={`${styles.verticalMarquee} ${this.state.isBroadcastPaused ? styles.paused : ""
+                          }`}
+                      >
+                        {[...this.state.broadcasts, ...this.state.broadcasts].map(
+                          (item, index) => (
+                            <div
+                              key={`${item.Id}-${index}`}
+                              className={styles.marqueeItem}
+                              role="button"
+                              tabIndex={0}
+                              style={{ cursor: "pointer" }}
+
+                              onClick={() => {
+                                if (item.FileUrl) {
+                                  window.open(item.FileUrl, "_blank");
+                                }
+                              }}
+
+                            >
+                              <div className={styles.broadcastIcon}>
+                                <i className="bi bi-broadcast"></i>
+                              </div>
+                              <h3 ref={handleTitleRef(item.Title)}>{item.Title}</h3>
+                            </div>
+                          )
+                        )}
+                      </div>
+
+                      <button
+                        className={styles.playPauseBtn}
+                        onClick={this.toggleBroadcast}
+                      >
+                        {this.state.isBroadcastPaused ? "▶" : "⏸"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* ----------- Events ----------- */}
+                <div className={styles.eventsBanner}>
+                  <div className={styles.bannerTitle}>
+                    <h4>{t.mrEvents}</h4>
+                    <span
+                      className={styles.seeAll}
+                      role="link"
+                      tabIndex={0}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        this.setState({
+                          showViewAllEventsPage: true
+                        });
+                      }}
+                    >
+                      See All
+                    </span>
+                  </div>
+
+                  {this.state.events.length === 0 ? (
+                    <div className={styles.noDataWrapper}>
+                      <p className={styles.noDataText}>No data to display</p>
+                    </div>
+                  ) : (
+                    <div className={styles.verticalEventMarqueeWrapper}>
+                      <div className={styles.eventVerticalMarquee} style={{ animationPlayState: this.state.isEventPaused ? "paused" : "running" }}>
+
+
+                        {[...this.state.events, ...this.state.events].map((item, index) => (
+                          <div
+                            key={`${item.Id}-${index}`}
+                            className={styles.marqueeItem}
+                            role="button"
+                            tabIndex={0}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              if (item.FileUrl) {
+                                // Open PDF if available
+                                window.open(item.FileUrl, "_blank");
+                              } else if (item.ImageUrl) {
+                                // Otherwise open the image
+                                window.open(item.ImageUrl, "_blank");
+                              }
+                            }}
+
+                          >
+                            <img
+                              src={item.ImageUrl}
+                              alt={item.Title}
+                            // onError={(e) => {
+                            //   e.currentTarget.src = "/SiteAssets/default-event.jpg";
+                            // }}
+                            />
+
+                            <div className={styles.eventContent}>
+                              {/* 🔹 Floating Like Badge (Top Right) */}
+
+
+                              {/* 🔹 Meta Row (Like Count + Date) */}
+                              <div className={styles.metaInfo}>
+
+
+                                <div className={styles.metaItem}>
+                                  <i className="bi bi-calendar3" />
+                                  <span>
+                                    {new Date(item.PublishedDate).toLocaleDateString("en-IN", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                    })}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <h3 ref={handleTitleRef(item.Title)}>{item.Title}</h3>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        className={styles.eventPlayPauseBtn}
+                        onClick={this.toggleEvent}
+                      >
+                        {this.state.isEventPaused ? "▶" : "⏸"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </Col>
+            </Row>
+          </div>
+
           {/* ================= PERFORMANCE SECTION ================= */}
 
           <Row className={styles.safetydashboardWrapper}>
-            <Col lg={6} md={12}>
+            <Col lg={6} md={12} className="px-0">
 
               {/* -------- Dynamic Tabs -------- */}
               <Nav
@@ -1189,243 +1663,9 @@ export default class Vsupport extends React.Component<IBpclMrVSupportProps, IVsu
           </Row>
 
 
-          {/*----------- NEWS/Event/Broadcaste BANNER ----------- */}
-
-          <div className={styles.newsBanner}>
-            <h2 className={styles.sectionHeading}>
-              {t.mrAnnouncementsBroadcastsEventsNews}
-            </h2>
-
-            <Row>
-              <Col xs={12} md={6}>
-                <div className={styles.newsannounceBanner}>
-                  <div className={styles.bannerTitle}>
-                    <h4>{t.newsAnnouncements}</h4>
-                    <span
-                      className={styles.seeAll}
-                      role="link"
-                      tabIndex={0}
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        this.setState({
-                          showViewAllNewsPage: true
-                        });
-                      }}
-                    >
-                      See All
-                    </span>
-                  </div>
-
-                  {this.state.corporateNews.length === 0 ? (
-                    <div className={styles.noDataWrapperNewsAnnouncements}>
-                      <p className={styles.noDataText}>No data to display</p>
-                    </div>
-                  ) : (
-                    <Carousel controls={false} interval={8000} indicators>
-                      {this.state.corporateNews.map((item) => (
-                        <Carousel.Item key={item.Id}>
-                          <div
-                            className={styles.slide}
-                            role="button"
-                            tabIndex={0}
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              if (item.FileUrl) {
-                                // Open PDF if available
-                                window.open(item.FileUrl, "_blank");
-                              } else if (item.ImageUrl) {
-                                // Otherwise open the image
-                                window.open(item.ImageUrl, "_blank");
-                              }
-                            }}
-
-                          >
-                            <img
-                              src={item.ImageUrl}
-                              alt={item.Title}
-
-
-                            />
-
-                            <div className={styles.contentDiv}>
-                              <div className={styles.announceContent}>
-                                <h3 className={styles.newsTitle} ref={handleTitleRef(item.Title)}>{item.Title}</h3>
-
-                                <h6>
-                                  {new Date(item.PublishedDate).toLocaleDateString("en-IN", {
-                                    month: "long",
-                                    year: "numeric",
-                                  })}
-                                </h6>
-                              </div>
-                            </div>
 
 
 
-                          </div>
-                        </Carousel.Item>
-                      ))}
-                    </Carousel>
-                  )}
-                </div>
-              </Col>
-              <Col xs={12} md={6}>
-                {/* ----------- Broadcasts ----------- */}
-                <div className={`${styles.broadcastBanner} mt-2 mt-sm-3 mt-md-0`}>
-                  <div className={styles.bannerTitle}>
-                    <h4>{t.mrBroadcasts}</h4>
-                    <span
-                      className={styles.seeAll}
-                      role="link"
-                      tabIndex={0}
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        this.setState({
-                          showBroadcastPage: true
-                        });
-                      }}
-                    >
-                      See All
-                    </span>
-                  </div>
-
-                  {this.state.broadcasts.length === 0 ? (
-                    <div className={styles.noDataWrapper}>
-                      <p className={styles.noDataText}>No data to display</p>
-                    </div>
-                  ) : (
-                    <div className={styles.verticalMarqueeWrapper}>
-                      <div
-                        className={`${styles.verticalMarquee} ${this.state.isBroadcastPaused ? styles.paused : ""
-                          }`}
-                      >
-                        {[...this.state.broadcasts, ...this.state.broadcasts].map(
-                          (item, index) => (
-                            <div
-                              key={`${item.Id}-${index}`}
-                              className={styles.marqueeItem}
-                              role="button"
-                              tabIndex={0}
-                              style={{ cursor: "pointer" }}
-
-                              onClick={() => {
-                                if (item.FileUrl) {
-                                  window.open(item.FileUrl, "_blank");
-                                }
-                              }}
-
-                            >
-                              <div className={styles.broadcastIcon}>
-                                <i className="bi bi-broadcast"></i>
-                              </div>
-                              <h3 ref={handleTitleRef(item.Title)}>{item.Title}</h3>
-                            </div>
-                          )
-                        )}
-                      </div>
-
-                      <button
-                        className={styles.playPauseBtn}
-                        onClick={this.toggleBroadcast}
-                      >
-                        {this.state.isBroadcastPaused ? "▶" : "⏸"}
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* ----------- Events ----------- */}
-                <div className={styles.eventsBanner}>
-                  <div className={styles.bannerTitle}>
-                    <h4>{t.mrEvents}</h4>
-                    <span
-                      className={styles.seeAll}
-                      role="link"
-                      tabIndex={0}
-                      style={{ cursor: "pointer" }}
-                      onClick={() => {
-                        this.setState({
-                          showViewAllEventsPage: true
-                        });
-                      }}
-                    >
-                      See All
-                    </span>
-                  </div>
-
-                  {this.state.events.length === 0 ? (
-                    <div className={styles.noDataWrapper}>
-                      <p className={styles.noDataText}>No data to display</p>
-                    </div>
-                  ) : (
-                    <div className={styles.verticalEventMarqueeWrapper}>
-                      <div className={styles.eventVerticalMarquee} style={{ animationPlayState: this.state.isEventPaused ? "paused" : "running" }}>
-
-
-                        {[...this.state.events, ...this.state.events].map((item, index) => (
-                          <div
-                            key={`${item.Id}-${index}`}
-                            className={styles.marqueeItem}
-                            role="button"
-                            tabIndex={0}
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              if (item.FileUrl) {
-                                // Open PDF if available
-                                window.open(item.FileUrl, "_blank");
-                              } else if (item.ImageUrl) {
-                                // Otherwise open the image
-                                window.open(item.ImageUrl, "_blank");
-                              }
-                            }}
-
-                          >
-                            <img
-                              src={item.ImageUrl}
-                              alt={item.Title}
-                            // onError={(e) => {
-                            //   e.currentTarget.src = "/SiteAssets/default-event.jpg";
-                            // }}
-                            />
-
-                            <div className={styles.eventContent}>
-                              {/* 🔹 Floating Like Badge (Top Right) */}
-
-
-                              {/* 🔹 Meta Row (Like Count + Date) */}
-                              <div className={styles.metaInfo}>
-
-
-                                <div className={styles.metaItem}>
-                                  <i className="bi bi-calendar3" />
-                                  <span>
-                                    {new Date(item.PublishedDate).toLocaleDateString("en-IN", {
-                                      day: "2-digit",
-                                      month: "short",
-                                      year: "numeric",
-                                    })}
-                                  </span>
-                                </div>
-                              </div>
-
-                              <h3 ref={handleTitleRef(item.Title)}>{item.Title}</h3>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      <button
-                        className={styles.eventPlayPauseBtn}
-                        onClick={this.toggleEvent}
-                      >
-                        {this.state.isEventPaused ? "▶" : "⏸"}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </Col>
-            </Row>
-          </div>
 
           {/*---------------- Weekly notices and mr business plans ----------------*/}
 

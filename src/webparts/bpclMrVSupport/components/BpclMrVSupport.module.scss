@@ -916,7 +916,7 @@
 
 .safetydashboardWrapper {
   background: #242424;
-  padding: 60px 56px 60px 56px;
+  padding: 40px 56px;
   border-radius: 0px;
   position: relative;
 }
@@ -1516,8 +1516,10 @@
 
 .newsBanner {
   max-width: 100%;
-  background: #E6E6E6;
-  padding: 40px 50px;
+  // background: #E6E6E6;
+  background: #e8f1f8;
+  padding: 40px 56px;
+  // padding: 20px 20px 24px;
 }
 
 .sectionHeading {
@@ -1532,7 +1534,8 @@
   max-width: 100%;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.15);
+  // box-shadow: 0 14px 32px rgba(0, 0, 0, 0.15);
+  box-shadow:0 4px 16px rgba(0, 48, 120, 0.08);
   background: #ffffff;
 }
 
@@ -1569,12 +1572,20 @@
   object-fit: fill;
 }
 
-.broadcastBanner .bannerTitle h4 {
-  color: #fff;
+.newsannounceBanner .bannerTitle h4 { 
+  color: #1e40af;
   font-size: 15px;
   font-weight: 500;
   margin: 10px;
   padding: 4px 8px;
+}
+
+.broadcastBanner .bannerTitle h4 {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 10px 0px;
+  padding: 4px 0px;
 }
 
 .bannerTitle {
@@ -1588,15 +1599,15 @@
   color: #1e40af;
   font-size: 15px;
   font-weight: 500;
-  margin: 10px;
-  padding: 4px 8px;
+  margin: 10px 0px;
+  padding: 4px 0px;
 }
 
 .bannerTitle a {
   color: #1e40af;
   font-size: 14px;
   font-weight: 400;
-  margin: 10px;
+  margin: 10px 0px;
   text-decoration: none;
 }
 
@@ -1620,6 +1631,7 @@
   background: #013298;
   padding: 10px 20px 20px 20px;
   border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 48, 120, 0.08);
 }
 
 /* 🔹 Floating Like Badge */
@@ -1770,6 +1782,7 @@
   padding: 10px 20px;
   border-radius: 10px;
   margin-top: 20px;
+  box-shadow: 0 4px 16px rgba(0, 48, 120, 0.08);
 }
 
 .eventsBanner .verticalEventMarqueeWrapper {
@@ -2682,7 +2695,7 @@
 
 .parallelCarouselSection {
   background: #003296;
-  padding: 40px;
+  padding: 40px 56px;
 }
 
 .weeklyNoticesCarouselSection {
@@ -2790,7 +2803,7 @@
 
 .SafetyTipsCarouselSectionBG {
   background: #242424;
-  padding: 40px;
+  padding: 40px 56px;
 }
 
 .SafetyTipsCarouselSection {
@@ -2962,7 +2975,7 @@
 /*---------------- Lateral Moves, Holiday List & Quick Links (styles) ----------------*/
 
 .portalMainWrapper {
-  padding: 24px;
+  padding: 40px 56px;
   background: #f4f7fc;
   width: 100%;
   overflow: hidden;
